@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>VTOL on Yueqian&#39;s Page</title>
+    <link>https://example.com/tags/vtol/</link>
+    <description>Recent content in VTOL on Yueqian&#39;s Page</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 13 Dec 2021 13:20:21 +0800</lastBuildDate><atom:link href="https://example.com/tags/vtol/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A 3-Rotor VTOL UAV</title>
+      <link>https://example.com/p/a-3-rotor-vtol-uav/</link>
+      <pubDate>Mon, 13 Dec 2021 13:20:21 +0800</pubDate>
+      
+      <guid>https://example.com/p/a-3-rotor-vtol-uav/</guid>
+      <description>VIDEO DEMO    SYSTEM OVERVIEW   VTOL is achieved by adding a mixing unit to the F4 flight controller running Betaflight Y3 firmware
+  The mixing unit takes in PWM outputs of a basic multicopter flight controller and yields signals for VTOL actuators
+  We only implemented attitude control. Communication between boards is via PWM
+   Illustration of the UAV | ①: Aileron, ②: Rudder &amp;amp; Elevator, ③ &amp;amp; ④: Tilt Servo, ⑤: Motor</description>
+    </item>
+    
+  </channel>
+</rss>
