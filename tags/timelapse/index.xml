@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TIMELAPSE on Yueqian&#39;s Page</title>
+    <link>https://ercbunny.github.io/tags/timelapse/</link>
+    <description>Recent content in TIMELAPSE on Yueqian&#39;s Page</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 22 Jan 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/timelapse/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>pyTimelapse</title>
+      <link>https://ercbunny.github.io/p/pytimelapse/</link>
+      <pubDate>Fri, 22 Jan 2021 16:37:33 +0800</pubDate>
+      
+      <guid>https://ercbunny.github.io/p/pytimelapse/</guid>
+      <description> VIDEO DEMO  LINKS   Open Source Repository
+  Daily Update of Captured Images (Onedrive)
+ I need to write another script to update the shared folder. But doing such work isn&amp;rsquo;t on my schedule. So, this folder is expected to start rolling in a receding horizon way in about Feb 2022.    </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -2,26 +2,35 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Yueqian&#39;s Page</title>
-    <link>https://example.com/categories/</link>
+    <link>https://ercbunny.github.io/categories/</link>
     <description>Recent content in Categories on Yueqian&#39;s Page</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Dec 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://example.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 12 Dec 2021 21:40:00 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Finished Project</title>
-      <link>https://example.com/categories/finished-project/</link>
-      <pubDate>Mon, 13 Dec 2021 16:37:33 +0800</pubDate>
+      <title>Blog</title>
+      <link>https://ercbunny.github.io/categories/blog/</link>
+      <pubDate>Sun, 12 Dec 2021 21:40:00 +0800</pubDate>
       
-      <guid>https://example.com/categories/finished-project/</guid>
+      <guid>https://ercbunny.github.io/categories/blog/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Blog</title>
-      <link>https://example.com/categories/blog/</link>
-      <pubDate>Sun, 12 Dec 2021 21:40:00 +0800</pubDate>
+      <title>Finished Project</title>
+      <link>https://ercbunny.github.io/categories/finished_project/</link>
+      <pubDate>Sat, 13 Nov 2021 16:37:33 +0800</pubDate>
       
-      <guid>https://example.com/categories/blog/</guid>
+      <guid>https://ercbunny.github.io/categories/finished_project/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ongoing Project</title>
+      <link>https://ercbunny.github.io/categories/ongoing_project/</link>
+      <pubDate>Wed, 01 Sep 2021 16:37:33 +0800</pubDate>
+      
+      <guid>https://ercbunny.github.io/categories/ongoing_project/</guid>
       <description></description>
     </item>
     

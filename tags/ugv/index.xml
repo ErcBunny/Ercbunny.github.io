@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>UGV on Yueqian&#39;s Page</title>
-    <link>https://example.com/tags/ugv/</link>
+    <link>https://ercbunny.github.io/tags/ugv/</link>
     <description>Recent content in UGV on Yueqian&#39;s Page</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Dec 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://example.com/tags/ugv/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Nov 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/ugv/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Dash To Cones</title>
-      <link>https://example.com/p/dash-to-cones/</link>
-      <pubDate>Mon, 13 Dec 2021 16:37:33 +0800</pubDate>
+      <link>https://ercbunny.github.io/p/dash-to-cones/</link>
+      <pubDate>Sat, 13 Nov 2021 16:37:33 +0800</pubDate>
       
-      <guid>https://example.com/p/dash-to-cones/</guid>
-      <description> VIDEO DEMO    RELATED LINKS   Source Code
+      <guid>https://ercbunny.github.io/p/dash-to-cones/</guid>
+      <description> VIDEO DEMO  RELATED LINKS   Source Code
   View Project Report PDF (Chinese)
    Contents of the detailed report are in Chinese as they were made originally to support the Chinese presentation. A rework and translation of illustrations, diagrams and the report is in progress, but don&amp;rsquo;t expect it to be finished soon. Best regards~
  </description>

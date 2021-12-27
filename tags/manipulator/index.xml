@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Manipulator on Yueqian&#39;s Page</title>
-    <link>https://example.com/tags/manipulator/</link>
-    <description>Recent content in Manipulator on Yueqian&#39;s Page</description>
+    <title>MANIPULATOR on Yueqian&#39;s Page</title>
+    <link>https://ercbunny.github.io/tags/manipulator/</link>
+    <description>Recent content in MANIPULATOR on Yueqian&#39;s Page</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Dec 2021 15:24:52 +0800</lastBuildDate><atom:link href="https://example.com/tags/manipulator/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 01 Jul 2021 15:24:52 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/manipulator/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>HLJenga: Hexalink Jenga Manipulator</title>
-      <link>https://example.com/p/hljenga-hexalink-jenga-manipulator/</link>
-      <pubDate>Mon, 13 Dec 2021 15:24:52 +0800</pubDate>
+      <link>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</link>
+      <pubDate>Thu, 01 Jul 2021 15:24:52 +0800</pubDate>
       
-      <guid>https://example.com/p/hljenga-hexalink-jenga-manipulator/</guid>
-      <description>VIDEO DEMO    OVERVIEW  We were required to program QKM manipulators to play Jenga automatically My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI The robot operates like this:  Take a picture with camera and calculate target positions Do path and trajectory planning Upload planned trajectory to bot Run     HAND-EYE CALIBRATION HEC Explained in A Nutshell  Aims to find the transform matrix from camera frame to tool frame.</description>
+      <guid>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</guid>
+      <description>VIDEO DEMO  OVERVIEW  We were required to program QKM manipulators to play Jenga automatically My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI The robot operates like this:  Take a picture with camera and calculate target positions Do path and trajectory planning Upload planned trajectory to bot Run     HAND-EYE CALIBRATION HEC Explained in A Nutshell  Aims to find the transform matrix from camera frame to tool frame.</description>
     </item>
     
   </channel>
