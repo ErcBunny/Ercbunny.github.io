@@ -6,7 +6,503 @@
         <description>Recent content on Yueqian&#39;s Page</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 13 Dec 2021 17:21:54 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 27 Dec 2021 15:24:52 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Notes for Introduction to Autonomous Mobile Robots</title>
+        <link>https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/</link>
+        <pubDate>Mon, 27 Dec 2021 15:24:52 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/post/note/mobileRobot/cover.jpg" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" /&gt;&lt;hr&gt;
+&lt;h2 id=&#34;绪论&#34;&gt;绪论&lt;/h2&gt;
+&lt;h3 id=&#34;按功能分类&#34;&gt;按功能分类&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;移动机器人&lt;/li&gt;
+&lt;li&gt;操作机器人&lt;/li&gt;
+&lt;li&gt;移动作业机器人&lt;/li&gt;
+&lt;li&gt;举些例子：机械臂，月球车，心脏手术，扫地，UAV，自驾车&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;应用领域&#34;&gt;应用领域&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;工业&lt;/li&gt;
+&lt;li&gt;空间探测&lt;/li&gt;
+&lt;li&gt;军事&lt;/li&gt;
+&lt;li&gt;医疗手术&lt;/li&gt;
+&lt;li&gt;家庭&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;几个概念&#34;&gt;几个概念&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;自主性(autonomy)是行为主体按自己意愿行事的动机、能力或特性
+&lt;ul&gt;
+&lt;li&gt;自主移动机器人是一类可以根据任务需求、具有在单维或多维空间主动改变自身位姿以及空间位置能力的机器人统称&lt;/li&gt;
+&lt;li&gt;自动驾驶分级：0-2级需要驾驶员实时介入，自动驾驶提供辅助速度和车道控制；3级有时会要求接管驾驶，4级开始是在特定环境下完全自主，5级是所有环境下全自主
+&lt;ul&gt;
+&lt;li&gt;0-2：特斯拉，小鹏，未来&lt;/li&gt;
+&lt;li&gt;没有一个达到了3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;三大关键问题：在哪，去哪，怎么去&lt;/li&gt;
+&lt;li&gt;经典3环节
+&lt;ul&gt;
+&lt;li&gt;see (perception): sensing, info extraction (filtering, keypoint extraction and matching)&lt;/li&gt;
+&lt;li&gt;think (planning/understanding): localizatoon, mapping, planning&lt;/li&gt;
+&lt;li&gt;act (motion control): tracking, actuator driving&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/see-think-act.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/see-think-act.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;general pipeline&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;general pipeline&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;运动形式&#34;&gt;运动形式&lt;/h2&gt;
+&lt;h3 id=&#34;运动相关的概念&#34;&gt;运动相关的概念&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;locomotion，运动，是一种机器人与环境的物理交互&lt;/li&gt;
+&lt;li&gt;稳定性考虑：接触点数目和形状（角度，摩擦），重心，环境（地形，空气），本体稳定性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;两种地面运动形式&#34;&gt;两种地面运动形式&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;腿式运动
+&lt;ul&gt;
+&lt;li&gt;自然界偏爱，自然界表面粗糙，环境复杂&lt;/li&gt;
+&lt;li&gt;通过性强，控制困难，非连续点接触&lt;/li&gt;
+&lt;li&gt;效率取决于本体质量&lt;/li&gt;
+&lt;li&gt;近似滚动多边形，随着步距减小，接近圆形&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;轮式运动
+&lt;ul&gt;
+&lt;li&gt;自然界基本没有，因为关节不能旋转&lt;/li&gt;
+&lt;li&gt;在平面上运动效率高，控制简单，受环境约束大&lt;/li&gt;
+&lt;li&gt;效率取决于环境质量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;腿式机器人&#34;&gt;腿式机器人&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;特点（因为不同场景下优点和弱点互相转换）包括：适应地形，自主调节重心高度，运动执行器也能当成操作器，主动隔离震动，自由度高，难控制建模，对关节驱动要求高，需要配合地形感知，落地有冲击&lt;/li&gt;
+&lt;li&gt;稳定性
+&lt;ul&gt;
+&lt;li&gt;动态稳定指的是执行器停止工作时机器人摔倒，反之则是静态稳定的&lt;/li&gt;
+&lt;li&gt;静止时保持稳定的条件
+&lt;ul&gt;
+&lt;li&gt;点接触腿需要三支同时着地（波士顿动力方案，快，动态稳定，能耗低）&lt;/li&gt;
+&lt;li&gt;面接触腿只需要一支（比如日本方案的双足，静态稳定，慢，能耗高）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;运动时保持稳定的条件
+&lt;ul&gt;
+&lt;li&gt;静态步态行走需要4-6条腿&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;关节数和自由度：每个腿至少需要两个自由度，增加自由度可以提高机动性、步态稳定性，同时增加设计难度&lt;/li&gt;
+&lt;li&gt;可能事件总数Gait/步态：一个行进周期内腿式机器人每条腿抬起和落地可能性的组合$=(2k-1)!$注意与腿状态数区分 $=2^k$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;轮式机器人&#34;&gt;轮式机器人&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;特点：人造结构的高效性（滚动摩擦，重心不会起伏变化），结构简单，成本低，控制简单，系统复杂度低，运行速度高&lt;/li&gt;
+&lt;li&gt;稳定性：至少有三个车轮同时接触地面才能保证静态稳定性（重心落在接触点的三角形内部），3个轮子以上需要悬挂系统使所有轮子保持与地面接触&lt;/li&gt;
+&lt;li&gt;轮子类型
+&lt;ul&gt;
+&lt;li&gt;标准轮，DOF=2&lt;/li&gt;
+&lt;li&gt;脚轮，DOF=3，调向时会对机器人底盘施加一个扭矩，偏心距d:触地点到垂直旋转轴的距离&lt;/li&gt;
+&lt;li&gt;瑞典轮（十字连续切换90/麦克纳姆45），DOF=3，无法单独使用，至少需三个或以上共同使用，对地面冲击大，噪音大，易破坏地面，运行震动大，对机器人本体机构冲击大&lt;/li&gt;
+&lt;li&gt;球轮，DOF=3，无约束:具有很高的灵活性，成本高:制造和维护成本均很高，积灰、磨损&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;全向驱动经典布局：等边三角形，瑞典轮，转向标准轮，4麦克纳姆&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;轮式机器人运动学&#34;&gt;轮式机器人运动学&lt;/h2&gt;
+&lt;h3 id=&#34;非完整约束&#34;&gt;非完整约束&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;大部分轮式机器人形态均含有非完整约束，即无法从位置空间找到一一对应的关系，和历史状态有关&lt;/li&gt;
+&lt;li&gt;需要扩展到速度空间 (车轮间相对位置增量的差别)考虑微分运动学&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;坐标系描述&#34;&gt;坐标系描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;惯性参考坐标系 $\xi_I$ ：机器人作业目标及控制指令，传感器感知测量的环境信息&lt;/li&gt;
+&lt;li&gt;机器人参考坐标系 $\xi_R$ ：机器人控制器的误差输入以及控制指令&lt;/li&gt;
+&lt;li&gt;config矩阵可以是 $3 \times 3$ ：因为只有两个维度&lt;/li&gt;
+&lt;li&gt;$\bold{\dot{\xi_I}=R(\theta)\dot{\xi_R}}$ ，两个坐标系下的速度之间关系为旋转矩阵&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/coord.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/coord.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;坐标系的一般设置&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;坐标系的一般设置&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;前向运动学模型&#34;&gt;(前向)运动学模型&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;指建立惯性系下参考点速度和执行器速度之间的关系&lt;/li&gt;
+&lt;li&gt;中间桥梁为机器人系下参考点速度&lt;/li&gt;
+&lt;li&gt;构建方法
+&lt;ul&gt;
+&lt;li&gt;作用法：从轮运动参数（转速，半径，轮距），进行速度的合成与分解（同时考虑约束作用），得到参考点在机体坐标系下的速度，然后通过旋转矩阵转为世界坐标系&lt;/li&gt;
+&lt;li&gt;约束法：把每个轮子的约束方程写出来（轮运动参数与机体坐标下速度的关系），合并成一个式子并转换为世界坐标速度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;标准轮约束
+&lt;ul&gt;
+&lt;li&gt;主动固定标准轮：$v_{\parallel}=r \dot{\phi}$ 以及 $v_{\perp}=0$ ；将 $v_{\parallel}$ 和 $v_{\perp}$ 用机体坐标系下的速度表示出来&lt;/li&gt;
+&lt;li&gt;主动转向标准轮：滚动约束，可控制角度来改变运动： $v_{\parallel}=r \dot{\phi}$&lt;/li&gt;
+&lt;li&gt;随动固定标准轮：无侧滑约束（滑动约束）： $v_{\perp}=0$&lt;/li&gt;
+&lt;li&gt;随动转向标准轮：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;脚轮约束
+&lt;ul&gt;
+&lt;li&gt;作为主动轮：滚动约束，可控制角度来改变运动&lt;/li&gt;
+&lt;li&gt;作为从动轮：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;球轮约束
+&lt;ul&gt;
+&lt;li&gt;主动：与主动转向标准轮一致&lt;/li&gt;
+&lt;li&gt;从动：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;瑞典轮约束
+&lt;ul&gt;
+&lt;li&gt;主动：驱动速度 $\dot{\phi} r$ 往转子上投影作为最终这个执行器产生的速度，没有无侧滑约束
+&lt;ul&gt;
+&lt;li&gt;记 $\gamma$ 为滚子轴与轮平面的夹角，则滚动约束为 $\dot{\phi} r \cos(\gamma)=v_{\parallel}$ ，这里 $v_{\parallel}$ 指的是机体坐标系下速度滚子轴方向的投影&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;从动：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;零运动直线：几何上经过轮子的轴心并垂直于轮平面的线，当受无侧滑约束时，轮子在该直线上不能存在运动
+&lt;ul&gt;
+&lt;li&gt;脚轮、瑞典轮：不存在无侧滑约束，不存在零运动直线&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;轮式移动机器人运动学建模仅考虑平面运动，因此其对应的输出状态为三维向量，因此，最多有三个独立约束&lt;/li&gt;
+&lt;li&gt;动力学建模在运动变化较为快速、动态响应比较明显的情况下适用，比如无人机上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/kine-example.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/kine-example.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;运动学模型例子&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;运动学模型例子&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;自由度&#34;&gt;自由度&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;自由度是机动性的度量&lt;/li&gt;
+&lt;li&gt;总自由度=移动mobility自由度+操纵steerability自由度：$\delta_{M}=\delta_{m}+\delta_{s}$
+&lt;ul&gt;
+&lt;li&gt;$\delta_{M}=3$：瞬心可在平面的任意点，可在工作空间中跟踪任何路径&lt;/li&gt;
+&lt;li&gt;$\delta_{M}=2$：瞬心被限制在某条直线上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;移动自由度（可移动度）$\delta_{m}$
+&lt;ul&gt;
+&lt;li&gt;$\delta_{m}=$ 工作空间维度 $-$ 独立约束数目 $=$ 状态向量的维度 $-$ 滑动约束中的独立约束个数&lt;/li&gt;
+&lt;li&gt;考虑 $\bold{AR\dot{\xi_I}} = [\bold{B,0}]^T$ 这样动力学模型的基本形式，与 $\bold{0}$ 对应的 $\bold{A}$ 的部分子矩阵零空间维度 $=$ 列数 $-$ 秩 $=\delta_{m}$&lt;/li&gt;
+&lt;li&gt;$\delta_{m}=0$ 时无法在平面中运动， $\delta_{m}=1$ 时只能沿着圆弧/直线行走（移动性退化）， $\delta_{m}=2$ 时可原地（线速度和角速度解耦）， $\delta_{m}=3$ 时全向
+&lt;ul&gt;
+&lt;li&gt;二轮差速小车：通过改变轮转速可同时控制角速度和线速度， $\delta_{m}=2$&lt;/li&gt;
+&lt;li&gt;自行车：改变主动轮转速只能改变线速度，角速度要通过另一个轮子的方向， $\delta_{m}=1$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;操纵自由度（可操纵度） $\delta_{s}$
+&lt;ul&gt;
+&lt;li&gt;等于独立的能够转向的舵机的个数，范围是 $[0,2]$&lt;/li&gt;
+&lt;li&gt;考虑 $\bold{A}$ 矩阵中滑动约束部分，挑出其中转向轮的子矩阵，求秩，则等于 $\delta_{s}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;机器人的完整性判据：可移动度等于工作空间维度
+&lt;ul&gt;
+&lt;li&gt;对于地面移动机器人，工作空间维度是3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/dof-example.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/dof-example.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;自由度计算例子&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;自由度计算例子&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二轮差速机器人的控制&#34;&gt;二轮差速机器人的控制&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;只考虑运动学控制，仅分析二轮差速小车&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;概念和零碎知识点&#34;&gt;概念和零碎知识点&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;定点(镇定)控制Regulation Control：以指定姿态到达指定工作位置&lt;/li&gt;
+&lt;li&gt;路径跟踪控制Path Tracking Control：跟随给定路线&lt;/li&gt;
+&lt;li&gt;轨迹跟踪控制Trajectory Tracking Control：跟随给定的轨迹&lt;/li&gt;
+&lt;li&gt;对于非完整约束机器人而言，不存在静态反馈控制律，使得机器人达到目标位姿&lt;/li&gt;
+&lt;li&gt;移动机器人反馈控制器设计一般步骤
+&lt;ol&gt;
+&lt;li&gt;根据作业需求定义系统开环误差信号&lt;/li&gt;
+&lt;li&gt;误差信号描述变换:惯性参考坐标系、机器人参考坐标系&lt;/li&gt;
+&lt;li&gt;基于机器人模型，构建闭环系统误差模型&lt;/li&gt;
+&lt;li&gt;控制器设计&lt;/li&gt;
+&lt;li&gt;稳定性分析&lt;/li&gt;
+&lt;li&gt;仿真实验&lt;/li&gt;
+&lt;li&gt;实际实验&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;自治系统(Autonomous system)：控制量只依赖状态不依赖时间&lt;/li&gt;
+&lt;li&gt;微分平坦(differentially flat)系统：控制量可以用状态量及其导数来表示&lt;/li&gt;
+&lt;li&gt;非完整约束系统总是欠驱动系统&lt;/li&gt;
+&lt;li&gt;可控：能通过施加控制使系统到达状态空间中的任意一个状态，是模型本身的性质，与控制量无关&lt;/li&gt;
+&lt;li&gt;系统存在光滑的反馈控制的必要条件，Brockett定理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;定点控制&#34;&gt;定点控制&lt;/h3&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/robot2ctrl.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/robot2ctrl.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;机器人模型&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;机器人模型&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;记号和问题描述
+&lt;ul&gt;
+&lt;li&gt;$q=[x,y,\theta]^T$ 为世界坐标系下的状态&lt;/li&gt;
+&lt;li&gt;$q_r=[x_r,y_r,\theta_r]^T$ 为世界坐标系下参考状态&lt;/li&gt;
+&lt;li&gt;$\tilde{q}=[\tilde{x},\tilde{y},\tilde{\theta}]^T=q-q_r$ 为开环误差&lt;/li&gt;
+&lt;li&gt;$e=\bold{R(\theta)^T} \tilde{q}$ 为机体坐标系下误差信号&lt;/li&gt;
+&lt;li&gt;误差的动态模型是 $\dot{e}$ 使用“左导右不导……”可展开，矩阵求导这里是每个元素分别求导即可&lt;/li&gt;
+&lt;li&gt;定点控制是找到一系列 $\bold{\dot{\xi_R}} = [v(t),\omega(t)]^T = [\dot{x}(t), \dot{y}(t), \omega(t)]^T = \bold{K}e$ 使 $e(t)=0$， 这里 $\bold{K}$ 为控制矩阵，是要设计的变量， $\bold{\dot{\xi_R}}$ 则能通过运动学模型转化为执行器需要的输出&lt;/li&gt;
+&lt;li&gt;这个模型中 $\dot{y}(t)=0$ ， $\dot{x}(t)=v(t)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;惯性坐标系中机器人的运动学模型
+&lt;ul&gt;
+&lt;li&gt;$\bold{\dot{\xi_I}} = \bold{R(\theta)\bold{\dot{\xi_R}}}$&lt;/li&gt;
+&lt;li&gt;根据此以及Brockett定理可判定对于这个模型，没有光滑的反馈控制&lt;/li&gt;
+&lt;li&gt;根据Chow定理是可控的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;非线性控制器
+&lt;ul&gt;
+&lt;li&gt;记机体坐标系下误差信号为 $e=[e_1,e_2,e_3]^T$&lt;/li&gt;
+&lt;li&gt;可令 $v(t)=-k_1 e_1$ ，单纯的比例控制&lt;/li&gt;
+&lt;li&gt;可令 $\omega(t)=-k_2 e_3 + {e_2}^2\sin(t)$ ，比例控制加前馈&lt;/li&gt;
+&lt;li&gt;如此带入误差的动态模型 $\dot{e}$ 可以进行稳定性分析&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;极坐标线性化
+&lt;ul&gt;
+&lt;li&gt;$\tilde{q}=[\rho, \alpha, \beta]$&lt;/li&gt;
+&lt;li&gt;误差模型则是 $\dot{\tilde{q}}=\bold{A} [v,\omega]^T$&lt;/li&gt;
+&lt;li&gt;控制器则可以令 $v=k_{\rho}\rho, \omega=k_1 \alpha + k_2 \beta$&lt;/li&gt;
+&lt;li&gt;带入到误差模型里后还是存在三角非线性，因为 $\alpha$ 始终比较小，可以做三角函数的线性化得 $\dot{\tilde{q}} = \bold{A_{linear}} \tilde{q}$&lt;/li&gt;
+&lt;li&gt;由Hurwitz判据知系统指数收敛，又近似了LTI，所以渐进收敛&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole1.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole1.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;误差模型的推导&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;误差模型的推导&lt;/figcaption&gt;
+	
+&lt;/figure&gt;
+&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole2.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole2.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;控制器和线性化&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;控制器和线性化&lt;/figcaption&gt;
+	
+&lt;/figure&gt;
+&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole3.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole3.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;稳定性分析&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;稳定性分析&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;并不是说极坐标一定要线性化，也可以指定 $v,\omega$ 为其他的函数，非线性的也可以，只不过就得用Lyapnuov理论了&lt;/p&gt;
+&lt;p&gt;&lt;u&gt;&lt;strong&gt;一般方法都是得到误差状态变量的导数与 $[v,w]^T$ 的关系（误差模型），然后设计控制率，也就是 $v, w$ 的关于状态变量的函数，然后带入到误差模型中，得到误差的动态，对其做稳定性分析&lt;/strong&gt;&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;轨迹跟踪控制&#34;&gt;轨迹跟踪控制&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;$q_r$ 这时候是规定的一条轨迹了，类似上面的定点控制&lt;/li&gt;
+&lt;li&gt;更高级的在这里有&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/weixin_46723764/article/details/108885265&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;「横向自动控制方法：Purepursuit, Stanley, MPC对比」&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;路径跟踪控制&#34;&gt;路径跟踪控制&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;课程内容不具有普遍参考意义，摆了罢&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;规划&#34;&gt;规划&lt;/h2&gt;
+&lt;h3 id=&#34;几个基本概念&#34;&gt;几个基本概念&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;The workspace is often the representation of the world, possibly independent of the robot itself. Often describes some notion of reachability, what space is free or occupied? 不一定是笛卡尔空间，关节空间或者参数空间都可以&lt;/li&gt;
+&lt;li&gt;Configuration space describes the full state of the robot in the world (actuator positions, orientation, etc.)&lt;/li&gt;
+&lt;li&gt;Let’s consider that our robot is no longer a point, but occupies an area&amp;hellip;&lt;/li&gt;
+&lt;li&gt;structured: occupancy grid map, distance field; Unstructured: graph, mesh, exact&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;基于搜索树的路径查找&#34;&gt;基于搜索树的路径查找&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://qiao.github.io/PathFinding.js/visual/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;一个很好的视觉实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;广度优先搜索BFS
+&lt;ul&gt;
+&lt;li&gt;从起点开始，首先遍历起点周围邻近的点，然后再遍历已经遍历过的点邻近的点，逐步的向外扩散&lt;/li&gt;
+&lt;li&gt;一旦到达终点，便可以从终点开始，反过来顺着父节点的顺序找到起点，由此就构成了一条路径&lt;/li&gt;
+&lt;li&gt;完备&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;深度优先搜索DFS
+&lt;ul&gt;
+&lt;li&gt;从起点开始，不断沿着路径进行扩展，直到找到终点或者无路可走，再重新选取父节点进行深度搜索&lt;/li&gt;
+&lt;li&gt;不完备，可能无限走错路&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Edsger W. Dijkstra
+&lt;ul&gt;
+&lt;li&gt;寻找图形中节点之间的最短路径，需要计算每一个节点距离起点的总移动代价&lt;/li&gt;
+&lt;li&gt;节点放入优先队列中会按照代价进行排序，运行时优选选出代价最小的作为下一个遍历的节点&lt;/li&gt;
+&lt;li&gt;Asymptotically the fastest known single-source shortest path algorithm for arbitrary directed graphs&lt;/li&gt;
+&lt;li&gt;Doesn’t really know the goal exists until it reaches it&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;从Dijkstra到A*
+&lt;ul&gt;
+&lt;li&gt;综合代价=代价+启发函数&lt;/li&gt;
+&lt;li&gt;优先选取综合代价小的节点作为下一个路径点&lt;/li&gt;
+&lt;li&gt;启发函数是节点n距离终点的预计代价
+&lt;ul&gt;
+&lt;li&gt;估计值 $&amp;lt;=$ 实际代价：一定能找到最短路径，估计值越小则遍历的节点越多&lt;/li&gt;
+&lt;li&gt;估计值 $=$ 实际代价：一定能找到最短路径，最理想的情况&lt;/li&gt;
+&lt;li&gt;估计值 $&amp;gt;$ 实际代价：不能保证找到最短路径，不过此时会很快，若远大于则变为最佳优先搜索&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;在低维度空间里很常用，限制是需要构造一个图，启发函数比较难找，比较难栅格化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/Dijk-Astar.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/Dijk-Astar.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;Dijkstra和A*区别&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Dijkstra和A*区别&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;D*: Dynamic A*
+&lt;ul&gt;
+&lt;li&gt;动态环境下可能各种条件代价会变化所以进行了改进&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;基于采样的路径查找&#34;&gt;基于采样的路径查找&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;主要是为了防止维数爆炸，防止连通性降级，以及直接在config空间里（不好grid化）直接plan&lt;/li&gt;
+&lt;li&gt;主要思路
+&lt;ol&gt;
+&lt;li&gt;在config空间中采样（uniform，gaussian，obstacle involved）&lt;/li&gt;
+&lt;li&gt;将新采样点和附近的已有点进行连接，判据一般是范数&lt;/li&gt;
+&lt;li&gt;检查碰撞（计算量大户），如果没碰撞则添加一条边到路径中&lt;/li&gt;
+&lt;li&gt;检查是否到达目标（附近）&lt;/li&gt;
+&lt;li&gt;loop&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/norm.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/norm.png&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;范数&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;范数&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Probabilistic Roadmaps (PRM, 1996)&lt;/li&gt;
+&lt;li&gt;Rapidly-exploring random trees (RRT, 1998)&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>さよなら〜GRE</title>
         <link>https://ercbunny.github.io/p/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89gre/</link>
         <pubDate>Sun, 12 Dec 2021 21:40:00 +0800</pubDate>
@@ -169,7 +665,7 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Presentation Of Previous Work (English)&lt;/a&gt;&lt;/p&gt;
+    &gt;Presentation of Previous Work (English)&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/omnihex.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;

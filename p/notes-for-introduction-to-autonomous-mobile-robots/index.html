@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='A Fall 2021 Course 「移动机器人导论」'><title>Notes for Introduction to Autonomous Mobile Robots</title>
+
+<link rel='canonical' href='https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Notes for Introduction to Autonomous Mobile Robots'>
+<meta property='og:description' content='A Fall 2021 Course 「移动机器人导论」'>
+<meta property='og:url' content='https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/'>
+<meta property='og:site_name' content='Yueqian&#39;s Page'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-12-27T15:24:52&#43;08:00'/><meta property='article:modified_time' content='2021-12-27T15:24:52&#43;08:00'/><meta property='og:image' content='https://ercbunny.github.io/post/note/mobileRobot/cover.jpg' />
+<meta name="twitter:site" content="@yueqianliu1">
+    <meta name="twitter:creator" content="@yueqianliu1"><meta name="twitter:title" content="Notes for Introduction to Autonomous Mobile Robots">
+<meta name="twitter:description" content="A Fall 2021 Course 「移动机器人导论」"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://ercbunny.github.io/post/note/mobileRobot/cover.jpg' />
+    <link rel="shortcut icon" href="/img/user.svg" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/notes-for-introduction-to-autonomous-mobile-robots/">
+                
+                    <img src="/post/note/mobileRobot/cover.jpg" loading="lazy" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/note/" style="background-color: #6495ED; color: #fff;">
+                Note
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/notes-for-introduction-to-autonomous-mobile-robots/">Notes for Introduction to Autonomous Mobile Robots</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        A Fall 2021 Course 「移动机器人导论」
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 27, 2021</time>
+            </div>
+        
+
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <hr>
+<h2 id="绪论">绪论</h2>
+<h3 id="按功能分类">按功能分类</h3>
+<ul>
+<li>移动机器人</li>
+<li>操作机器人</li>
+<li>移动作业机器人</li>
+<li>举些例子：机械臂，月球车，心脏手术，扫地，UAV，自驾车</li>
+</ul>
+<h3 id="应用领域">应用领域</h3>
+<ul>
+<li>工业</li>
+<li>空间探测</li>
+<li>军事</li>
+<li>医疗手术</li>
+<li>家庭</li>
+</ul>
+<h3 id="几个概念">几个概念</h3>
+<ul>
+<li>自主性(autonomy)是行为主体按自己意愿行事的动机、能力或特性
+<ul>
+<li>自主移动机器人是一类可以根据任务需求、具有在单维或多维空间主动改变自身位姿以及空间位置能力的机器人统称</li>
+<li>自动驾驶分级：0-2级需要驾驶员实时介入，自动驾驶提供辅助速度和车道控制；3级有时会要求接管驾驶，4级开始是在特定环境下完全自主，5级是所有环境下全自主
+<ul>
+<li>0-2：特斯拉，小鹏，未来</li>
+<li>没有一个达到了3</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>三大关键问题：在哪，去哪，怎么去</li>
+<li>经典3环节
+<ul>
+<li>see (perception): sensing, info extraction (filtering, keypoint extraction and matching)</li>
+<li>think (planning/understanding): localizatoon, mapping, planning</li>
+<li>act (motion control): tracking, actuator driving</li>
+</ul>
+</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/see-think-act.png" >
+		<img src="/post/note/mobileRobot/see-think-act.png"
+			
+			
+			
+			loading="lazy"
+			alt="general pipeline">
+	</a>
+	
+	<figcaption>general pipeline</figcaption>
+	
+</figure></p>
+<hr>
+<h2 id="运动形式">运动形式</h2>
+<h3 id="运动相关的概念">运动相关的概念</h3>
+<ul>
+<li>locomotion，运动，是一种机器人与环境的物理交互</li>
+<li>稳定性考虑：接触点数目和形状（角度，摩擦），重心，环境（地形，空气），本体稳定性</li>
+</ul>
+<h3 id="两种地面运动形式">两种地面运动形式</h3>
+<ul>
+<li>腿式运动
+<ul>
+<li>自然界偏爱，自然界表面粗糙，环境复杂</li>
+<li>通过性强，控制困难，非连续点接触</li>
+<li>效率取决于本体质量</li>
+<li>近似滚动多边形，随着步距减小，接近圆形</li>
+</ul>
+</li>
+<li>轮式运动
+<ul>
+<li>自然界基本没有，因为关节不能旋转</li>
+<li>在平面上运动效率高，控制简单，受环境约束大</li>
+<li>效率取决于环境质量</li>
+</ul>
+</li>
+</ul>
+<h3 id="腿式机器人">腿式机器人</h3>
+<ul>
+<li>特点（因为不同场景下优点和弱点互相转换）包括：适应地形，自主调节重心高度，运动执行器也能当成操作器，主动隔离震动，自由度高，难控制建模，对关节驱动要求高，需要配合地形感知，落地有冲击</li>
+<li>稳定性
+<ul>
+<li>动态稳定指的是执行器停止工作时机器人摔倒，反之则是静态稳定的</li>
+<li>静止时保持稳定的条件
+<ul>
+<li>点接触腿需要三支同时着地（波士顿动力方案，快，动态稳定，能耗低）</li>
+<li>面接触腿只需要一支（比如日本方案的双足，静态稳定，慢，能耗高）</li>
+</ul>
+</li>
+<li>运动时保持稳定的条件
+<ul>
+<li>静态步态行走需要4-6条腿</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>关节数和自由度：每个腿至少需要两个自由度，增加自由度可以提高机动性、步态稳定性，同时增加设计难度</li>
+<li>可能事件总数Gait/步态：一个行进周期内腿式机器人每条腿抬起和落地可能性的组合$=(2k-1)!$注意与腿状态数区分 $=2^k$</li>
+</ul>
+<h3 id="轮式机器人">轮式机器人</h3>
+<ul>
+<li>特点：人造结构的高效性（滚动摩擦，重心不会起伏变化），结构简单，成本低，控制简单，系统复杂度低，运行速度高</li>
+<li>稳定性：至少有三个车轮同时接触地面才能保证静态稳定性（重心落在接触点的三角形内部），3个轮子以上需要悬挂系统使所有轮子保持与地面接触</li>
+<li>轮子类型
+<ul>
+<li>标准轮，DOF=2</li>
+<li>脚轮，DOF=3，调向时会对机器人底盘施加一个扭矩，偏心距d:触地点到垂直旋转轴的距离</li>
+<li>瑞典轮（十字连续切换90/麦克纳姆45），DOF=3，无法单独使用，至少需三个或以上共同使用，对地面冲击大，噪音大，易破坏地面，运行震动大，对机器人本体机构冲击大</li>
+<li>球轮，DOF=3，无约束:具有很高的灵活性，成本高:制造和维护成本均很高，积灰、磨损</li>
+</ul>
+</li>
+<li>全向驱动经典布局：等边三角形，瑞典轮，转向标准轮，4麦克纳姆</li>
+</ul>
+<hr>
+<h2 id="轮式机器人运动学">轮式机器人运动学</h2>
+<h3 id="非完整约束">非完整约束</h3>
+<ul>
+<li>大部分轮式机器人形态均含有非完整约束，即无法从位置空间找到一一对应的关系，和历史状态有关</li>
+<li>需要扩展到速度空间 (车轮间相对位置增量的差别)考虑微分运动学</li>
+</ul>
+<h3 id="坐标系描述">坐标系描述</h3>
+<ul>
+<li>惯性参考坐标系 $\xi_I$ ：机器人作业目标及控制指令，传感器感知测量的环境信息</li>
+<li>机器人参考坐标系 $\xi_R$ ：机器人控制器的误差输入以及控制指令</li>
+<li>config矩阵可以是 $3 \times 3$ ：因为只有两个维度</li>
+<li>$\bold{\dot{\xi_I}=R(\theta)\dot{\xi_R}}$ ，两个坐标系下的速度之间关系为旋转矩阵</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/coord.png" >
+		<img src="/post/note/mobileRobot/coord.png"
+			
+			
+			
+			loading="lazy"
+			alt="坐标系的一般设置">
+	</a>
+	
+	<figcaption>坐标系的一般设置</figcaption>
+	
+</figure></p>
+<h3 id="前向运动学模型">(前向)运动学模型</h3>
+<ul>
+<li>指建立惯性系下参考点速度和执行器速度之间的关系</li>
+<li>中间桥梁为机器人系下参考点速度</li>
+<li>构建方法
+<ul>
+<li>作用法：从轮运动参数（转速，半径，轮距），进行速度的合成与分解（同时考虑约束作用），得到参考点在机体坐标系下的速度，然后通过旋转矩阵转为世界坐标系</li>
+<li>约束法：把每个轮子的约束方程写出来（轮运动参数与机体坐标下速度的关系），合并成一个式子并转换为世界坐标速度</li>
+</ul>
+</li>
+<li>标准轮约束
+<ul>
+<li>主动固定标准轮：$v_{\parallel}=r \dot{\phi}$ 以及 $v_{\perp}=0$ ；将 $v_{\parallel}$ 和 $v_{\perp}$ 用机体坐标系下的速度表示出来</li>
+<li>主动转向标准轮：滚动约束，可控制角度来改变运动： $v_{\parallel}=r \dot{\phi}$</li>
+<li>随动固定标准轮：无侧滑约束（滑动约束）： $v_{\perp}=0$</li>
+<li>随动转向标准轮：自由</li>
+</ul>
+</li>
+<li>脚轮约束
+<ul>
+<li>作为主动轮：滚动约束，可控制角度来改变运动</li>
+<li>作为从动轮：自由</li>
+</ul>
+</li>
+<li>球轮约束
+<ul>
+<li>主动：与主动转向标准轮一致</li>
+<li>从动：自由</li>
+</ul>
+</li>
+<li>瑞典轮约束
+<ul>
+<li>主动：驱动速度 $\dot{\phi} r$ 往转子上投影作为最终这个执行器产生的速度，没有无侧滑约束
+<ul>
+<li>记 $\gamma$ 为滚子轴与轮平面的夹角，则滚动约束为 $\dot{\phi} r \cos(\gamma)=v_{\parallel}$ ，这里 $v_{\parallel}$ 指的是机体坐标系下速度滚子轴方向的投影</li>
+</ul>
+</li>
+<li>从动：自由</li>
+</ul>
+</li>
+<li>零运动直线：几何上经过轮子的轴心并垂直于轮平面的线，当受无侧滑约束时，轮子在该直线上不能存在运动
+<ul>
+<li>脚轮、瑞典轮：不存在无侧滑约束，不存在零运动直线</li>
+</ul>
+</li>
+<li>轮式移动机器人运动学建模仅考虑平面运动，因此其对应的输出状态为三维向量，因此，最多有三个独立约束</li>
+<li>动力学建模在运动变化较为快速、动态响应比较明显的情况下适用，比如无人机上</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/kine-example.png" >
+		<img src="/post/note/mobileRobot/kine-example.png"
+			
+			
+			
+			loading="lazy"
+			alt="运动学模型例子">
+	</a>
+	
+	<figcaption>运动学模型例子</figcaption>
+	
+</figure></p>
+<h3 id="自由度">自由度</h3>
+<ul>
+<li>自由度是机动性的度量</li>
+<li>总自由度=移动mobility自由度+操纵steerability自由度：$\delta_{M}=\delta_{m}+\delta_{s}$
+<ul>
+<li>$\delta_{M}=3$：瞬心可在平面的任意点，可在工作空间中跟踪任何路径</li>
+<li>$\delta_{M}=2$：瞬心被限制在某条直线上</li>
+</ul>
+</li>
+<li>移动自由度（可移动度）$\delta_{m}$
+<ul>
+<li>$\delta_{m}=$ 工作空间维度 $-$ 独立约束数目 $=$ 状态向量的维度 $-$ 滑动约束中的独立约束个数</li>
+<li>考虑 $\bold{AR\dot{\xi_I}} = [\bold{B,0}]^T$ 这样动力学模型的基本形式，与 $\bold{0}$ 对应的 $\bold{A}$ 的部分子矩阵零空间维度 $=$ 列数 $-$ 秩 $=\delta_{m}$</li>
+<li>$\delta_{m}=0$ 时无法在平面中运动， $\delta_{m}=1$ 时只能沿着圆弧/直线行走（移动性退化）， $\delta_{m}=2$ 时可原地（线速度和角速度解耦）， $\delta_{m}=3$ 时全向
+<ul>
+<li>二轮差速小车：通过改变轮转速可同时控制角速度和线速度， $\delta_{m}=2$</li>
+<li>自行车：改变主动轮转速只能改变线速度，角速度要通过另一个轮子的方向， $\delta_{m}=1$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>操纵自由度（可操纵度） $\delta_{s}$
+<ul>
+<li>等于独立的能够转向的舵机的个数，范围是 $[0,2]$</li>
+<li>考虑 $\bold{A}$ 矩阵中滑动约束部分，挑出其中转向轮的子矩阵，求秩，则等于 $\delta_{s}$</li>
+</ul>
+</li>
+<li>机器人的完整性判据：可移动度等于工作空间维度
+<ul>
+<li>对于地面移动机器人，工作空间维度是3</li>
+</ul>
+</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/dof-example.png" >
+		<img src="/post/note/mobileRobot/dof-example.png"
+			
+			
+			
+			loading="lazy"
+			alt="自由度计算例子">
+	</a>
+	
+	<figcaption>自由度计算例子</figcaption>
+	
+</figure></p>
+<hr>
+<h2 id="二轮差速机器人的控制">二轮差速机器人的控制</h2>
+<blockquote>
+<p>只考虑运动学控制，仅分析二轮差速小车</p>
+</blockquote>
+<h3 id="概念和零碎知识点">概念和零碎知识点</h3>
+<ul>
+<li>定点(镇定)控制Regulation Control：以指定姿态到达指定工作位置</li>
+<li>路径跟踪控制Path Tracking Control：跟随给定路线</li>
+<li>轨迹跟踪控制Trajectory Tracking Control：跟随给定的轨迹</li>
+<li>对于非完整约束机器人而言，不存在静态反馈控制律，使得机器人达到目标位姿</li>
+<li>移动机器人反馈控制器设计一般步骤
+<ol>
+<li>根据作业需求定义系统开环误差信号</li>
+<li>误差信号描述变换:惯性参考坐标系、机器人参考坐标系</li>
+<li>基于机器人模型，构建闭环系统误差模型</li>
+<li>控制器设计</li>
+<li>稳定性分析</li>
+<li>仿真实验</li>
+<li>实际实验</li>
+</ol>
+</li>
+<li>自治系统(Autonomous system)：控制量只依赖状态不依赖时间</li>
+<li>微分平坦(differentially flat)系统：控制量可以用状态量及其导数来表示</li>
+<li>非完整约束系统总是欠驱动系统</li>
+<li>可控：能通过施加控制使系统到达状态空间中的任意一个状态，是模型本身的性质，与控制量无关</li>
+<li>系统存在光滑的反馈控制的必要条件，Brockett定理</li>
+</ul>
+<h3 id="定点控制">定点控制</h3>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/robot2ctrl.png" >
+		<img src="/post/note/mobileRobot/robot2ctrl.png"
+			
+			
+			
+			loading="lazy"
+			alt="机器人模型">
+	</a>
+	
+	<figcaption>机器人模型</figcaption>
+	
+</figure></p>
+<ul>
+<li>记号和问题描述
+<ul>
+<li>$q=[x,y,\theta]^T$ 为世界坐标系下的状态</li>
+<li>$q_r=[x_r,y_r,\theta_r]^T$ 为世界坐标系下参考状态</li>
+<li>$\tilde{q}=[\tilde{x},\tilde{y},\tilde{\theta}]^T=q-q_r$ 为开环误差</li>
+<li>$e=\bold{R(\theta)^T} \tilde{q}$ 为机体坐标系下误差信号</li>
+<li>误差的动态模型是 $\dot{e}$ 使用“左导右不导……”可展开，矩阵求导这里是每个元素分别求导即可</li>
+<li>定点控制是找到一系列 $\bold{\dot{\xi_R}} = [v(t),\omega(t)]^T = [\dot{x}(t), \dot{y}(t), \omega(t)]^T = \bold{K}e$ 使 $e(t)=0$， 这里 $\bold{K}$ 为控制矩阵，是要设计的变量， $\bold{\dot{\xi_R}}$ 则能通过运动学模型转化为执行器需要的输出</li>
+<li>这个模型中 $\dot{y}(t)=0$ ， $\dot{x}(t)=v(t)$</li>
+</ul>
+</li>
+<li>惯性坐标系中机器人的运动学模型
+<ul>
+<li>$\bold{\dot{\xi_I}} = \bold{R(\theta)\bold{\dot{\xi_R}}}$</li>
+<li>根据此以及Brockett定理可判定对于这个模型，没有光滑的反馈控制</li>
+<li>根据Chow定理是可控的</li>
+</ul>
+</li>
+<li>非线性控制器
+<ul>
+<li>记机体坐标系下误差信号为 $e=[e_1,e_2,e_3]^T$</li>
+<li>可令 $v(t)=-k_1 e_1$ ，单纯的比例控制</li>
+<li>可令 $\omega(t)=-k_2 e_3 + {e_2}^2\sin(t)$ ，比例控制加前馈</li>
+<li>如此带入误差的动态模型 $\dot{e}$ 可以进行稳定性分析</li>
+</ul>
+</li>
+<li>极坐标线性化
+<ul>
+<li>$\tilde{q}=[\rho, \alpha, \beta]$</li>
+<li>误差模型则是 $\dot{\tilde{q}}=\bold{A} [v,\omega]^T$</li>
+<li>控制器则可以令 $v=k_{\rho}\rho, \omega=k_1 \alpha + k_2 \beta$</li>
+<li>带入到误差模型里后还是存在三角非线性，因为 $\alpha$ 始终比较小，可以做三角函数的线性化得 $\dot{\tilde{q}} = \bold{A_{linear}} \tilde{q}$</li>
+<li>由Hurwitz判据知系统指数收敛，又近似了LTI，所以渐进收敛</li>
+</ul>
+</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/pole1.png" >
+		<img src="/post/note/mobileRobot/pole1.png"
+			
+			
+			
+			loading="lazy"
+			alt="误差模型的推导">
+	</a>
+	
+	<figcaption>误差模型的推导</figcaption>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/pole2.png" >
+		<img src="/post/note/mobileRobot/pole2.png"
+			
+			
+			
+			loading="lazy"
+			alt="控制器和线性化">
+	</a>
+	
+	<figcaption>控制器和线性化</figcaption>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/pole3.png" >
+		<img src="/post/note/mobileRobot/pole3.png"
+			
+			
+			
+			loading="lazy"
+			alt="稳定性分析">
+	</a>
+	
+	<figcaption>稳定性分析</figcaption>
+	
+</figure></p>
+<blockquote>
+<p>并不是说极坐标一定要线性化，也可以指定 $v,\omega$ 为其他的函数，非线性的也可以，只不过就得用Lyapnuov理论了</p>
+<p><u><strong>一般方法都是得到误差状态变量的导数与 $[v,w]^T$ 的关系（误差模型），然后设计控制率，也就是 $v, w$ 的关于状态变量的函数，然后带入到误差模型中，得到误差的动态，对其做稳定性分析</strong></u></p>
+</blockquote>
+<h3 id="轨迹跟踪控制">轨迹跟踪控制</h3>
+<ul>
+<li>$q_r$ 这时候是规定的一条轨迹了，类似上面的定点控制</li>
+<li>更高级的在这里有<a class="link" href="https://blog.csdn.net/weixin_46723764/article/details/108885265"  target="_blank" rel="noopener"
+    >「横向自动控制方法：Purepursuit, Stanley, MPC对比」</a></li>
+</ul>
+<h3 id="路径跟踪控制">路径跟踪控制</h3>
+<ul>
+<li>课程内容不具有普遍参考意义，摆了罢</li>
+</ul>
+<hr>
+<h2 id="规划">规划</h2>
+<h3 id="几个基本概念">几个基本概念</h3>
+<ul>
+<li>The workspace is often the representation of the world, possibly independent of the robot itself. Often describes some notion of reachability, what space is free or occupied? 不一定是笛卡尔空间，关节空间或者参数空间都可以</li>
+<li>Configuration space describes the full state of the robot in the world (actuator positions, orientation, etc.)</li>
+<li>Let’s consider that our robot is no longer a point, but occupies an area&hellip;</li>
+<li>structured: occupancy grid map, distance field; Unstructured: graph, mesh, exact</li>
+</ul>
+<h3 id="基于搜索树的路径查找">基于搜索树的路径查找</h3>
+<ul>
+<li><a class="link" href="https://qiao.github.io/PathFinding.js/visual/"  target="_blank" rel="noopener"
+    >一个很好的视觉实现</a></li>
+<li>广度优先搜索BFS
+<ul>
+<li>从起点开始，首先遍历起点周围邻近的点，然后再遍历已经遍历过的点邻近的点，逐步的向外扩散</li>
+<li>一旦到达终点，便可以从终点开始，反过来顺着父节点的顺序找到起点，由此就构成了一条路径</li>
+<li>完备</li>
+</ul>
+</li>
+<li>深度优先搜索DFS
+<ul>
+<li>从起点开始，不断沿着路径进行扩展，直到找到终点或者无路可走，再重新选取父节点进行深度搜索</li>
+<li>不完备，可能无限走错路</li>
+</ul>
+</li>
+<li>Edsger W. Dijkstra
+<ul>
+<li>寻找图形中节点之间的最短路径，需要计算每一个节点距离起点的总移动代价</li>
+<li>节点放入优先队列中会按照代价进行排序，运行时优选选出代价最小的作为下一个遍历的节点</li>
+<li>Asymptotically the fastest known single-source shortest path algorithm for arbitrary directed graphs</li>
+<li>Doesn’t really know the goal exists until it reaches it</li>
+</ul>
+</li>
+<li>从Dijkstra到A*
+<ul>
+<li>综合代价=代价+启发函数</li>
+<li>优先选取综合代价小的节点作为下一个路径点</li>
+<li>启发函数是节点n距离终点的预计代价
+<ul>
+<li>估计值 $&lt;=$ 实际代价：一定能找到最短路径，估计值越小则遍历的节点越多</li>
+<li>估计值 $=$ 实际代价：一定能找到最短路径，最理想的情况</li>
+<li>估计值 $&gt;$ 实际代价：不能保证找到最短路径，不过此时会很快，若远大于则变为最佳优先搜索</li>
+</ul>
+</li>
+<li>在低维度空间里很常用，限制是需要构造一个图，启发函数比较难找，比较难栅格化</li>
+</ul>
+</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/Dijk-Astar.png" >
+		<img src="/post/note/mobileRobot/Dijk-Astar.png"
+			
+			
+			
+			loading="lazy"
+			alt="Dijkstra和A*区别">
+	</a>
+	
+	<figcaption>Dijkstra和A*区别</figcaption>
+	
+</figure></p>
+<ul>
+<li>D*: Dynamic A*
+<ul>
+<li>动态环境下可能各种条件代价会变化所以进行了改进</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于采样的路径查找">基于采样的路径查找</h3>
+<ul>
+<li>主要是为了防止维数爆炸，防止连通性降级，以及直接在config空间里（不好grid化）直接plan</li>
+<li>主要思路
+<ol>
+<li>在config空间中采样（uniform，gaussian，obstacle involved）</li>
+<li>将新采样点和附近的已有点进行连接，判据一般是范数</li>
+<li>检查碰撞（计算量大户），如果没碰撞则添加一条边到路径中</li>
+<li>检查是否到达目标（附近）</li>
+<li>loop</li>
+</ol>
+</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/norm.png" >
+		<img src="/post/note/mobileRobot/norm.png"
+			
+			
+			
+			loading="lazy"
+			alt="范数">
+	</a>
+	
+	<figcaption>范数</figcaption>
+	
+</figure></p>
+<ul>
+<li>Probabilistic Roadmaps (PRM, 1996)</li>
+<li>Rapidly-exploring random trees (RRT, 1998)</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css"integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js"integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8"crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js"integrity="sha384-vZTG03m&#43;2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl"crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Yueqian&#39;s Page
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#绪论">绪论</a>
+      <ol>
+        <li><a href="#按功能分类">按功能分类</a></li>
+        <li><a href="#应用领域">应用领域</a></li>
+        <li><a href="#几个概念">几个概念</a></li>
+      </ol>
+    </li>
+    <li><a href="#运动形式">运动形式</a>
+      <ol>
+        <li><a href="#运动相关的概念">运动相关的概念</a></li>
+        <li><a href="#两种地面运动形式">两种地面运动形式</a></li>
+        <li><a href="#腿式机器人">腿式机器人</a></li>
+        <li><a href="#轮式机器人">轮式机器人</a></li>
+      </ol>
+    </li>
+    <li><a href="#轮式机器人运动学">轮式机器人运动学</a>
+      <ol>
+        <li><a href="#非完整约束">非完整约束</a></li>
+        <li><a href="#坐标系描述">坐标系描述</a></li>
+        <li><a href="#前向运动学模型">(前向)运动学模型</a></li>
+        <li><a href="#自由度">自由度</a></li>
+      </ol>
+    </li>
+    <li><a href="#二轮差速机器人的控制">二轮差速机器人的控制</a>
+      <ol>
+        <li><a href="#概念和零碎知识点">概念和零碎知识点</a></li>
+        <li><a href="#定点控制">定点控制</a></li>
+        <li><a href="#轨迹跟踪控制">轨迹跟踪控制</a></li>
+        <li><a href="#路径跟踪控制">路径跟踪控制</a></li>
+      </ol>
+    </li>
+    <li><a href="#规划">规划</a>
+      <ol>
+        <li><a href="#几个基本概念">几个基本概念</a></li>
+        <li><a href="#基于搜索树的路径查找">基于搜索树的路径查找</a></li>
+        <li><a href="#基于采样的路径查找">基于采样的路径查找</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
