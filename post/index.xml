@@ -13,7 +13,8 @@
       <pubDate>Mon, 27 Dec 2021 15:24:52 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/</guid>
-      <description>绪论 按功能分类  移动机器人 操作机器人 移动作业机器人 举些例子：机械臂，月球车，心脏手术，扫地，UAV，自驾车  应用领域  工业 空间探测 军事 医疗手术 家庭  几个概念  自主性(autonomy)是行为主体按自己意愿行事的动机、能力或特性  自主移动机器人是一类可以根据任务需求、具有在单维或多维空间主动改变自身位姿以及空间位置能力的机器人统称 自动驾驶分级：0-2级需要驾驶员实时介入，自动驾驶提供辅助速度和车道控制；3级有时会要求接管驾驶，4级开始是在特定环境下完全自主，5级是所有环境下全自主  0-2：特斯拉，小鹏，未来 没有一个达到了3     三大关键问题：在哪，去哪，怎么去 经典3环节  see (perception): sensing, info extraction (filtering, keypoint extraction and matching) think (planning/understanding): localizatoon, mapping, planning act (motion control): tracking, actuator driving     general pipeline 
+      <description>篇幅较长，请先浏览目录，方便导航哦～
+  绪论 按功能分类  移动机器人 操作机器人 移动作业机器人 举些例子：机械臂，月球车，心脏手术，扫地，UAV，自驾车  应用领域  工业 空间探测 军事 医疗手术 家庭  自动化  自主性(autonomy)是行为主体按自己意愿行事的动机、能力或特性  自主移动机器人是一类可以根据任务需求、具有在单维或多维空间主动改变自身位姿以及空间位置能力的机器人统称 自动驾驶分级：0-2级需要驾驶员实时介入，自动驾驶提供辅助速度和车道控制；3级有时会要求接管驾驶，4级开始是在特定环境下完全自主，5级是所有环境下全自主  0-2：特斯拉，小鹏，未来 没有一个达到了3     三大关键问题：在哪，去哪，怎么去 经典3环节  see (perception): sensing, info extraction (filtering, keypoint extraction and matching) think (planning/understanding): localizatoon, mapping, planning act (motion control): tracking, actuator driving     general pipeline 
  运动形式 运动相关的概念  locomotion，运动，是一种机器人与环境的物理交互 稳定性考虑：接触点数目和形状（角度，摩擦），重心，环境（地形，空气），本体稳定性  两种地面运动形式  腿式运动  自然界偏爱，自然界表面粗糙，环境复杂 通过性强，控制困难，非连续点接触 效率取决于本体质量 近似滚动多边形，随着步距减小，接近圆形   轮式运动  自然界基本没有，因为关节不能旋转 在平面上运动效率高，控制简单，受环境约束大 效率取决于环境质量    腿式机器人  特点（因为不同场景下优点和弱点互相转换）包括：适应地形，自主调节重心高度，运动执行器也能当成操作器，主动隔离震动，自由度高，难控制建模，对关节驱动要求高，需要配合地形感知，落地有冲击 稳定性  动态稳定指的是执行器停止工作时机器人摔倒，反之则是静态稳定的 静止时保持稳定的条件  点接触腿需要三支同时着地（波士顿动力方案，快，动态稳定，能耗低） 面接触腿只需要一支（比如日本方案的双足，静态稳定，慢，能耗高）   运动时保持稳定的条件  静态步态行走需要4-6条腿     关节数和自由度：每个腿至少需要两个自由度，增加自由度可以提高机动性、步态稳定性，同时增加设计难度 可能事件总数Gait/步态：一个行进周期内腿式机器人每条腿抬起和落地可能性的组合$=(2k-1)!</description>
     </item>
     

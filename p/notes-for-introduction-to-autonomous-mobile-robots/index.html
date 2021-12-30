@@ -118,7 +118,10 @@
 </header>
 
     <section class="article-content">
-    <hr>
+    <blockquote>
+<p>篇幅较长，请先浏览目录，方便导航哦～</p>
+</blockquote>
+<hr>
 <h2 id="绪论">绪论</h2>
 <h3 id="按功能分类">按功能分类</h3>
 <ul>
@@ -135,7 +138,7 @@
 <li>医疗手术</li>
 <li>家庭</li>
 </ul>
-<h3 id="几个概念">几个概念</h3>
+<h3 id="自动化">自动化</h3>
 <ul>
 <li>自主性(autonomy)是行为主体按自己意愿行事的动机、能力或特性
 <ul>
@@ -374,7 +377,7 @@
 <blockquote>
 <p>只考虑运动学控制，仅分析二轮差速小车</p>
 </blockquote>
-<h3 id="概念和零碎知识点">概念和零碎知识点</h3>
+<h3 id="术语和零碎知识点">术语和零碎知识点</h3>
 <ul>
 <li>定点(镇定)控制Regulation Control：以指定姿态到达指定工作位置</li>
 <li>路径跟踪控制Path Tracking Control：跟随给定路线</li>
@@ -501,10 +504,6 @@
 <li>更高级的在这里有<a class="link" href="https://blog.csdn.net/weixin_46723764/article/details/108885265"  target="_blank" rel="noopener"
     >「横向自动控制方法：Purepursuit, Stanley, MPC对比」</a></li>
 </ul>
-<h3 id="路径跟踪控制">路径跟踪控制</h3>
-<ul>
-<li>课程内容不具有普遍参考意义，摆了罢</li>
-</ul>
 <hr>
 <h2 id="规划">规划</h2>
 <h3 id="几个基本概念">几个基本概念</h3>
@@ -603,8 +602,671 @@
 	
 </figure></p>
 <ul>
-<li>Probabilistic Roadmaps (PRM, 1996)</li>
-<li>Rapidly-exploring random trees (RRT, 1998)</li>
+<li>Probabilistic Roadmaps (PRM, 1996)
+<ul>
+<li>特性
+<ul>
+<li>为multiple-queries设计，允许大量预先计算</li>
+<li>对于single-query问题则可以省略一些预先计算来加速</li>
+<li>先全图采样完再寻找一条路径</li>
+</ul>
+</li>
+<li>主要步骤
+<ol>
+<li>在空间中sample一堆没有碰撞的点</li>
+<li>用这些点构造一个图，包括碰撞检测</li>
+<li>使用A*做搜索</li>
+</ol>
+</li>
+<li>限制
+<ul>
+<li>限制为完整约束运动</li>
+<li>窄通道无视问题</li>
+<li>动态环境不适用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Rapidly-exploring random trees (RRT, 1998)
+<ul>
+<li>不断生长的树，而不是把全部空间都采样完</li>
+<li>designed for single-query search</li>
+<li>适用于非完整性约束运动和动态环境，比PRM更容易整合控制和运动学约束</li>
+<li>可用于高维空间问题，无需几何划分，可以尽可能的探索未知区域</li>
+<li>改进型
+<ul>
+<li>Goal-Bias：将目标节点作为采样点出现，可以控制目标点出现的概率</li>
+<li>Extend RRT：引入路径点集合，加快了收敛速度，提高了路径的稳定性</li>
+<li>RRT-Connect：初始点和目标点生成两棵树，直到两棵树连在一起算法收敛</li>
+<li>Local-tree-RRT：对随机采样算法狭窄通道难以迅速通过的问题，提出局部树方法加以解决</li>
+<li>Dynamic RRT：提出了修剪和合并操作，去除掉无效的节点后再继续进行搜索</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="局部规划避障">局部规划（避障）</h3>
+<ul>
+<li>BUG算法</li>
+<li>动态窗口：认为一小段时间内twist恒定</li>
+</ul>
+<h3 id="势场法">势场法</h3>
+<ul>
+<li>主要思想：避免层级结构，同时考虑全局和局部路径，建立一个全局势能场，机器人自动沿着最大梯度方向下降到目标点</li>
+<li>一种常见的实现：总场=目标场+障碍场</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/goal.png" >
+		<img src="/post/note/mobileRobot/goal.png"
+			
+			
+			
+			loading="lazy"
+			alt="目标场">
+	</a>
+	
+	<figcaption>目标场</figcaption>
+	
+</figure></p>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/obs.png" >
+		<img src="/post/note/mobileRobot/obs.png"
+			
+			
+			
+			loading="lazy"
+			alt="障碍场">
+	</a>
+	
+	<figcaption>障碍场</figcaption>
+	
+</figure></p>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/total.png" >
+		<img src="/post/note/mobileRobot/total.png"
+			
+			
+			
+			loading="lazy"
+			alt="总势场">
+	</a>
+	
+	<figcaption>总势场</figcaption>
+	
+</figure></p>
+<hr>
+<h2 id="传感器大类和指标">传感器大类和指标</h2>
+<h3 id="分类">分类</h3>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/sensor1.png" >
+		<img src="/post/note/mobileRobot/sensor1.png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/sensor2.png" >
+		<img src="/post/note/mobileRobot/sensor2.png"
+			
+			
+			
+			loading="lazy"
+			alt="常见传感器">
+	</a>
+	
+	<figcaption>常见传感器</figcaption>
+	
+</figure></p>
+<h3 id="常见传感器的原理">常见传感器的原理</h3>
+<ul>
+<li>rangefinder
+<ul>
+<li>TOF
+<ul>
+<li>sonar</li>
+<li>lidar</li>
+</ul>
+</li>
+<li>RSS</li>
+</ul>
+</li>
+<li>infra-red：发光二极管发出包括红外的光，由物体反射，传感器接收检测强度</li>
+</ul>
+<h3 id="主要性能指标">主要性能指标</h3>
+<ul>
+<li>动态范围</li>
+<li>测量范围</li>
+<li>分辨率</li>
+<li>线性度</li>
+<li>频率/带宽</li>
+<li>误差
+<ul>
+<li>系统误差由理论上可建模的因素或过程造成，是确定性的（deterministic 知道解析形式的），可测的</li>
+</ul>
+</li>
+</ul>
+<h3 id="标定和不确定性">标定和不确定性</h3>
+<ul>
+<li>标定：确定一个从传感器读数到有意义数据的映射
+<ol>
+<li>获得ground truth和测试数据</li>
+<li>拟合模型</li>
+</ol>
+</li>
+<li>不确定性一般处理办法
+<ul>
+<li>储存测试值和准确值的pair</li>
+<li>获得确定性变换模型</li>
+<li>获得概率模型（比如假设高斯分布）
+<ul>
+<li>可以用平均值（第一moment）和方差（第二moment）</li>
+<li>贝叶斯公式</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="基于视觉的感知">基于视觉的感知</h2>
+<h3 id="cv的常见应用">CV的常见应用</h3>
+<ul>
+<li>语义分割</li>
+<li>图像分类</li>
+<li>目标检测</li>
+<li>实例分割</li>
+<li>目标追踪</li>
+<li>三维重建</li>
+</ul>
+<h3 id="相机图像获取">相机图像获取</h3>
+<ul>
+<li>小孔成像-&gt;光圈虚化原理-&gt;使用透镜</li>
+<li>小孔成像与透视原理
+<ul>
+<li>radial distortion</li>
+<li>intrinsic calibration: Use camera model to interpret the projection from world to image plane
+<ul>
+<li>To estimate 11 unknowns, we need at least 6 points to calibrate the camera (linear least squares)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数字图像处理">数字图像处理</h3>
+<ul>
+<li>相关和卷积，都是对应位置相乘之后相加，但是卷积的核要倒过来，但是因为图像处理中基本是对称的，所以区别不大</li>
+<li>空间滤波基础（模糊和锐化）</li>
+<li>边缘检测，一阶和二阶导数的区别，如果加入了高斯模糊，则一阶对应用gussian一阶导DOG卷原图，二阶对应LOG卷原图</li>
+<li>图像匹配
+<ul>
+<li>normalized cross correlation</li>
+<li>zero-mean correlation</li>
+<li>dot product</li>
+</ul>
+</li>
+</ul>
+<h3 id="立体视觉">立体视觉</h3>
+<ul>
+<li>Triangulation：给出一组对应的图像坐标和相机位置，确定像素对应点的3D位置
+<ul>
+<li>geometric approach</li>
+<li>linear approach</li>
+<li>non-linear approach</li>
+</ul>
+</li>
+<li>Stereo camera
+<ul>
+<li>标定：外参数（relative pose between the cameras (rotation, translation)）；内参数（focal length, optical center, radial distortion）</li>
+<li>像素匹配
+<ul>
+<li>Epipolar Constraint
+<ol>
+<li>Epipolar rectification: warps image pairs into new “rectified” images, whose epipolar lines are parallel &amp; collinear (aligned to the baseline)</li>
+<li>计算相似度来匹配，Typical similarity measures: Normalized Cross-Correlation (NCC) , Sum of Squared Differences (SSD), Sum of Absolute Differences (SAD)</li>
+</ol>
+</li>
+<li>得到像素的匹配之后可以获得视差图：同一个场景在两个相机下成像的像素的位置偏差，因为通常下两个双目相机是水平放置的，所以该位置偏差一般体现在水平方向</li>
+</ul>
+</li>
+<li>对双目成像来说，视差图和深度图在某种程度上是等价的，知道了两个相机的相关参数，是可以将视差图转换为深度图的（最近有工作直接用AI输出深度图）</li>
+<li>双目间距的影响：太小则深度误差大看不远，太大则看不近</li>
+</ul>
+</li>
+<li>Structure from motion (SFM)
+<ul>
+<li>Simultaneously estimate both 3D geometry (structure) and camera pose (motion): solve via non-linear minimization of the reprojection errors</li>
+</ul>
+</li>
+</ul>
+<h3 id="光流lucaskanade">光流（Lucas–Kanade）</h3>
+<ul>
+<li>根据相邻两帧图像估计运动信息</li>
+<li>三个假设
+<ul>
+<li>光强（像素值）不变： $I(x,y,t)=I(x+dx,y+dy,t+dt)$</li>
+<li>时间差较小： $dt=0$</li>
+<li>空间相关性，空间不变形</li>
+</ul>
+</li>
+<li>步骤图如下</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/opticalflow1.png" >
+		<img src="/post/note/mobileRobot/opticalflow1.png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/opticalflow2.png" >
+		<img src="/post/note/mobileRobot/opticalflow2.png"
+			
+			
+			
+			loading="lazy"
+			alt="光流法">
+	</a>
+	
+	<figcaption>光流法</figcaption>
+	
+</figure></p>
+<h3 id="点检测">点检测</h3>
+<ul>
+<li>Harris Corner &amp; Shi-Tomasi（可判断是edge类型还是corner）
+<ul>
+<li>同平面旋转不变性，线性光照强度变化不变性；但对于尺度和仿射变换没有不变性</li>
+<li>corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions
+<figure 
+	>
+	<a href="/post/note/mobileRobot/corner1.png" >
+		<img src="/post/note/mobileRobot/corner1.png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/corner2.png" >
+		<img src="/post/note/mobileRobot/corner2.png"
+			
+			
+			
+			loading="lazy"
+			alt="角落检测一般分析思路">
+	</a>
+	
+	<figcaption>角落检测一般分析思路</figcaption>
+	
+</figure></li>
+<li>特征值的解法 $det(A-\lambda I)=0$
+<figure 
+	>
+	<a href="/post/note/mobileRobot/corner3.png" >
+		<img src="/post/note/mobileRobot/corner3.png"
+			
+			
+			
+			loading="lazy"
+			alt="Eigen Visualization">
+	</a>
+	
+	<figcaption>Eigen Visualization</figcaption>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/corner4.png" >
+		<img src="/post/note/mobileRobot/corner4.png"
+			
+			
+			
+			loading="lazy"
+			alt="Shi-Tomasi">
+	</a>
+	
+	<figcaption>Shi-Tomasi</figcaption>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/corner5.png" >
+		<img src="/post/note/mobileRobot/corner5.png"
+			
+			
+			
+			loading="lazy"
+			alt="Harris实际上也可以采用单阈值筛选">
+	</a>
+	
+	<figcaption>Harris实际上也可以采用单阈值筛选</figcaption>
+	
+</figure></li>
+</ul>
+</li>
+<li>解决特征检测的尺度变换问题
+<ul>
+<li>Scale detector
+<ul>
+<li>思想是根据不同的图片尺度选择不同大小的检测区域大小/shifting region大小</li>
+<li>Sharp, local intensity changes in an image, are good regions to monitor for identifying relative scale in usual images
+<ul>
+<li>Use DOG and LOG</li>
+<li>convolve image with kernel to identify sharp intensity discontinuities</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SIFT = Scale Invariant Feature Transform: an approach for detecting and describing regions of interest in an image
+<ul>
+<li>invariant to changes in: rotation, scaling, illumination</li>
+<li>Very powerful in capturing + describing distinctive structure, but also computationally demanding</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>一些快速算法
+<ul>
+<li>FAST corner detector</li>
+<li>BRIEF descriptor，Not scale/rotation invariant (extensions exist&hellip;)</li>
+<li>BRISK （快，仅次于BRIEF，但旋转和尺度不变）</li>
+</ul>
+</li>
+</ul>
+<h3 id="线检测">线检测</h3>
+<ul>
+<li>算法比较
+<ul>
+<li>Split-and-merge and Line-Regression: fastest
+<ul>
+<li>best applied on laser scans</li>
+<li>Deterministic &amp; make use of the sequential ordering of raw scan points</li>
+</ul>
+</li>
+<li>If applied on randomly captured points only last 3 algorithms would segment all lines</li>
+</ul>
+</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/lines.png" >
+		<img src="/post/note/mobileRobot/lines.png"
+			
+			
+			
+			loading="lazy"
+			alt="一图对比">
+	</a>
+	
+	<figcaption>一图对比</figcaption>
+	
+</figure></p>
+<ul>
+<li>
+<p>Hough没什么好说的，参考DIP</p>
+</li>
+<li>
+<p>Split-and-merge</p>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/split1.png" >
+		<img src="/post/note/mobileRobot/split1.png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/split2.png" >
+		<img src="/post/note/mobileRobot/split2.png"
+			
+			
+			
+			loading="lazy"
+			alt="Split-and-merge">
+	</a>
+	
+	<figcaption>Split-and-merge</figcaption>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/full.png" >
+		<img src="/post/note/mobileRobot/full.png"
+			
+			
+			
+			loading="lazy"
+			alt="full process">
+	</a>
+	
+	<figcaption>full process</figcaption>
+	
+</figure></p>
+</li>
+<li>
+<p>Linear regression</p>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/iterReg.png" >
+		<img src="/post/note/mobileRobot/iterReg.png"
+			
+			
+			
+			loading="lazy"
+			alt="line regression">
+	</a>
+	
+	<figcaption>line regression</figcaption>
+	
+</figure></p>
+</li>
+<li>
+<p>RANSAC: RANdom SAmple Consensus.</p>
+<ul>
+<li>A generic &amp; robust fitting algorithm of models in the presence of outliers (i.e. points which do not satisfy a model)</li>
+<li>Typical applications in robotics are: line extraction from 2D range data, plane extraction from 3D data, feature matching, structure from motion, camera calibration, homography estimation, etc.</li>
+<li>iterative and non-deterministic, the probability to find a set free of outliers increases as more iterations are used</li>
+<li>a non-deterministic method, results are different between runs</li>
+</ul>
+</li>
+</ul>
+<h3 id="地方检测">地方检测</h3>
+<ul>
+<li>地方的图像抽象为bag of words：We can describe a scene as a collection of words and look up in the database for images with a similar collection of words</li>
+<li>图像各种feature通过某种方法得到descriptor space里面的一个个点，用k聚类算法归类
+<ul>
+<li>k-means
+<ol>
+<li>先定义总共有多少个类/族 (cluster)</li>
+<li>将每个族心 (cluster centers）随机定在一个点上</li>
+<li>将每个数据点关联到最近族中心所属的筷上</li>
+<li>对于每一个筷找到其所有关联点的中心点（取每一个点坐标的平均值)</li>
+<li>将上述点变为新的筷心</li>
+<li>不停重复，直到每个族所拥有的点不变</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>根据聚类生成一个单词树，树的最末端代表word，上一级代表一个聚类，拿去跟训练好的模型进行比较即可知道是什么单词</li>
+</ul>
+<hr>
+<h2 id="移动机器人的定位">移动机器人的定位</h2>
+<h3 id="相关概念">相关概念</h3>
+<ul>
+<li>Perception : the robot must interpret its sensors to extract meaningful data;</li>
+<li>Localization : the robot must determine its position in the environment;</li>
+<li>Cognition : the robot must decide how to act to achieve its goals;</li>
+<li>Motion control : the robot must modulate its motor outputs to achieve the desired trajectory.</li>
+</ul>
+<h3 id="挑战">挑战</h3>
+<ul>
+<li>noise: illumination, jitter, gain, bloom, blur</li>
+<li>sensor aliasing (混叠)</li>
+<li>odometry
+<ul>
+<li>Limited resolution during integration (time increments, measurement resolution, etc.);</li>
+<li>Misalignment of the wheels (deterministic);</li>
+<li>Uncertainty in the wheel diameter and in particular unequal wheel diameter (deterministic);</li>
+<li>Variation in the contact point of the wheel;</li>
+<li>Unequal floor contact (slipping, nonplanar surface, etc.)</li>
+<li>error types
+<ol>
+<li>Range error: 积分 integrated path length (distance) of the robot’s movement, sum of the wheel movements</li>
+<li>Turn error: 运动学参数 similar to range error, but for turns, difference of the wheel motions</li>
+<li>Drift error: 打滑 difference in the error of the wheels leads to an error in the robot’s angular orientation</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="差速模型里程计误差">差速模型里程计误差</h3>
+<ul>
+<li>基于RK2的运动学模型</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/rk2.png" >
+		<img src="/post/note/mobileRobot/rk2.png"
+			
+			
+			
+			loading="lazy"
+			alt="运动学模型">
+	</a>
+	
+	<figcaption>运动学模型</figcaption>
+	
+</figure></p>
+<ul>
+<li>误差传导模型结论</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/errprop.png" >
+		<img src="/post/note/mobileRobot/errprop.png"
+			
+			
+			
+			loading="lazy"
+			alt="新的协方差矩阵">
+	</a>
+	
+	<figcaption>新的协方差矩阵</figcaption>
+	
+</figure>
+<figure 
+	>
+	<a href="/post/note/mobileRobot/errpropv.png" >
+		<img src="/post/note/mobileRobot/errpropv.png"
+			
+			
+			
+			loading="lazy"
+			alt="可视化">
+	</a>
+	
+	<figcaption>可视化</figcaption>
+	
+</figure></p>
+<h3 id="马尔可夫定位">马尔可夫定位</h3>
+<ul>
+<li>Markov localization tracks the robot’s belief state using an arbitrary probability density function to represent the robot’s position</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/markov.png" >
+		<img src="/post/note/mobileRobot/markov.png"
+			
+			
+			
+			loading="lazy"
+			alt="markov流程">
+	</a>
+	
+	<figcaption>markov流程</figcaption>
+	
+</figure></p>
+<ul>
+<li>对于2D定位，需要实时更新一个立方体的数据，很慢
+<ul>
+<li>One possible solution would be to increase the cell size at the expense of localization accuracy.</li>
+<li>Another solution is to use an adaptive cell decomposition instead of a fixed cell decomposition.</li>
+<li>reduce the number of states that are updated in each step</li>
+</ul>
+</li>
+</ul>
+<h3 id="卡尔曼滤波定位">卡尔曼滤波定位</h3>
+<ul>
+<li>卡尔曼滤波是迭代的，线性系统高斯噪声下最优的，实时性好</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/kalman1.png" >
+		<img src="/post/note/mobileRobot/kalman1.png"
+			
+			
+			
+			loading="lazy"
+			alt="kalman流程">
+	</a>
+	
+	<figcaption>kalman流程</figcaption>
+	
+</figure></p>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/kalman2.png" >
+		<img src="/post/note/mobileRobot/kalman2.png"
+			
+			
+			
+			loading="lazy"
+			alt="kalman update">
+	</a>
+	
+	<figcaption>kalman update</figcaption>
+	
+</figure></p>
+<ul>
+<li>
+<p>卡尔曼滤波器和信息融合</p>
+<p><figure 
+	>
+	<a href="/post/note/mobileRobot/fuse.png" >
+		<img src="/post/note/mobileRobot/fuse.png"
+			
+			
+			
+			loading="lazy"
+			alt="kalman fusion">
+	</a>
+	
+	<figcaption>kalman fusion</figcaption>
+	
+</figure></p>
+</li>
 </ul>
 
 </section>
@@ -811,7 +1473,7 @@
       <ol>
         <li><a href="#按功能分类">按功能分类</a></li>
         <li><a href="#应用领域">应用领域</a></li>
-        <li><a href="#几个概念">几个概念</a></li>
+        <li><a href="#自动化">自动化</a></li>
       </ol>
     </li>
     <li><a href="#运动形式">运动形式</a>
@@ -832,10 +1494,9 @@
     </li>
     <li><a href="#二轮差速机器人的控制">二轮差速机器人的控制</a>
       <ol>
-        <li><a href="#概念和零碎知识点">概念和零碎知识点</a></li>
+        <li><a href="#术语和零碎知识点">术语和零碎知识点</a></li>
         <li><a href="#定点控制">定点控制</a></li>
         <li><a href="#轨迹跟踪控制">轨迹跟踪控制</a></li>
-        <li><a href="#路径跟踪控制">路径跟踪控制</a></li>
       </ol>
     </li>
     <li><a href="#规划">规划</a>
@@ -843,6 +1504,37 @@
         <li><a href="#几个基本概念">几个基本概念</a></li>
         <li><a href="#基于搜索树的路径查找">基于搜索树的路径查找</a></li>
         <li><a href="#基于采样的路径查找">基于采样的路径查找</a></li>
+        <li><a href="#局部规划避障">局部规划（避障）</a></li>
+        <li><a href="#势场法">势场法</a></li>
+      </ol>
+    </li>
+    <li><a href="#传感器大类和指标">传感器大类和指标</a>
+      <ol>
+        <li><a href="#分类">分类</a></li>
+        <li><a href="#常见传感器的原理">常见传感器的原理</a></li>
+        <li><a href="#主要性能指标">主要性能指标</a></li>
+        <li><a href="#标定和不确定性">标定和不确定性</a></li>
+      </ol>
+    </li>
+    <li><a href="#基于视觉的感知">基于视觉的感知</a>
+      <ol>
+        <li><a href="#cv的常见应用">CV的常见应用</a></li>
+        <li><a href="#相机图像获取">相机图像获取</a></li>
+        <li><a href="#数字图像处理">数字图像处理</a></li>
+        <li><a href="#立体视觉">立体视觉</a></li>
+        <li><a href="#光流lucaskanade">光流（Lucas–Kanade）</a></li>
+        <li><a href="#点检测">点检测</a></li>
+        <li><a href="#线检测">线检测</a></li>
+        <li><a href="#地方检测">地方检测</a></li>
+      </ol>
+    </li>
+    <li><a href="#移动机器人的定位">移动机器人的定位</a>
+      <ol>
+        <li><a href="#相关概念">相关概念</a></li>
+        <li><a href="#挑战">挑战</a></li>
+        <li><a href="#差速模型里程计误差">差速模型里程计误差</a></li>
+        <li><a href="#马尔可夫定位">马尔可夫定位</a></li>
+        <li><a href="#卡尔曼滤波定位">卡尔曼滤波定位</a></li>
       </ol>
     </li>
   </ol>
