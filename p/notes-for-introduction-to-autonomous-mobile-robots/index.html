@@ -9,11 +9,11 @@
 <meta property='og:description' content='A Fall 2021 Course 「移动机器人导论」'>
 <meta property='og:url' content='https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/'>
 <meta property='og:site_name' content='Yueqian&#39;s Page'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-12-27T15:24:52&#43;08:00'/><meta property='article:modified_time' content='2021-12-27T15:24:52&#43;08:00'/><meta property='og:image' content='https://ercbunny.github.io/post/note/mobileRobot/cover.jpg' />
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-12-29T15:24:52&#43;08:00'/><meta property='article:modified_time' content='2021-12-29T15:24:52&#43;08:00'/><meta property='og:image' content='https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/cover.jpg' />
 <meta name="twitter:site" content="@yueqianliu1">
     <meta name="twitter:creator" content="@yueqianliu1"><meta name="twitter:title" content="Notes for Introduction to Autonomous Mobile Robots">
 <meta name="twitter:description" content="A Fall 2021 Course 「移动机器人导论」"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://ercbunny.github.io/post/note/mobileRobot/cover.jpg' />
+    <meta name="twitter:image" content='https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/cover.jpg' />
     <link rel="shortcut icon" href="/img/user.svg" />
 
     </head>
@@ -66,8 +66,12 @@
     <header class="article-header">
         <div class="article-image">
             <a href="/p/notes-for-introduction-to-autonomous-mobile-robots/">
-                
-                    <img src="/post/note/mobileRobot/cover.jpg" loading="lazy" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" />
+                <img src="/p/notes-for-introduction-to-autonomous-mobile-robots/cover_hu51328586977ed3b7b80ac2bd02aacb27_216134_800x0_resize_q75_box.jpg"
+                        srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/cover_hu51328586977ed3b7b80ac2bd02aacb27_216134_800x0_resize_q75_box.jpg 800w, /p/notes-for-introduction-to-autonomous-mobile-robots/cover_hu51328586977ed3b7b80ac2bd02aacb27_216134_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="500" 
+                        loading="lazy"
+                        alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" />
                 
             </a>
         </div>
@@ -107,7 +111,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Dec 27, 2021</time>
+                <time class="article-time--published">Dec 29, 2021</time>
             </div>
         
 
@@ -121,6 +125,24 @@
     <blockquote>
 <p>篇幅较长，请先浏览目录，方便导航哦～</p>
 </blockquote>
+<hr>
+<h2 id="2021年1231考试内容">2021年12.31考试内容</h2>
+<ul>
+<li>机器人的自由度计算</li>
+<li>轮子的自由度</li>
+<li>sobel算子作用</li>
+<li>直线检测各种算法原理</li>
+<li>搜索算法哪个完备</li>
+<li>概率框架下的定位模型</li>
+<li>什么噪声没办法去除</li>
+<li>dijkstra</li>
+<li>markov定位图</li>
+<li>split merge</li>
+<li>势场法导航</li>
+<li>卡尔曼滤波的k矩阵</li>
+<li>单轮驱动的运动模型，自由度</li>
+<li>odom模型和误差传播</li>
+</ul>
 <hr>
 <h2 id="绪论">绪论</h2>
 <h3 id="按功能分类">按功能分类</h3>
@@ -161,12 +183,17 @@
 </li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 163; 
+			flex-basis: 392px"
 	>
-	<a href="/post/note/mobileRobot/see-think-act.png" >
-		<img src="/post/note/mobileRobot/see-think-act.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act.png" data-size="1288x788">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act.png"
+			width="1288"
+			height="788"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="general pipeline">
 	</a>
@@ -250,12 +277,17 @@
 <li>$\bold{\dot{\xi_I}=R(\theta)\dot{\xi_R}}$ ，两个坐标系下的速度之间关系为旋转矩阵</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 227; 
+			flex-basis: 545px"
 	>
-	<a href="/post/note/mobileRobot/coord.png" >
-		<img src="/post/note/mobileRobot/coord.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/coord.png" data-size="2288x1006">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/coord.png"
+			width="2288"
+			height="1006"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="坐标系的一般设置">
 	</a>
@@ -312,12 +344,17 @@
 <li>动力学建模在运动变化较为快速、动态响应比较明显的情况下适用，比如无人机上</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 94; 
+			flex-basis: 225px"
 	>
-	<a href="/post/note/mobileRobot/kine-example.png" >
-		<img src="/post/note/mobileRobot/kine-example.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example.png" data-size="2060x2188">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example.png"
+			width="2060"
+			height="2188"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="运动学模型例子">
 	</a>
@@ -359,12 +396,17 @@
 </li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 76; 
+			flex-basis: 182px"
 	>
-	<a href="/post/note/mobileRobot/dof-example.png" >
-		<img src="/post/note/mobileRobot/dof-example.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example.png" data-size="1904x2500">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example.png"
+			width="1904"
+			height="2500"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="自由度计算例子">
 	</a>
@@ -402,12 +444,17 @@
 </ul>
 <h3 id="定点控制">定点控制</h3>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 210; 
+			flex-basis: 505px"
 	>
-	<a href="/post/note/mobileRobot/robot2ctrl.png" >
-		<img src="/post/note/mobileRobot/robot2ctrl.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl.png" data-size="2344x1112">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl.png"
+			width="2344"
+			height="1112"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="机器人模型">
 	</a>
@@ -453,40 +500,55 @@
 </li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 263; 
+			flex-basis: 631px"
 	>
-	<a href="/post/note/mobileRobot/pole1.png" >
-		<img src="/post/note/mobileRobot/pole1.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/pole1.png" data-size="1752x666">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/pole1.png"
+			width="1752"
+			height="666"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="误差模型的推导">
 	</a>
 	
 	<figcaption>误差模型的推导</figcaption>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 231; 
+			flex-basis: 554px"
 	>
-	<a href="/post/note/mobileRobot/pole2.png" >
-		<img src="/post/note/mobileRobot/pole2.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/pole2.png" data-size="1752x758">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/pole2.png"
+			width="1752"
+			height="758"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="控制器和线性化">
 	</a>
 	
 	<figcaption>控制器和线性化</figcaption>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 195; 
+			flex-basis: 468px"
 	>
-	<a href="/post/note/mobileRobot/pole3.png" >
-		<img src="/post/note/mobileRobot/pole3.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/pole3.png" data-size="1752x898">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/pole3.png"
+			width="1752"
+			height="898"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="稳定性分析">
 	</a>
@@ -554,12 +616,17 @@
 </li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 178; 
+			flex-basis: 427px"
 	>
-	<a href="/post/note/mobileRobot/Dijk-Astar.png" >
-		<img src="/post/note/mobileRobot/Dijk-Astar.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar.png" data-size="2092x1174">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar.png"
+			width="2092"
+			height="1174"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="Dijkstra和A*区别">
 	</a>
@@ -588,12 +655,17 @@
 </li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 219; 
+			flex-basis: 526px"
 	>
-	<a href="/post/note/mobileRobot/norm.png" >
-		<img src="/post/note/mobileRobot/norm.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/norm.png" data-size="2388x1088">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/norm.png"
+			width="2388"
+			height="1088"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="范数">
 	</a>
@@ -656,12 +728,17 @@
 <li>一种常见的实现：总场=目标场+障碍场</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 239; 
+			flex-basis: 575px"
 	>
-	<a href="/post/note/mobileRobot/goal.png" >
-		<img src="/post/note/mobileRobot/goal.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/goal.png" data-size="1780x742">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/goal.png"
+			width="1780"
+			height="742"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/goal_hu714d753056c144d85d9749d39b2dd203_1884771_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/goal_hu714d753056c144d85d9749d39b2dd203_1884771_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="目标场">
 	</a>
@@ -670,12 +747,17 @@
 	
 </figure></p>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 258; 
+			flex-basis: 619px"
 	>
-	<a href="/post/note/mobileRobot/obs.png" >
-		<img src="/post/note/mobileRobot/obs.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/obs.png" data-size="2224x862">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/obs.png"
+			width="2224"
+			height="862"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="障碍场">
 	</a>
@@ -684,12 +766,17 @@
 	
 </figure></p>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 258; 
+			flex-basis: 619px"
 	>
-	<a href="/post/note/mobileRobot/total.png" >
-		<img src="/post/note/mobileRobot/total.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/total.png" data-size="2224x862">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/total.png"
+			width="2224"
+			height="862"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="总势场">
 	</a>
@@ -701,24 +788,34 @@
 <h2 id="传感器大类和指标">传感器大类和指标</h2>
 <h3 id="分类">分类</h3>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 213; 
+			flex-basis: 511px"
 	>
-	<a href="/post/note/mobileRobot/sensor1.png" >
-		<img src="/post/note/mobileRobot/sensor1.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1.png" data-size="1526x716">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1.png"
+			width="1526"
+			height="716"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			>
 	</a>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 200; 
+			flex-basis: 482px"
 	>
-	<a href="/post/note/mobileRobot/sensor2.png" >
-		<img src="/post/note/mobileRobot/sensor2.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2.png" data-size="1354x674">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2.png"
+			width="1354"
+			height="674"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="常见传感器">
 	</a>
@@ -859,24 +956,34 @@
 <li>步骤图如下</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 236; 
+			flex-basis: 568px"
 	>
-	<a href="/post/note/mobileRobot/opticalflow1.png" >
-		<img src="/post/note/mobileRobot/opticalflow1.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1.png" data-size="1654x698">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1.png"
+			width="1654"
+			height="698"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			>
 	</a>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 236; 
+			flex-basis: 568px"
 	>
-	<a href="/post/note/mobileRobot/opticalflow2.png" >
-		<img src="/post/note/mobileRobot/opticalflow2.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2.png" data-size="1654x698">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2.png"
+			width="1654"
+			height="698"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="光流法">
 	</a>
@@ -886,82 +993,111 @@
 </figure></p>
 <h3 id="点检测">点检测</h3>
 <ul>
-<li>Harris Corner &amp; Shi-Tomasi（可判断是edge类型还是corner）
+<li>
+<p>Harris Corner &amp; Shi-Tomasi（可判断是edge类型还是corner）</p>
 <ul>
 <li>同平面旋转不变性，线性光照强度变化不变性；但对于尺度和仿射变换没有不变性</li>
-<li>corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions
-<figure 
+<li>corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions</li>
+</ul>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 236; 
+			flex-basis: 568px"
 	>
-	<a href="/post/note/mobileRobot/corner1.png" >
-		<img src="/post/note/mobileRobot/corner1.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/corner1.png" data-size="1654x698">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/corner1.png"
+			width="1654"
+			height="698"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			>
 	</a>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 243; 
+			flex-basis: 585px"
 	>
-	<a href="/post/note/mobileRobot/corner2.png" >
-		<img src="/post/note/mobileRobot/corner2.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/corner2.png" data-size="1654x678">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/corner2.png"
+			width="1654"
+			height="678"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="角落检测一般分析思路">
 	</a>
 	
 	<figcaption>角落检测一般分析思路</figcaption>
 	
-</figure></li>
-<li>特征值的解法 $det(A-\lambda I)=0$
-<figure 
+</figure></p>
+<ul>
+<li>特征值的解法 $det(A-\lambda I)=0$</li>
+</ul>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 346; 
+			flex-basis: 830px"
 	>
-	<a href="/post/note/mobileRobot/corner3.png" >
-		<img src="/post/note/mobileRobot/corner3.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/corner3.png" data-size="1654x478">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/corner3.png"
+			width="1654"
+			height="478"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="Eigen Visualization">
 	</a>
 	
 	<figcaption>Eigen Visualization</figcaption>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 229; 
+			flex-basis: 549px"
 	>
-	<a href="/post/note/mobileRobot/corner4.png" >
-		<img src="/post/note/mobileRobot/corner4.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/corner4.png" data-size="1654x722">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/corner4.png"
+			width="1654"
+			height="722"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="Shi-Tomasi">
 	</a>
 	
 	<figcaption>Shi-Tomasi</figcaption>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 224; 
+			flex-basis: 539px"
 	>
-	<a href="/post/note/mobileRobot/corner5.png" >
-		<img src="/post/note/mobileRobot/corner5.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/corner5.png" data-size="1654x736">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/corner5.png"
+			width="1654"
+			height="736"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="Harris实际上也可以采用单阈值筛选">
 	</a>
 	
 	<figcaption>Harris实际上也可以采用单阈值筛选</figcaption>
 	
-</figure></li>
-</ul>
+</figure></p>
 </li>
-<li>解决特征检测的尺度变换问题
+<li>
+<p>解决特征检测的尺度变换问题</p>
 <ul>
 <li>Scale detector
 <ul>
@@ -982,7 +1118,8 @@
 </li>
 </ul>
 </li>
-<li>一些快速算法
+<li>
+<p>一些快速算法</p>
 <ul>
 <li>FAST corner detector</li>
 <li>BRIEF descriptor，Not scale/rotation invariant (extensions exist&hellip;)</li>
@@ -1005,12 +1142,17 @@
 </li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 400; 
+			flex-basis: 960px"
 	>
-	<a href="/post/note/mobileRobot/lines.png" >
-		<img src="/post/note/mobileRobot/lines.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/lines.png" data-size="1648x412">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/lines.png"
+			width="1648"
+			height="412"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/lines_hud36468f48f180a9d6665864372b9f2bb_151644_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/lines_hud36468f48f180a9d6665864372b9f2bb_151644_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="一图对比">
 	</a>
@@ -1025,38 +1167,51 @@
 <li>
 <p>Split-and-merge</p>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 310; 
+			flex-basis: 746px"
 	>
-	<a href="/post/note/mobileRobot/split1.png" >
-		<img src="/post/note/mobileRobot/split1.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/split1.png" data-size="1648x530">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/split1.png"
+			width="1648"
+			height="530"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			>
 	</a>
 	
 </figure>
 <figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 123; 
+			flex-basis: 296px"
 	>
-	<a href="/post/note/mobileRobot/split2.png" >
-		<img src="/post/note/mobileRobot/split2.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/split2.png" data-size="654x530">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/split2.png"
+			width="654"
+			height="530"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/split2_hucfa5d437b4868d2da828ae07f655727f_70688_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/split2_hucfa5d437b4868d2da828ae07f655727f_70688_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
-			alt="Split-and-merge">
+			>
 	</a>
 	
-	<figcaption>Split-and-merge</figcaption>
+</figure></p>
+<p><figure 
 	
-</figure>
-<figure 
+		class="gallery-image" 
+		style="
+			flex-grow: 218; 
+			flex-basis: 523px"
 	>
-	<a href="/post/note/mobileRobot/full.png" >
-		<img src="/post/note/mobileRobot/full.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/full.png" data-size="1592x730">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/full.png"
+			width="1592"
+			height="730"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/full_hu25c2696c0cbc81a3a74d863979996dae_222264_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/full_hu25c2696c0cbc81a3a74d863979996dae_222264_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="full process">
 	</a>
@@ -1068,12 +1223,17 @@
 <li>
 <p>Linear regression</p>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 287; 
+			flex-basis: 689px"
 	>
-	<a href="/post/note/mobileRobot/iterReg.png" >
-		<img src="/post/note/mobileRobot/iterReg.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg.png" data-size="1592x554">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg.png"
+			width="1592"
+			height="554"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="line regression">
 	</a>
@@ -1099,12 +1259,12 @@
 <ul>
 <li>k-means
 <ol>
-<li>先定义总共有多少个类/族 (cluster)</li>
-<li>将每个族心 (cluster centers）随机定在一个点上</li>
-<li>将每个数据点关联到最近族中心所属的筷上</li>
-<li>对于每一个筷找到其所有关联点的中心点（取每一个点坐标的平均值)</li>
-<li>将上述点变为新的筷心</li>
-<li>不停重复，直到每个族所拥有的点不变</li>
+<li>先定义总共有多少个类/蔟 (cluster)</li>
+<li>将每个蔟心 (cluster centers）随机定在一个点上</li>
+<li>将每个数据点关联到最近蔟中心所属的蔟上</li>
+<li>对于每一个蔟找到其所有关联点的中心点（取每一个点坐标的平均值)</li>
+<li>将上述点变为新的蔟心</li>
+<li>不停重复，直到每个蔟所拥有的点不变</li>
 </ol>
 </li>
 </ul>
@@ -1146,12 +1306,17 @@
 <li>基于RK2的运动学模型</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 315; 
+			flex-basis: 756px"
 	>
-	<a href="/post/note/mobileRobot/rk2.png" >
-		<img src="/post/note/mobileRobot/rk2.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/rk2.png" data-size="1608x510">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/rk2.png"
+			width="1608"
+			height="510"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/rk2_hudc19162e910f97f96f42ffd127d72765_230742_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/rk2_hudc19162e910f97f96f42ffd127d72765_230742_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="运动学模型">
 	</a>
@@ -1163,26 +1328,36 @@
 <li>误差传导模型结论</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 250; 
+			flex-basis: 601px"
 	>
-	<a href="/post/note/mobileRobot/errprop.png" >
-		<img src="/post/note/mobileRobot/errprop.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/errprop.png" data-size="1608x642">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/errprop.png"
+			width="1608"
+			height="642"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="新的协方差矩阵">
 	</a>
 	
 	<figcaption>新的协方差矩阵</figcaption>
 	
-</figure>
-<figure 
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 290; 
+			flex-basis: 698px"
 	>
-	<a href="/post/note/mobileRobot/errpropv.png" >
-		<img src="/post/note/mobileRobot/errpropv.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv.png" data-size="2258x776">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv.png"
+			width="2258"
+			height="776"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="可视化">
 	</a>
@@ -1195,12 +1370,17 @@
 <li>Markov localization tracks the robot’s belief state using an arbitrary probability density function to represent the robot’s position</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 178; 
+			flex-basis: 429px"
 	>
-	<a href="/post/note/mobileRobot/markov.png" >
-		<img src="/post/note/mobileRobot/markov.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/markov.png" data-size="1606x898">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/markov.png"
+			width="1606"
+			height="898"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="markov流程">
 	</a>
@@ -1222,12 +1402,17 @@
 <li>卡尔曼滤波是迭代的，线性系统高斯噪声下最优的，实时性好</li>
 </ul>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 179; 
+			flex-basis: 430px"
 	>
-	<a href="/post/note/mobileRobot/kalman1.png" >
-		<img src="/post/note/mobileRobot/kalman1.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1.png" data-size="1606x896">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1.png"
+			width="1606"
+			height="896"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="kalman流程">
 	</a>
@@ -1236,12 +1421,17 @@
 	
 </figure></p>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 187; 
+			flex-basis: 450px"
 	>
-	<a href="/post/note/mobileRobot/kalman2.png" >
-		<img src="/post/note/mobileRobot/kalman2.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2.png" data-size="3028x1612">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2.png"
+			width="3028"
+			height="1612"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="kalman update">
 	</a>
@@ -1253,12 +1443,17 @@
 <li>
 <p>卡尔曼滤波器和信息融合</p>
 <p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 237; 
+			flex-basis: 569px"
 	>
-	<a href="/post/note/mobileRobot/fuse.png" >
-		<img src="/post/note/mobileRobot/fuse.png"
-			
-			
-			
+	<a href="/p/notes-for-introduction-to-autonomous-mobile-robots/fuse.png" data-size="2974x1254">
+		<img src="/p/notes-for-introduction-to-autonomous-mobile-robots/fuse.png"
+			width="2974"
+			height="1254"
+			srcset="/p/notes-for-introduction-to-autonomous-mobile-robots/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_480x0_resize_box_3.png 480w, /p/notes-for-introduction-to-autonomous-mobile-robots/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="kalman fusion">
 	</a>
@@ -1469,6 +1664,7 @@
                 <div class="widget--toc">
                     <nav id="TableOfContents">
   <ol>
+    <li><a href="#2021年1231考试内容">2021年12.31考试内容</a></li>
     <li><a href="#绪论">绪论</a>
       <ol>
         <li><a href="#按功能分类">按功能分类</a></li>

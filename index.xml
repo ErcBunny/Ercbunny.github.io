@@ -6,15 +6,42 @@
         <description>Recent content on Yueqian&#39;s Page</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 27 Dec 2021 15:24:52 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 31 Dec 2021 14:50:23 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>2021年度总结</title>
+        <link>https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Fri, 31 Dec 2021 14:50:23 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/post/lifeSummary/2021.jpg" alt="Featured image of post 2021年度总结" /&gt;&lt;p&gt;大脑一片空白中&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Notes for Introduction to Autonomous Mobile Robots</title>
         <link>https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/</link>
-        <pubDate>Mon, 27 Dec 2021 15:24:52 +0800</pubDate>
+        <pubDate>Wed, 29 Dec 2021 15:24:52 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/note/mobileRobot/cover.jpg" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" /&gt;&lt;blockquote&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/cover.jpg" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" /&gt;&lt;blockquote&gt;
 &lt;p&gt;篇幅较长，请先浏览目录，方便导航哦～&lt;/p&gt;
 &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2021年1231考试内容&#34;&gt;2021年12.31考试内容&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;机器人的自由度计算&lt;/li&gt;
+&lt;li&gt;轮子的自由度&lt;/li&gt;
+&lt;li&gt;sobel算子作用&lt;/li&gt;
+&lt;li&gt;直线检测各种算法原理&lt;/li&gt;
+&lt;li&gt;搜索算法哪个完备&lt;/li&gt;
+&lt;li&gt;概率框架下的定位模型&lt;/li&gt;
+&lt;li&gt;什么噪声没办法去除&lt;/li&gt;
+&lt;li&gt;dijkstra&lt;/li&gt;
+&lt;li&gt;markov定位图&lt;/li&gt;
+&lt;li&gt;split merge&lt;/li&gt;
+&lt;li&gt;势场法导航&lt;/li&gt;
+&lt;li&gt;卡尔曼滤波的k矩阵&lt;/li&gt;
+&lt;li&gt;单轮驱动的运动模型，自由度&lt;/li&gt;
+&lt;li&gt;odom模型和误差传播&lt;/li&gt;
+&lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;绪论&#34;&gt;绪论&lt;/h2&gt;
 &lt;h3 id=&#34;按功能分类&#34;&gt;按功能分类&lt;/h3&gt;
@@ -55,12 +82,17 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 163; 
+			flex-basis: 392px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/see-think-act.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/see-think-act.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act.png&#34; data-size=&#34;1288x788&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act.png&#34;
+			width=&#34;1288&#34;
+			height=&#34;788&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;general pipeline&#34;&gt;
 	&lt;/a&gt;
@@ -144,12 +176,17 @@
 &lt;li&gt;$\bold{\dot{\xi_I}=R(\theta)\dot{\xi_R}}$ ，两个坐标系下的速度之间关系为旋转矩阵&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 227; 
+			flex-basis: 545px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/coord.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/coord.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord.png&#34; data-size=&#34;2288x1006&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord.png&#34;
+			width=&#34;2288&#34;
+			height=&#34;1006&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;坐标系的一般设置&#34;&gt;
 	&lt;/a&gt;
@@ -206,12 +243,17 @@
 &lt;li&gt;动力学建模在运动变化较为快速、动态响应比较明显的情况下适用，比如无人机上&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 94; 
+			flex-basis: 225px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/kine-example.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/kine-example.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example.png&#34; data-size=&#34;2060x2188&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example.png&#34;
+			width=&#34;2060&#34;
+			height=&#34;2188&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;运动学模型例子&#34;&gt;
 	&lt;/a&gt;
@@ -253,12 +295,17 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 76; 
+			flex-basis: 182px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/dof-example.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/dof-example.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example.png&#34; data-size=&#34;1904x2500&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example.png&#34;
+			width=&#34;1904&#34;
+			height=&#34;2500&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;自由度计算例子&#34;&gt;
 	&lt;/a&gt;
@@ -296,12 +343,17 @@
 &lt;/ul&gt;
 &lt;h3 id=&#34;定点控制&#34;&gt;定点控制&lt;/h3&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 210; 
+			flex-basis: 505px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/robot2ctrl.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/robot2ctrl.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl.png&#34; data-size=&#34;2344x1112&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl.png&#34;
+			width=&#34;2344&#34;
+			height=&#34;1112&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;机器人模型&#34;&gt;
 	&lt;/a&gt;
@@ -347,40 +399,55 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 263; 
+			flex-basis: 631px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole1.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole1.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1.png&#34; data-size=&#34;1752x666&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1.png&#34;
+			width=&#34;1752&#34;
+			height=&#34;666&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;误差模型的推导&#34;&gt;
 	&lt;/a&gt;
 	
 	&lt;figcaption&gt;误差模型的推导&lt;/figcaption&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 231; 
+			flex-basis: 554px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole2.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole2.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2.png&#34; data-size=&#34;1752x758&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2.png&#34;
+			width=&#34;1752&#34;
+			height=&#34;758&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;控制器和线性化&#34;&gt;
 	&lt;/a&gt;
 	
 	&lt;figcaption&gt;控制器和线性化&lt;/figcaption&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 195; 
+			flex-basis: 468px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole3.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/pole3.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3.png&#34; data-size=&#34;1752x898&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3.png&#34;
+			width=&#34;1752&#34;
+			height=&#34;898&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;稳定性分析&#34;&gt;
 	&lt;/a&gt;
@@ -448,12 +515,17 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 178; 
+			flex-basis: 427px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/Dijk-Astar.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/Dijk-Astar.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar.png&#34; data-size=&#34;2092x1174&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar.png&#34;
+			width=&#34;2092&#34;
+			height=&#34;1174&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Dijkstra和A*区别&#34;&gt;
 	&lt;/a&gt;
@@ -482,12 +554,17 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 219; 
+			flex-basis: 526px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/norm.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/norm.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm.png&#34; data-size=&#34;2388x1088&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm.png&#34;
+			width=&#34;2388&#34;
+			height=&#34;1088&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;范数&#34;&gt;
 	&lt;/a&gt;
@@ -550,12 +627,17 @@
 &lt;li&gt;一种常见的实现：总场=目标场+障碍场&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 239; 
+			flex-basis: 575px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/goal.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/goal.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal.png&#34; data-size=&#34;1780x742&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal.png&#34;
+			width=&#34;1780&#34;
+			height=&#34;742&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal_hu714d753056c144d85d9749d39b2dd203_1884771_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal_hu714d753056c144d85d9749d39b2dd203_1884771_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;目标场&#34;&gt;
 	&lt;/a&gt;
@@ -564,12 +646,17 @@
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 258; 
+			flex-basis: 619px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/obs.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/obs.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs.png&#34; data-size=&#34;2224x862&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs.png&#34;
+			width=&#34;2224&#34;
+			height=&#34;862&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;障碍场&#34;&gt;
 	&lt;/a&gt;
@@ -578,12 +665,17 @@
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 258; 
+			flex-basis: 619px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/total.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/total.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total.png&#34; data-size=&#34;2224x862&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total.png&#34;
+			width=&#34;2224&#34;
+			height=&#34;862&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;总势场&#34;&gt;
 	&lt;/a&gt;
@@ -595,24 +687,34 @@
 &lt;h2 id=&#34;传感器大类和指标&#34;&gt;传感器大类和指标&lt;/h2&gt;
 &lt;h3 id=&#34;分类&#34;&gt;分类&lt;/h3&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 213; 
+			flex-basis: 511px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/sensor1.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/sensor1.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1.png&#34; data-size=&#34;1526x716&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1.png&#34;
+			width=&#34;1526&#34;
+			height=&#34;716&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 200; 
+			flex-basis: 482px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/sensor2.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/sensor2.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2.png&#34; data-size=&#34;1354x674&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2.png&#34;
+			width=&#34;1354&#34;
+			height=&#34;674&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;常见传感器&#34;&gt;
 	&lt;/a&gt;
@@ -753,24 +855,34 @@
 &lt;li&gt;步骤图如下&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 236; 
+			flex-basis: 568px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/opticalflow1.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/opticalflow1.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1.png&#34; data-size=&#34;1654x698&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1.png&#34;
+			width=&#34;1654&#34;
+			height=&#34;698&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 236; 
+			flex-basis: 568px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/opticalflow2.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/opticalflow2.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2.png&#34; data-size=&#34;1654x698&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2.png&#34;
+			width=&#34;1654&#34;
+			height=&#34;698&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;光流法&#34;&gt;
 	&lt;/a&gt;
@@ -780,82 +892,111 @@
 &lt;/figure&gt;&lt;/p&gt;
 &lt;h3 id=&#34;点检测&#34;&gt;点检测&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;Harris Corner &amp;amp; Shi-Tomasi（可判断是edge类型还是corner）
+&lt;li&gt;
+&lt;p&gt;Harris Corner &amp;amp; Shi-Tomasi（可判断是edge类型还是corner）&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;同平面旋转不变性，线性光照强度变化不变性；但对于尺度和仿射变换没有不变性&lt;/li&gt;
-&lt;li&gt;corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions
-&lt;figure 
+&lt;li&gt;corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 236; 
+			flex-basis: 568px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner1.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner1.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1.png&#34; data-size=&#34;1654x698&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1.png&#34;
+			width=&#34;1654&#34;
+			height=&#34;698&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 243; 
+			flex-basis: 585px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner2.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner2.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2.png&#34; data-size=&#34;1654x678&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2.png&#34;
+			width=&#34;1654&#34;
+			height=&#34;678&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;角落检测一般分析思路&#34;&gt;
 	&lt;/a&gt;
 	
 	&lt;figcaption&gt;角落检测一般分析思路&lt;/figcaption&gt;
 	
-&lt;/figure&gt;&lt;/li&gt;
-&lt;li&gt;特征值的解法 $det(A-\lambda I)=0$
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;特征值的解法 $det(A-\lambda I)=0$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 346; 
+			flex-basis: 830px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner3.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner3.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3.png&#34; data-size=&#34;1654x478&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3.png&#34;
+			width=&#34;1654&#34;
+			height=&#34;478&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Eigen Visualization&#34;&gt;
 	&lt;/a&gt;
 	
 	&lt;figcaption&gt;Eigen Visualization&lt;/figcaption&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 229; 
+			flex-basis: 549px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner4.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner4.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4.png&#34; data-size=&#34;1654x722&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4.png&#34;
+			width=&#34;1654&#34;
+			height=&#34;722&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Shi-Tomasi&#34;&gt;
 	&lt;/a&gt;
 	
 	&lt;figcaption&gt;Shi-Tomasi&lt;/figcaption&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 224; 
+			flex-basis: 539px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner5.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/corner5.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5.png&#34; data-size=&#34;1654x736&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5.png&#34;
+			width=&#34;1654&#34;
+			height=&#34;736&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Harris实际上也可以采用单阈值筛选&#34;&gt;
 	&lt;/a&gt;
 	
 	&lt;figcaption&gt;Harris实际上也可以采用单阈值筛选&lt;/figcaption&gt;
 	
-&lt;/figure&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;/figure&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;解决特征检测的尺度变换问题
+&lt;li&gt;
+&lt;p&gt;解决特征检测的尺度变换问题&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Scale detector
 &lt;ul&gt;
@@ -876,7 +1017,8 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;一些快速算法
+&lt;li&gt;
+&lt;p&gt;一些快速算法&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;FAST corner detector&lt;/li&gt;
 &lt;li&gt;BRIEF descriptor，Not scale/rotation invariant (extensions exist&amp;hellip;)&lt;/li&gt;
@@ -899,12 +1041,17 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 400; 
+			flex-basis: 960px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/lines.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/lines.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines.png&#34; data-size=&#34;1648x412&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines.png&#34;
+			width=&#34;1648&#34;
+			height=&#34;412&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines_hud36468f48f180a9d6665864372b9f2bb_151644_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines_hud36468f48f180a9d6665864372b9f2bb_151644_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;一图对比&#34;&gt;
 	&lt;/a&gt;
@@ -919,38 +1066,51 @@
 &lt;li&gt;
 &lt;p&gt;Split-and-merge&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 310; 
+			flex-basis: 746px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/split1.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/split1.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1.png&#34; data-size=&#34;1648x530&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1.png&#34;
+			width=&#34;1648&#34;
+			height=&#34;530&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
 	
 &lt;/figure&gt;
 &lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 123; 
+			flex-basis: 296px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/split2.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/split2.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2.png&#34; data-size=&#34;654x530&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2.png&#34;
+			width=&#34;654&#34;
+			height=&#34;530&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2_hucfa5d437b4868d2da828ae07f655727f_70688_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2_hucfa5d437b4868d2da828ae07f655727f_70688_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
-			alt=&#34;Split-and-merge&#34;&gt;
+			&gt;
 	&lt;/a&gt;
 	
-	&lt;figcaption&gt;Split-and-merge&lt;/figcaption&gt;
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
 	
-&lt;/figure&gt;
-&lt;figure 
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 218; 
+			flex-basis: 523px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/full.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/full.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full.png&#34; data-size=&#34;1592x730&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full.png&#34;
+			width=&#34;1592&#34;
+			height=&#34;730&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full_hu25c2696c0cbc81a3a74d863979996dae_222264_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full_hu25c2696c0cbc81a3a74d863979996dae_222264_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;full process&#34;&gt;
 	&lt;/a&gt;
@@ -962,12 +1122,17 @@
 &lt;li&gt;
 &lt;p&gt;Linear regression&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 287; 
+			flex-basis: 689px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/iterReg.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/iterReg.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg.png&#34; data-size=&#34;1592x554&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg.png&#34;
+			width=&#34;1592&#34;
+			height=&#34;554&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;line regression&#34;&gt;
 	&lt;/a&gt;
@@ -993,12 +1158,12 @@
 &lt;ul&gt;
 &lt;li&gt;k-means
 &lt;ol&gt;
-&lt;li&gt;先定义总共有多少个类/族 (cluster)&lt;/li&gt;
-&lt;li&gt;将每个族心 (cluster centers）随机定在一个点上&lt;/li&gt;
-&lt;li&gt;将每个数据点关联到最近族中心所属的筷上&lt;/li&gt;
-&lt;li&gt;对于每一个筷找到其所有关联点的中心点（取每一个点坐标的平均值)&lt;/li&gt;
-&lt;li&gt;将上述点变为新的筷心&lt;/li&gt;
-&lt;li&gt;不停重复，直到每个族所拥有的点不变&lt;/li&gt;
+&lt;li&gt;先定义总共有多少个类/蔟 (cluster)&lt;/li&gt;
+&lt;li&gt;将每个蔟心 (cluster centers）随机定在一个点上&lt;/li&gt;
+&lt;li&gt;将每个数据点关联到最近蔟中心所属的蔟上&lt;/li&gt;
+&lt;li&gt;对于每一个蔟找到其所有关联点的中心点（取每一个点坐标的平均值)&lt;/li&gt;
+&lt;li&gt;将上述点变为新的蔟心&lt;/li&gt;
+&lt;li&gt;不停重复，直到每个蔟所拥有的点不变&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -1040,12 +1205,17 @@
 &lt;li&gt;基于RK2的运动学模型&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 315; 
+			flex-basis: 756px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/rk2.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/rk2.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2.png&#34; data-size=&#34;1608x510&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2.png&#34;
+			width=&#34;1608&#34;
+			height=&#34;510&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2_hudc19162e910f97f96f42ffd127d72765_230742_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2_hudc19162e910f97f96f42ffd127d72765_230742_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;运动学模型&#34;&gt;
 	&lt;/a&gt;
@@ -1057,26 +1227,36 @@
 &lt;li&gt;误差传导模型结论&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 250; 
+			flex-basis: 601px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/errprop.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/errprop.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop.png&#34; data-size=&#34;1608x642&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop.png&#34;
+			width=&#34;1608&#34;
+			height=&#34;642&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;新的协方差矩阵&#34;&gt;
 	&lt;/a&gt;
 	
 	&lt;figcaption&gt;新的协方差矩阵&lt;/figcaption&gt;
 	
-&lt;/figure&gt;
-&lt;figure 
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 290; 
+			flex-basis: 698px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/errpropv.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/errpropv.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv.png&#34; data-size=&#34;2258x776&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv.png&#34;
+			width=&#34;2258&#34;
+			height=&#34;776&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;可视化&#34;&gt;
 	&lt;/a&gt;
@@ -1089,12 +1269,17 @@
 &lt;li&gt;Markov localization tracks the robot’s belief state using an arbitrary probability density function to represent the robot’s position&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 178; 
+			flex-basis: 429px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/markov.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/markov.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov.png&#34; data-size=&#34;1606x898&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov.png&#34;
+			width=&#34;1606&#34;
+			height=&#34;898&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;markov流程&#34;&gt;
 	&lt;/a&gt;
@@ -1116,12 +1301,17 @@
 &lt;li&gt;卡尔曼滤波是迭代的，线性系统高斯噪声下最优的，实时性好&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 179; 
+			flex-basis: 430px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/kalman1.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/kalman1.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1.png&#34; data-size=&#34;1606x896&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1.png&#34;
+			width=&#34;1606&#34;
+			height=&#34;896&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;kalman流程&#34;&gt;
 	&lt;/a&gt;
@@ -1130,12 +1320,17 @@
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 187; 
+			flex-basis: 450px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/kalman2.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/kalman2.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2.png&#34; data-size=&#34;3028x1612&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2.png&#34;
+			width=&#34;3028&#34;
+			height=&#34;1612&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;kalman update&#34;&gt;
 	&lt;/a&gt;
@@ -1147,12 +1342,17 @@
 &lt;li&gt;
 &lt;p&gt;卡尔曼滤波器和信息融合&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 237; 
+			flex-basis: 569px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/note/mobileRobot/fuse.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/note/mobileRobot/fuse.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse.png&#34; data-size=&#34;2974x1254&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse.png&#34;
+			width=&#34;2974&#34;
+			height=&#34;1254&#34;
+			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;kalman fusion&#34;&gt;
 	&lt;/a&gt;
@@ -1170,7 +1370,7 @@
         <pubDate>Sun, 12 Dec 2021 21:40:00 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89gre/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/blog/GRE/cover.png" alt="Featured image of post さよなら〜GRE" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89gre/cover.png" alt="Featured image of post さよなら〜GRE" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;先来说说结果&#34;&gt;先来说说结果&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Oct10在广外大学城考的是V150，Q166，AW4&lt;/li&gt;
@@ -1273,7 +1473,7 @@
         <pubDate>Sat, 13 Nov 2021 16:37:33 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/dash-to-cones/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/finishedProject/DashToCones/cover.png" alt="Featured image of post Dash To Cones" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/dash-to-cones/cover.png" alt="Featured image of post Dash To Cones" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -1317,7 +1517,7 @@
         <pubDate>Wed, 01 Sep 2021 16:37:33 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/omnihex/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/ongoingProject/omnihex/cover.png" alt="Featured image of post OmniHEX" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/omnihex/cover.png" alt="Featured image of post OmniHEX" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;info&#34;&gt;INFO&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This page is WIP, as translating the original version of my research proposal is no easier than rewriting one in English. I also need to re-render charts and graphs with Chinese characters, which requires quite a lot of effort. Please expect this page to be complete by Feb 2022. Best regards~&lt;/p&gt;
@@ -1342,7 +1542,7 @@
         <pubDate>Sun, 01 Aug 2021 11:07:12 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/%E5%85%A5%E6%B5%B7mv%E7%BB%93%E5%B0%BE%E9%97%AE%E9%A2%98%E6%88%91%E7%9A%84%E7%AD%94%E6%A1%88/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/blog/outlook/%E5%85%A5%E6%B5%B7cover.jpg" alt="Featured image of post 入海MV结尾问题我的答案" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/post/outlook/%E5%85%A5%E6%B5%B7cover.jpg" alt="Featured image of post 入海MV结尾问题我的答案" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;这篇post是啥&#34;&gt;这篇Post是啥&lt;/h2&gt;
 
 
@@ -1376,8 +1576,8 @@
 &lt;h2 id=&#34;第一面&#34;&gt;第一面&lt;/h2&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/blog/outlook/%e5%85%a5%e6%b5%b71.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/blog/outlook/%e5%85%a5%e6%b5%b71.png&#34;
+	&lt;a href=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b71.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b71.png&#34;
 			
 			
 			
@@ -1452,8 +1652,8 @@
 &lt;h2 id=&#34;第二面&#34;&gt;第二面&lt;/h2&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/blog/outlook/%e5%85%a5%e6%b5%b72.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/blog/outlook/%e5%85%a5%e6%b5%b72.png&#34;
+	&lt;a href=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b72.png&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b72.png&#34;
 			
 			
 			
@@ -1532,7 +1732,7 @@
         <pubDate>Thu, 01 Jul 2021 15:24:52 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/finishedProject/HLJenga/cover.png" alt="Featured image of post HLJenga: Hexalink Jenga Manipulator" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/cover.png" alt="Featured image of post HLJenga: Hexalink Jenga Manipulator" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -1578,12 +1778,17 @@
 &lt;/ul&gt;
 &lt;h3 id=&#34;solving-the-axxb-problem&#34;&gt;Solving the AX=XB Problem&lt;/h3&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 151; 
+			flex-basis: 364px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/finishedProject/HLJenga/HECProcess.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/finishedProject/HLJenga/HECProcess.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess.png&#34; data-size=&#34;1066x702&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess.png&#34;
+			width=&#34;1066&#34;
+			height=&#34;702&#34;
+			srcset=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;HE Calibration Illustrated&#34;&gt;
 	&lt;/a&gt;
@@ -1608,12 +1813,17 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 219; 
+			flex-basis: 526px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/finishedProject/HLJenga/subp1.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/finishedProject/HLJenga/subp1.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1.png&#34; data-size=&#34;1908x870&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1.png&#34;
+			width=&#34;1908&#34;
+			height=&#34;870&#34;
+			srcset=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1_hu76f58b4960776087e81296ab875f36f1_333982_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1_hu76f58b4960776087e81296ab875f36f1_333982_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Solving Subproblem 1&#34;&gt;
 	&lt;/a&gt;
@@ -1659,12 +1869,17 @@ Apply inverse kinematics with given starting, ending and via points to find corr
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 384; 
+			flex-basis: 922px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/finishedProject/HLJenga/traj.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/finishedProject/HLJenga/traj.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj.png&#34; data-size=&#34;2006x522&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj.png&#34;
+			width=&#34;2006&#34;
+			height=&#34;522&#34;
+			srcset=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj_hu8104c97a1f2c34b96caa86d898114430_93886_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj_hu8104c97a1f2c34b96caa86d898114430_93886_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Trajectory Visualized&#34;&gt;
 	&lt;/a&gt;
@@ -1686,7 +1901,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Fri, 23 Apr 2021 14:55:42 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/autonomous-delivery-drone/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/finishedProject/DeliverY/cover.png" alt="Featured image of post Autonomous Delivery Drone" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/autonomous-delivery-drone/cover.png" alt="Featured image of post Autonomous Delivery Drone" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -1746,7 +1961,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Fri, 22 Jan 2021 16:37:33 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/pytimelapse/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/ongoingProject/timelapse/cover.jpg" alt="Featured image of post pyTimelapse" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/pytimelapse/cover.jpg" alt="Featured image of post pyTimelapse" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -1790,7 +2005,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Thu, 31 Dec 2020 19:52:23 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/2020%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/blog/lifeSummary/2020.jpg" alt="Featured image of post 2020年度总结" /&gt;&lt;p&gt;元旦左右的时候按照习惯是会写一个年度小结之类的东西。但当时有一堆事情要做，复习机械之类的，然后心态也稍微有点爆炸所以就拖到现在10号了，老实说如果当时不是在onenote里给自己定下了“要写个总结”的计划，我估计就懒得写了。&lt;/p&gt;
+        <description>&lt;img src="https://ercbunny.github.io/post/lifeSummary/2020.jpg" alt="Featured image of post 2020年度总结" /&gt;&lt;p&gt;元旦左右的时候按照习惯是会写一个年度小结之类的东西。但当时有一堆事情要做，复习机械之类的，然后心态也稍微有点爆炸所以就拖到现在10号了，老实说如果当时不是在onenote里给自己定下了“要写个总结”的计划，我估计就懒得写了。&lt;/p&gt;
 &lt;p&gt;这里主要就是想对着onenote回顾一下这一年做了些啥，体会一下心态的变化，为啥是onenote呢，我习惯在onenote里面规划自己的日程。曾经想过要不要把onenote迁移到notability上，想了想又还是觉得算了，毕竟我还是挺喜欢onenote那种无限大的页面，不会被纸张大小局限的感觉。&lt;/p&gt;
 &lt;p&gt;新的一年给我的感觉好像总是从冬天、寒假开始，而不是人们常说的春夏秋冬这个顺序。2020年的寒假开始于13号，当时花了四天时间把电路书讲cadence的章节给看了，上手了这个软件。啊，竟然还是不到一年前吗？真的很难想象这一年我都经历了什么以至于到最后做电机仿真的时候都有一种已经认识这个软件两三年的感觉……大概是一堆远程仿真实验吧……寒假期间终于在许多次找场地、试飞和修理后体会到了固定翼FPV飞行的乐趣（DJI还是牛的），确实很爽，但一个人玩终究还是孤单了一点哈，而且尾推式的飞翼起飞的时候有点麻烦。下次可能就弄一个尾座式VTOL，加上头部追踪云台，和小伙伴们一起飞吧。看书的话主要就是把电路剩下的那几章给学完了，作业也做了，总结也做了。虽说最后复习的时候还是得重新做一遍的，但还是给我省下了一点在电路课上啃模数电（以及摸鱼）的时间。&lt;/p&gt;
 &lt;p&gt;这个寒假绝对是最最最特殊的一个寒假，一开始从15截止延期到29号，最后直接无缝过渡到春季学期，现在回忆起来也没有觉得春季学期有什么实感，好像还是放假的感觉。造成这种情况的源头是很大概率会被载入史册的COVID19。当时天气尚冷、新闻里不断播报着疫情的蔓延和城市的封锁，真的给人一种非常压抑喘不过气来的感觉。要命的是我还突然开始咳嗽了，当然不是新冠而是普通的着凉那种。虽然当时也心里很明白大概率只是着凉了，但是当时真的很恐慌啊也不知道该不该去医院，处于一种进退两难的地步，我还去问了我一个学医的学长，现在想起来简直是xswl。咳嗽这种东西啊，你越去想就越想咳——后来沉迷于罗小黑和三蹦子，就没怎么去管咳嗽是不是新冠这档子事情了。我好像是把这有关这两个IP的几乎所有作品都给补了一遍……对了对了，受008的启发我也做了一个类似的视频，虽然莫有什么人看，但是做视频的那几天还是挺快乐的（沙雕并快乐着），是疫情期间少有的闪光的日子。&lt;/p&gt;
@@ -1808,7 +2023,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Mon, 01 Jun 2020 18:52:23 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/%E5%A4%A7%E4%BA%8C%E5%AD%A6%E5%B9%B4%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/blog/lifeSummary/grade2.png" alt="Featured image of post 大二学年总结" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/post/lifeSummary/grade2.png" alt="Featured image of post 大二学年总结" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;主要工作&#34;&gt;主要工作&lt;/h2&gt;
 &lt;h3 id=&#34;学分绩&#34;&gt;学分绩&lt;/h3&gt;
 &lt;p&gt;大一摸清了一些考试规律，所以大二更加注重对知识的掌握程度，而非仅仅停留在把握整体框架上，于是在最后考试的时候做题不会感觉生疏。虽然有些课是真的不戳我兴趣点，但是还是硬着头皮去学了，毕竟抛开卷的问题，学分绩在哪里都是很重要的，所以丝毫不敢放松。&lt;/p&gt;
@@ -1830,7 +2045,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Wed, 01 Jan 2020 15:45:12 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/%E6%84%BF%E6%9C%9B%E6%B8%85%E5%8D%95/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/blog/outlook/wishListCover.jpg" alt="Featured image of post 愿望清单" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/post/outlook/wishListCover.jpg" alt="Featured image of post 愿望清单" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;这是什么&#34;&gt;这是什么&lt;/h2&gt;
 &lt;p&gt;在2020年初，我写下了一些对“‘主旋律’和生活本身协调问题，或者说怎么协调所谓正事和兴趣的问题”的一些思考，然后一直存在我的本地磁盘上，现在觉得可以放在个人主页上来充实一下内容&lt;/p&gt;
 &lt;p&gt;正事是学业和事业，是直接和以后的成就高度和生活水平相关的硬核事务。这个东西如果要很深入可能要上升到人生意义和君之何从的哲学问题，很难回答，一般的做法是先着眼于当下的小目标，这个小目标就是所谓的主旋律或者说大方向。而兴趣以及生活可以看成是一个愿望清单，里面包括各种杂七杂八的愿望，等着自己去实现。&lt;/p&gt;
@@ -1967,7 +2182,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Tue, 31 Dec 2019 17:52:23 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/2019%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/blog/lifeSummary/2019.jpg" alt="Featured image of post 2019年度总结" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/post/lifeSummary/2019.jpg" alt="Featured image of post 2019年度总结" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;2019总结&#34;&gt;2019总结&lt;/h2&gt;
 &lt;p&gt;这一年过得非常充实。&lt;/p&gt;
 &lt;p&gt;课业上基本都是基础课，而且基础课要一直持续到大二结束。有意思的专业课都被学校放在了大三。大三得出去交换，要不然很难完成“取得世界公认的硕士（或以上）学位”这个目标呀。不过听说那边课也能选到对应的，而且怎么说呢，感觉在这边也是基本靠自学。学分绩上最终的结果是排名到前0.3，还混了个三等奖学金。&lt;/p&gt;
@@ -1986,7 +2201,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Thu, 15 Aug 2019 13:20:21 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/a-3-rotor-vtol-uav/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/finishedProject/TriVTOL/cover.png" alt="Featured image of post A 3-Rotor VTOL UAV" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/a-3-rotor-vtol-uav/cover.png" alt="Featured image of post A 3-Rotor VTOL UAV" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -2021,12 +2236,17 @@ Apply inverse kinematics with given starting, ending and via points to find corr
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 118; 
+			flex-basis: 284px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/finishedProject/TriVTOL/illustration.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/finishedProject/TriVTOL/illustration.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration.png&#34; data-size=&#34;468x395&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration.png&#34;
+			width=&#34;468&#34;
+			height=&#34;395&#34;
+			srcset=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Illustration of the UAV | ①: Aileron, ②: Rudder &amp; Elevator, ③ &amp; ④: Tilt Servo, ⑤: Motor&#34;&gt;
 	&lt;/a&gt;
@@ -2035,12 +2255,17 @@ Apply inverse kinematics with given starting, ending and via points to find corr
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 417; 
+			flex-basis: 1002px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/finishedProject/TriVTOL/overview.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/finishedProject/TriVTOL/overview.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview.png&#34; data-size=&#34;1312x314&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview.png&#34;
+			width=&#34;1312&#34;
+			height=&#34;314&#34;
+			srcset=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;System Block Diagram&#34;&gt;
 	&lt;/a&gt;
@@ -2049,12 +2274,17 @@ Apply inverse kinematics with given starting, ending and via points to find corr
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 177; 
+			flex-basis: 426px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/finishedProject/TriVTOL/math.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/finishedProject/TriVTOL/math.png&#34;
-			
-			
-			
+	&lt;a href=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math.png&#34; data-size=&#34;3840x2160&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math.png&#34;
+			width=&#34;3840&#34;
+			height=&#34;2160&#34;
+			srcset=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Essential Part of the F1 Mixing Unit Explained&#34;&gt;
 	&lt;/a&gt;
@@ -2079,7 +2309,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Wed, 27 Mar 2019 11:07:12 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/%E5%9F%BA%E4%BA%8Embti%E7%9A%84%E8%81%8C%E4%B8%9A%E7%94%9F%E6%B6%AF%E8%A7%84%E5%88%92/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/blog/outlook/MBTICover.png" alt="Featured image of post 基于MBTI的职业生涯规划" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/post/outlook/MBTICover.png" alt="Featured image of post 基于MBTI的职业生涯规划" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;摘要&#34;&gt;摘要&lt;/h2&gt;
 &lt;p&gt;此规划分三部分。第一部分是基于MBTI测试的自我分析；第二部分是未来一到两年的详细规划；第三部分是到毕业时的中期规划，主要谈谈感兴趣的方向和各种可能性。&lt;/p&gt;
 &lt;hr&gt;
@@ -2119,7 +2349,7 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         <pubDate>Fri, 14 Sep 2018 10:19:16 +0800</pubDate>
         
         <guid>https://ercbunny.github.io/p/bunnyaat/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/finishedProject/bunnyAAT/cover.png" alt="Featured image of post BunnyAAT" /&gt;&lt;hr&gt;
+        <description>&lt;img src="https://ercbunny.github.io/p/bunnyaat/cover.png" alt="Featured image of post BunnyAAT" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
