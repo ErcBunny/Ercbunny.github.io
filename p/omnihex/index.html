@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter'><title>OmniHEX</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter'><title>OmniHex</title>
 
 <link rel='canonical' href='https://ercbunny.github.io/p/omnihex/'>
 
-<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='OmniHEX'>
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='OmniHex'>
 <meta property='og:description' content='Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter'>
 <meta property='og:url' content='https://ercbunny.github.io/p/omnihex/'>
 <meta property='og:site_name' content='Yueqian&#39;s Page'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='UAV' /><meta property='article:tag' content='MPC' /><meta property='article:tag' content='ADAPTIVE CTRL' /><meta property='article:published_time' content='2021-09-01T16:37:33&#43;08:00'/><meta property='article:modified_time' content='2021-09-01T16:37:33&#43;08:00'/><meta property='og:image' content='https://ercbunny.github.io/p/omnihex/cover.png' />
 <meta name="twitter:site" content="@yueqianliu1">
-    <meta name="twitter:creator" content="@yueqianliu1"><meta name="twitter:title" content="OmniHEX">
+    <meta name="twitter:creator" content="@yueqianliu1"><meta name="twitter:title" content="OmniHex">
 <meta name="twitter:description" content="Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter"><meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content='https://ercbunny.github.io/p/omnihex/cover.png' />
     <link rel="shortcut icon" href="/img/user.svg" />
@@ -71,7 +71,7 @@
                         width="800" 
                         height="189" 
                         loading="lazy"
-                        alt="Featured image of post OmniHEX" />
+                        alt="Featured image of post OmniHex" />
                 
             </a>
         </div>
@@ -89,7 +89,7 @@
     
 
     <h2 class="article-title">
-        <a href="/p/omnihex/">OmniHEX</a>
+        <a href="/p/omnihex/">OmniHex</a>
     </h2>
 
     
@@ -130,15 +130,257 @@
 <hr>
 <h2 id="links">LINKS</h2>
 <ul>
-<li>
-<p><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx"  target="_blank" rel="noopener"
-    >Presentation of Previous Work (English)</a></p>
-</li>
-<li>
-<p><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/omnihex.pdf"  target="_blank" rel="noopener"
-    >Research Proposal (Chinese)</a></p>
-</li>
+<li><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx"  target="_blank" rel="noopener"
+    >Presentation of Previous Work (English)</a></li>
+<li><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/omnihex.pdf"  target="_blank" rel="noopener"
+    >Research Proposal (Chinese)</a></li>
 </ul>
+<hr>
+<blockquote>
+<p>Repository readme below</p>
+</blockquote>
+<h1 id="omnihex">omniHex</h1>
+<p><figure 
+	>
+	<a href="/p/omnihex/cover_huf54f83ec7f48f4593ffcb0ac862986d3_1368328_1600x0_resize_box_3.png" >
+		<img src="/p/omnihex/cover_huf54f83ec7f48f4593ffcb0ac862986d3_1368328_1600x0_resize_box_3.png"
+			
+			
+			
+			loading="lazy"
+			alt="fooimg">
+	</a>
+	
+	<figcaption>fooimg</figcaption>
+	
+</figure></p>
+<p>[toc]</p>
+<h2 id="environment-setup">Environment Setup</h2>
+<ol>
+<li><code>Ubuntu 20.04 LTS</code> with <code>ROS2 foxy</code> configuration is recommended.</li>
+<li>Install ROS2 <a class="link" href="https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html"  target="_blank" rel="noopener"
+    >via debian</a> and <a class="link" href="https://docs.px4.io/master/en/ros/ros2_comm.html#install-ros-2"  target="_blank" rel="noopener"
+    >additional tools</a>.</li>
+<li>Install Fast-RTPS-Gen using source code.
+<ul>
+<li>Install <a class="link" href="https://gradle.org/install/"  target="_blank" rel="noopener"
+    >Gradle v6.3</a> through <a class="link" href="https://sdkman.io/"  target="_blank" rel="noopener"
+    >sdkman</a>.</li>
+<li>Use Gradle to build and install Fast-RTPS-Gen.</li>
+</ul>
+</li>
+</ol>
+<pre tabindex="0"><code>git clone --recursive https://github.com/eProsima/Fast-DDS-Gen.git -b v1.0.4 ~/Fast-RTPS-Gen \
+    &amp;&amp; cd ~/Fast-RTPS-Gen \
+    &amp;&amp; gradle assemble \
+    &amp;&amp; sudo env &quot;PATH=$PATH&quot; gradle install
+</code></pre><ol start="4">
+<li>Install dependencies for PX4: <code>PX4-Autopilot/Tools/setup/ubuntu.sh</code>.</li>
+<li>Install officially provided ROS2 plug-ins for Gazebo: <code>sudo apt install ros-foxy-gazebo-ros-pkgs</code>.</li>
+<li>Install <a class="link" href="http://qgroundcontrol.com/"  target="_blank" rel="noopener"
+    >QgroundControl</a> ground station.</li>
+</ol>
+<h2 id="usage">Usage</h2>
+<h3 id="simulation-with-gazebo">Simulation with Gazebo</h3>
+<ol>
+<li>Build ROS2 workspace and source this workspace.</li>
+</ol>
+<pre tabindex="0"><code>cd scripts
+./build_all_ros_clean.sh
+</code></pre><ol start="2">
+<li>Build and run PX4 SITL simulation. It is required to source ROS2 setup file.</li>
+</ol>
+<pre tabindex="0"><code>cd PX4-Autopilot
+PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
+</code></pre><ol start="3">
+<li>Run <code>micrortps_agent</code> over UDP.</li>
+</ol>
+<pre tabindex="0"><code>micrortps_agent -t UDP
+</code></pre><ol start="4">
+<li>Use QGC to give commands to the simulation environment. Several useful buttons and modes are listed below.
+<ul>
+<li>Takeoff and land</li>
+<li>Virtual joysticks</li>
+<li>Position mode, altitude mode, ACRO mode</li>
+</ul>
+</li>
+<li>Or use the offboard control node to generate a trajectory for omniHex to track.</li>
+</ol>
+<pre tabindex="0"><code>ros2 run px4_ros_com offboard_control
+</code></pre><h3 id="real-world-flight">Real World Flight</h3>
+<blockquote>
+<p>TODO: servo driver, VRPN client, real flight</p>
+</blockquote>
+<h2 id="software-version">Software Version</h2>
+<ol>
+<li>The original version of <code>PX4</code> is <code>stable release v1.12.3</code>. Modified submodules derive from the commit that is referenced by PX4.</li>
+<li>The original version of <code>px4_msg</code> is commit <code>0f550f436547fccc6b86d448e095ad914f5de94a</code> on master branch.</li>
+<li><code>px4_ros_com</code>: commit <code>c618d757bd64113ccbee17ad0ae17ab8122337e8</code> on master branch.</li>
+</ol>
+<h2 id="coordinate-frame">Coordinate Frame</h2>
+<ol>
+<li>SDF and Solidworks models
+<ul>
+<li>front-x, left-y, up-z (body)</li>
+</ul>
+</li>
+<li>PX4
+<ul>
+<li>NED (world)</li>
+<li>front-x, right-y, down-z (body)</li>
+</ul>
+</li>
+<li>Gazebo
+<ul>
+<li>N-Green-y, E-Red-x, U-Blue-z (world)</li>
+</ul>
+</li>
+<li>Arm rotation: see <a class="link" href="https://doi.org/10.3929/ethz-b-000224598"  target="_blank" rel="noopener"
+    >Control Allocation of a Tilting Rotor Hexacopter</a></li>
+</ol>
+<h2 id="sw-model-to-sdf">SW Model to SDF</h2>
+<ol>
+<li>There are several useful links
+<ul>
+<li><a class="link" href="https://gazebosim.org/tutorials?cat=build_robot"  target="_blank" rel="noopener"
+    >Gazebo official guide</a></li>
+<li><a class="link" href="http://sdformat.org/spec"  target="_blank" rel="noopener"
+    >Format standard of <code>.sdf</code></a></li>
+</ul>
+</li>
+<li>Do NOT use SW2018SP0</li>
+<li>Minimize the number of links. It is good to treat parts that do not move relatively as a whole. Only separate parts into links if there must be a joint in between. Usually, a link corresponds to an assembly.</li>
+<li>In the assembly that represents a link, make sure to attach a coordinate frame in the SDF convention to the model. This frame will be used as the reference frame when exporting <code>.stl</code> and calculating mass properties.</li>
+<li>When exporting to <code>.stl</code> files, hide fine parts otherwise your file would be too big. Choose the aforementioned reference frame, use meter as the scale, and select &ldquo;do not transform to positive space&rdquo;.</li>
+<li>Write the SDF
+<ul>
+<li>SDF uses kilogram and meter as the default unit.</li>
+<li>Don&rsquo;t use mesh as collision. Use the geometry shapes instead.</li>
+<li>Specify a <code>min_depth</code> property to the collision that is in contact with the ground.</li>
+<li>Use numbers in &ldquo;Moments of inertia, taken at the center of mass and aligned with the output coordinate system&rdquo;. Numbers that are not on the diagonal line of the matrix should be inverted.</li>
+</ul>
+</li>
+<li><code>sitl_gazebo</code> plug-ins: &ldquo;IMU&rdquo; should be loaded after &ldquo;mavlink interface&rdquo;.</li>
+</ol>
+<h2 id="ros2-packages">ROS2 Packages</h2>
+<h3 id="custom_gazebo_plugins">custom_gazebo_plugins</h3>
+<ol>
+<li>This package is a supplement to <a class="link" href="https://github.com/ros-simulation/gazebo_ros_pkgs/tree/foxy"  target="_blank" rel="noopener"
+    >officially provided ROS2 plug-ins</a> and those provided in <code>PX4-Autopilot/Tool/sitl_gazebo</code>. The official repository provides example code for writing a plug-in.</li>
+<li><code>gazebo_ros_arm_rotation.cpp</code> is for controlling the position of six arm joints of omniHex via the <code>PID</code> API. Similarly, <code>gazebo_ros_joint_pid_ctrl.cpp</code> controls the position of a single joint via <code>PID</code>.</li>
+<li><code>gazebo_ros_joint_motor.cpp</code> is for controlling joint position or velocity via <code>SetParam</code> and <code>SetPosition</code> API.</li>
+<li><code>gazebo_ros_motor_model.cpp</code> is a simplified ROS2 adaptation of the original version in <code>PX4-Autopilot/Tool/sitl_gazebo</code>.</li>
+</ol>
+<h3 id="px4_msgs">px4_msgs</h3>
+<ol>
+<li>This package contains message types needed by <code>px4_ros_com</code> and other packages that might use the PX4 types, as well as <code>rqt</code> utility.</li>
+<li>The <code>msg</code> folder is updated by the script in <code>PX4-Autopilot/msg/tools/uorb_to_ros_msgs.py</code>. It should be synced whenever a message definition in <code>PX4-Autopilot/msg</code> is changed.</li>
+</ol>
+<h3 id="px4_ros_com">px4_ros_com</h3>
+<ol>
+<li>The main purpose of this package is to generate the communication bridge <code>micrortps_agent</code> from a template file <code>src/templates/uorb_rtps_message_ids.yaml</code>. The template file should be synced with PX4 via script <code>PX4-Autopilot/msg/tools/uorb_to_ros_rtps_ids.yaml</code>.</li>
+<li>There is also an example of off-board control available in <code>src/examples/offboard</code>. This example code is modified to generate a full position-pose trajectory as the function of timestamps.</li>
+<li>It also provides useful scripts for cleaning and building the workspace.
+<ul>
+<li>Previously, <code>build_ros2_workspace.bash</code> is set to skip <code>custom_gazebo_plugins</code> because the latter depend on <code>px4_msgs</code>.</li>
+<li>It is better to add <code>&lt;depend&gt;px4_msg&lt;/depend&gt;</code> in <code>package.xml</code>. In this way we don&rsquo;t need to specify a order. Make sure to add <code>find_package(px4_msgs REQUIRED)</code> and <code>ament_target_dependencies(foo ...px4_msgs...)</code> in <code>CMakeLists.txt</code>.</li>
+</ul>
+</li>
+</ol>
+<h2 id="px4-tools-and-miscellaneous">PX4 Tools and Miscellaneous</h2>
+<ol>
+<li>Set the correct URL in <code>.gitmodules</code>.</li>
+<li>Custom models for Gazebo simulation is put in <code>PX4-Autopilot/Tools/sitl_gazebo/models</code> with a corresponding <code>.world</code> file in <code>PX4-Autopilot/Tools/sitl_gazebo/worlds</code>.
+<ul>
+<li>The initial condition of the simulation could be set in <code>PX4-Autopilot/Tools/sitl_run.sh</code>.</li>
+<li>Some plug-ins are built externally (in the ROS2 workspace). So <code>PX4-Autopilot/Tools/setup_gazebo.bash</code> is modified to export the correct library paths.</li>
+</ul>
+</li>
+<li>As we are using the <code>micrortps_bridge</code>, we need to build this module in PX4. We can specify this feature by uncommenting the <code>micrortps_bridge</code> line in <code>PX4-Autopilot/boards/px4/sitl/ctrlalloc.cmake</code>, which is the module configuration file for SITL targets. We can choose what modules to be built and what not to be built. The same rule applies to <code>.cmake</code> files for other boards.</li>
+<li>Add our custom model for gazebo simulation in <code>PX4-Autopilot/platforms/posix/cmake/sitl_target.cmake</code>.</li>
+<li>Add our airframe file (a model-dependent script for loading parameters and modules) for simulation in <code>PX4-Autopilot/ROMFS/init.d-posix/airframes</code> and make sure to add this file to the <code>CMakeLists.txt</code>.</li>
+</ol>
+<h2 id="px4-messages">PX4 Messages</h2>
+<ol>
+<li>Add a message to hold arm positions and limit status: <code>arm_rotation.msg</code>. After adding a new message file, don&rsquo;t forget to indicate it in <code>CmakeList.txt</code>, otherwise it won&rsquo;t be compiled.</li>
+<li>Every message should be assigned an ID in <code>msg/tools/urob_rtps_message_ids.yaml</code> or targets with <code>micrortps_bridge</code> enabled cannot be compiled. Also, we can specify how <code>micrortps_bridge</code> treat each message.</li>
+<li><code>vehicle_attitude_setpoint.msg</code> and <code>vehicle_local_position_setpoint.msg</code> are modified to handle roll and pitch movements.</li>
+</ol>
+<h2 id="px4-modules">PX4 Modules</h2>
+<ul>
+<li>Generally, a good way to read the code is to look at the header files first. Look at topic subscriptions and publications. Then look at the <code>run()</code> function in <code>.cpp</code> files.</li>
+<li>Modified modules are <code>angular_velocity_controller</code>, <code>commander</code>, <code>control_allocator</code>, <code>flight_mode_manager</code>, <code>mc_att_control</code> and <code>mc_pos_control</code>.</li>
+</ul>
+<h3 id="angular_velocity_controller">angular_velocity_controller</h3>
+<ol>
+<li>
+<p>Center of mass compensation $x_{com} \cross F_{sp}$ in <code>AngularVelocityControl.cpp/hpp</code>, <code>void AngularVelocityControl::update()</code>.</p>
+</li>
+<li>
+<p>Read center of mass parameters and call <code>AngularVelocityControl::update()</code> with additional arguments in<code>AngularVelocityController.cpp/hpp</code>.</p>
+</li>
+<li>
+<p>Newton-Euler equation cross term $\omega_b \cross v_b$​ in <code>void AngularVelocityController::Run()</code>.</p>
+<blockquote>
+<p>TODO: implement Newton-Euler equation correctly</p>
+</blockquote>
+</li>
+<li>
+<p>Center of mass parameters are defined in <code>vehicle_model_params.c</code>.</p>
+</li>
+</ol>
+<h3 id="commander">commander</h3>
+<ol>
+<li>In <code>void Commander::update_control_mode()</code>, ACRO mode is added with the same set of configuration as POSCTL mode.</li>
+</ol>
+<h3 id="control_allocator">control_allocator</h3>
+<ol>
+<li>The allocation matrix (actuator effectiveness) is implemented as a subclass of <code>ControlAllocationPseudoInverse</code> and <code>ModuleParams</code>. See <code>ActuatorEffectivenessOmniHex.cpp/hpp/params.c</code> for more detail. In PX4 convention, torque comes above force in a wrench.</li>
+<li>Add omniHex to enum classes, switch cases, and includes in <code>ControlAllocator.cpp/hpp</code>.</li>
+<li>Always check <code>CMakeLists.txt</code></li>
+</ol>
+<h3 id="flight_mode_manager">flight_mode_manager</h3>
+<ol>
+<li>
+<p>This module takes care of controller setpoints in different flight modes.</p>
+</li>
+<li>
+<p>Switch to <code>FlightTaskIndex::ManualAcceleration</code> when in <code>vehicle_status_s::NAVIGATION_STATE_ACRO</code>. This feature is implemented in <code>FlightModeManager.cpp</code>.</p>
+<blockquote>
+<p>TODO: exclusive flight task for ACRO mode (not only pitch but full pose)</p>
+</blockquote>
+</li>
+<li>
+<p><code>FlightTask.cpp/hpp</code>: add missing variables and functions that are not implemented for roll and pitch commands.</p>
+</li>
+<li>
+<p><code>FlightTaskManualAltitude.hpp</code>: add scaling factors from stick to roll and pitch rate.</p>
+</li>
+<li>
+<p><code>FlightTaskManualAcceleration.cpp/hpp</code>: generate different setpoints in different navigation states.</p>
+</li>
+<li>
+<p>Set roll pitch angle and angular speed setpoint in <code>FlightTaskFoo::activate()</code> function of tasks such as <code>Auto</code>, <code>Failsafe</code> and <code>ManualAltitudeSmoothVel</code>. This is necessary because otherwise the vehicle loses roll and pitch control when auto buttons in QGC is pressed.</p>
+</li>
+</ol>
+<h3 id="mc_att_control">mc_att_control</h3>
+<ol>
+<li><code>AttitudeControl.cpp</code>: <code>matrix::Vector3f AttitudeControl::update()</code> is modified to consider turning rate feed-forward.</li>
+<li><code>AttitudeControl.hpp</code>: add roll and pitch in <code>void setAttitudeSetpoint()</code>, also variables.</li>
+<li><code>mc_att_control_main.cpp</code> and <code>mc_att_control.hpp</code>: call modified function with the right arguments.</li>
+</ol>
+<h3 id="mc_pos_control">mc_pos_control</h3>
+<ol>
+<li><code>PositionControl.cpp/hpp</code>: add variables to take care of roll and pitch rotation. In <code>void PositionControl::getAttitudeSetpoint()</code> attitude setpoints are passed down and thrust setpoint is converted into body frame.</li>
+<li><code>mc_pos_control_params.c</code>: define parameters for manual roll and pitch rate control, which are used in <code>FlightTaskManualAltitude.hpp</code>.</li>
+<li><code>MulticopterPositionControl.cpp/hpp</code>: call modified functions and pass correct arguments.</li>
+</ol>
+<h2 id="motor-propeller-model">Motor-Propeller Model</h2>
+<h3 id="sitl">SITL</h3>
+<h3 id="real-world-data">Real World Data</h3>
+<blockquote>
+<p>TODO: mapping between u, PWM, angular velocity, determine thrust and torque coefficient</p>
+</blockquote>
 
 </section>
 
@@ -384,6 +626,44 @@
   <ol>
     <li><a href="#info">INFO</a></li>
     <li><a href="#links">LINKS</a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#environment-setup">Environment Setup</a></li>
+    <li><a href="#usage">Usage</a>
+      <ol>
+        <li><a href="#simulation-with-gazebo">Simulation with Gazebo</a></li>
+        <li><a href="#real-world-flight">Real World Flight</a></li>
+      </ol>
+    </li>
+    <li><a href="#software-version">Software Version</a></li>
+    <li><a href="#coordinate-frame">Coordinate Frame</a></li>
+    <li><a href="#sw-model-to-sdf">SW Model to SDF</a></li>
+    <li><a href="#ros2-packages">ROS2 Packages</a>
+      <ol>
+        <li><a href="#custom_gazebo_plugins">custom_gazebo_plugins</a></li>
+        <li><a href="#px4_msgs">px4_msgs</a></li>
+        <li><a href="#px4_ros_com">px4_ros_com</a></li>
+      </ol>
+    </li>
+    <li><a href="#px4-tools-and-miscellaneous">PX4 Tools and Miscellaneous</a></li>
+    <li><a href="#px4-messages">PX4 Messages</a></li>
+    <li><a href="#px4-modules">PX4 Modules</a>
+      <ol>
+        <li><a href="#angular_velocity_controller">angular_velocity_controller</a></li>
+        <li><a href="#commander">commander</a></li>
+        <li><a href="#control_allocator">control_allocator</a></li>
+        <li><a href="#flight_mode_manager">flight_mode_manager</a></li>
+        <li><a href="#mc_att_control">mc_att_control</a></li>
+        <li><a href="#mc_pos_control">mc_pos_control</a></li>
+      </ol>
+    </li>
+    <li><a href="#motor-propeller-model">Motor-Propeller Model</a>
+      <ol>
+        <li><a href="#sitl">SITL</a></li>
+        <li><a href="#real-world-data">Real World Data</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
                 </div>
