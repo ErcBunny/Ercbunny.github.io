@@ -123,11 +123,6 @@
 
     <section class="article-content">
     <hr>
-<h2 id="info">INFO</h2>
-<blockquote>
-<p>This page is WIP, as translating the original version of my research proposal is no easier than rewriting one in English. I also need to re-render charts and graphs with Chinese characters, which requires quite a lot of effort. Please expect this page to be complete by Feb 2022. Best regards~</p>
-</blockquote>
-<hr>
 <h2 id="links">LINKS</h2>
 <ul>
 <li><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx"  target="_blank" rel="noopener"
@@ -148,16 +143,22 @@
 			
 			
 			loading="lazy"
-			alt="fooimg">
+			>
 	</a>
 	
-	<figcaption>fooimg</figcaption>
-	
 </figure></p>
-<p>[toc]</p>
+<h2 id="dev-milestones">Dev Milestones</h2>
+<ol>
+<li>[Dec 01 2021] Upgrade to ROS2: 100%</li>
+<li>[Dec 15 2021] PID and Newton-Euler Dynamics in SITL: 100%</li>
+<li>[Dec 31 2021] Real hardware drivers and maiden flight: 90%</li>
+<li>[Mar 01 2022] Adaptive MPC real flight: 0%</li>
+<li>[Apr 01 2022] Track trajectories and collect data: 0%</li>
+<li>[May 01 2022] Thesis writing: 0%</li>
+</ol>
 <h2 id="environment-setup">Environment Setup</h2>
 <ol>
-<li><code>Ubuntu 20.04 LTS</code> with <code>ROS2 foxy</code> configuration is recommended.</li>
+<li><code>Ubuntu 20.04 LTS</code> with <code>ROS2 foxy</code> and <code>ROS1 noetic</code> (since vrpn-client-ros is only available for ROS1).</li>
 <li>Install ROS2 <a class="link" href="https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html"  target="_blank" rel="noopener"
     >via debian</a> and <a class="link" href="https://docs.px4.io/master/en/ros/ros2_comm.html#install-ros-2"  target="_blank" rel="noopener"
     >additional tools</a>.</li>
@@ -179,23 +180,35 @@
 <li>Install officially provided ROS2 plug-ins for Gazebo: <code>sudo apt install ros-foxy-gazebo-ros-pkgs</code>.</li>
 <li>Install <a class="link" href="http://qgroundcontrol.com/"  target="_blank" rel="noopener"
     >QgroundControl</a> ground station.</li>
+<li>Install packages for optitrack: <code>sudo apt install ros-foxy-ros1-bridge ros-noetic-vrpn ros-noetic-vrpn-client-ros</code>
+<ul>
+<li><code>vrpn-client-ros</code> publishes the built in message type <code>geometry-msgs</code>, it is OK to use debian release of <code>ros1-bridge</code>.</li>
+<li>Building <code>ros1-bridge</code> form source enables extra support for custom message and service types but has conflicts with <code>ros-foxy-controller-manager-msgs</code>.</li>
+</ul>
+</li>
+<li>Install mavros for data visualization: <code>sudo apt install ros-noetic-mavros* ros-noetic-mavlink</code>.</li>
 </ol>
 <h2 id="usage">Usage</h2>
 <h3 id="simulation-with-gazebo">Simulation with Gazebo</h3>
 <ol>
-<li>Build ROS2 workspace and source this workspace.</li>
+<li>Build ROS2 workspace.</li>
 </ol>
-<pre tabindex="0"><code>cd scripts
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+cd scripts
 ./build_all_ros_clean.sh
 </code></pre><ol start="2">
 <li>Build and run PX4 SITL simulation. It is required to source ROS2 setup file.</li>
 </ol>
-<pre tabindex="0"><code>cd PX4-Autopilot
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+cd PX4-Autopilot
 PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
 </code></pre><ol start="3">
 <li>Run <code>micrortps_agent</code> over UDP.</li>
 </ol>
-<pre tabindex="0"><code>micrortps_agent -t UDP
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+micrortps_agent -t UDP
 </code></pre><ol start="4">
 <li>Use QGC to give commands to the simulation environment. Several useful buttons and modes are listed below.
 <ul>
@@ -206,10 +219,72 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
 </li>
 <li>Or use the offboard control node to generate a trajectory for omniHex to track.</li>
 </ol>
-<pre tabindex="0"><code>ros2 run px4_ros_com offboard_control
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+ros2 run px4_ros_com offboard_control
 </code></pre><h3 id="real-world-flight">Real World Flight</h3>
+<ul>
+<li>
+<p>Port connections on NUC:</p>
+<ul>
+<li>dynamixel servos on <code>/dev/ttyUSB0 @ 115200</code></li>
+<li>urtps_bridge on <code>/dev/ttyUSB1 @ 3000000</code> -&gt; MCU <code>TELEM1</code></li>
+<li>QGC/mavlink on <code>/dev/ttyACM0 @ any baud</code> (<code>ACM1</code> occurs after a reboot) -&gt; MCU <code>microUSB</code></li>
+</ul>
+</li>
+<li>
+<p>About RC:</p>
+<ul>
+<li>switch A is the kill switch</li>
+<li>switch F sets different flight modes (up: altitude, mid: position, down: acro).</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>Setup the motion capture system.
+<ol>
+<li>Open motive software and open the most recent project (Z-up configuration).</li>
+<li>Go to capture layout (upper-right corner) and delete default rigid bodies.</li>
+<li>Aligned markers with the world frame and create a new rigid body from the selected ones, rename this new instance to <code>uav</code> (as it is fixed in <code>ros1-workspace/src/vrpn_client/launch/default.launch</code>). Data is automatically published to local network.</li>
+</ol>
+</li>
+<li>Build PX4 firmware.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+cd PX4-Autopilot
+make cubepilot_cubeorange_ctrlalloc
+</code></pre><ol start="2">
+<li>Upload firmware to MCU.
+<ol>
+<li>Open QGC and navigate to &ldquo;Vehicle Setup-Firmware&rdquo;.</li>
+<li>Plug in MCU through USB (ttyACM) port and QGC will auto detect the MCU. This step requires the MCU only powered by USB.</li>
+<li>Select custom firmware and upload <code>PX4-Autopilot/build/cubepilot_cubeorange_ctrlalloc/cubepilot_cubeorange_ctrlalloc.px4</code>.</li>
+<li>Restart QGC so that airframe files could be loaded by QGC, then you can do further settings and calibration.</li>
+</ol>
+</li>
+<li>Build ROS1 workspace.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/noetic/setup.bash
+cd ros1-workspace
+catkin build
+</code></pre><ol start="4">
+<li>Build ROS2 workspace.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+cd scripts
+./build_all_ros_clean.sh
+</code></pre><ol start="5">
+<li>Start packages on NUC: <code>setup_real_flight.sh</code>. This script starts the following necessary drivers.
+<ul>
+<li>ROS1 <code>vrpn_client</code></li>
+<li>ROS2 <code>ros1_bridge</code></li>
+<li>ROS2  <code>micrortps_bridge</code>, <code>dyanmixel_driver</code>, <code>optitrack</code></li>
+</ul>
+</li>
+<li>Now you can use packages like rqt or rviz for data monitor and visualization. Make sure to source the corresponding ROS version and workspace.</li>
+</ol>
 <blockquote>
-<p>TODO: servo driver, VRPN client, real flight</p>
+<p>TODO: maiden flight test</p>
 </blockquote>
 <h2 id="software-version">Software Version</h2>
 <ol>
@@ -262,6 +337,15 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
 </li>
 <li><code>sitl_gazebo</code> plug-ins: &ldquo;IMU&rdquo; should be loaded after &ldquo;mavlink interface&rdquo;.</li>
 </ol>
+<h2 id="ros1-packages">ROS1 Packages</h2>
+<h3 id="mavros_client">mavros_client</h3>
+<ul>
+<li>An overlay package for customizing the launch file. Note that this package should not be named <code>mavros</code>, otherwise ROS may not find the right package path.</li>
+</ul>
+<h3 id="vrpn_client">vrpn_client</h3>
+<ul>
+<li>An overlay package for customizing the launch file.</li>
+</ul>
 <h2 id="ros2-packages">ROS2 Packages</h2>
 <h3 id="custom_gazebo_plugins">custom_gazebo_plugins</h3>
 <ol>
@@ -287,6 +371,17 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
 </ul>
 </li>
 </ol>
+<h3 id="optitrack_driver">optitrack_driver</h3>
+<ol>
+<li><code>visual_odom_publisher</code> receives pose data from MOCAP, performs frame transformation and publishes data to topic <code>VehicleVisualOdometry_PubSubTopic</code>. In this target, the message is published in a timer callback at 50Hz.</li>
+<li>Timestamps are taken from <code>VehicleImu_PubSubTopic</code>.</li>
+<li><code>callback_relay</code> is a simple relay. It is similar to <code>visual_odom_publisher</code> but instead of publishing data in a timer callback, it publishes data in the callback for receiving pose data.</li>
+</ol>
+<h3 id="dynamixel_driver">dynamixel_driver</h3>
+<ol>
+<li><code>read_write_node</code> is the example node provided by <code>dynamixel_sdk</code>.</li>
+<li><code>arm_position_control</code> is the one used for controlling the arm positions. It communicates with dynamixel servos via UART in the callback function for receiving <code>ArmRotation_PubSubTopic</code>.</li>
+</ol>
 <h2 id="px4-tools-and-miscellaneous">PX4 Tools and Miscellaneous</h2>
 <ol>
 <li>Set the correct URL in <code>.gitmodules</code>.</li>
@@ -299,6 +394,7 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
 <li>As we are using the <code>micrortps_bridge</code>, we need to build this module in PX4. We can specify this feature by uncommenting the <code>micrortps_bridge</code> line in <code>PX4-Autopilot/boards/px4/sitl/ctrlalloc.cmake</code>, which is the module configuration file for SITL targets. We can choose what modules to be built and what not to be built. The same rule applies to <code>.cmake</code> files for other boards.</li>
 <li>Add our custom model for gazebo simulation in <code>PX4-Autopilot/platforms/posix/cmake/sitl_target.cmake</code>.</li>
 <li>Add our airframe file (a model-dependent script for loading parameters and modules) for simulation in <code>PX4-Autopilot/ROMFS/init.d-posix/airframes</code> and make sure to add this file to the <code>CMakeLists.txt</code>.</li>
+<li>The airframe for real hardware is <code>init.d/airframes/6004_omni_hex</code>.</li>
 </ol>
 <h2 id="px4-messages">PX4 Messages</h2>
 <ol>
@@ -320,10 +416,7 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
 <p>Read center of mass parameters and call <code>AngularVelocityControl::update()</code> with additional arguments in<code>AngularVelocityController.cpp/hpp</code>.</p>
 </li>
 <li>
-<p>Newton-Euler equation cross term $\omega_b \cross v_b$​ in <code>void AngularVelocityController::Run()</code>.</p>
-<blockquote>
-<p>TODO: implement Newton-Euler equation correctly</p>
-</blockquote>
+<p>Newton-Euler equation cross term $\omega_b \cross v_b$ in <code>void AngularVelocityController::Run()</code>.</p>
 </li>
 <li>
 <p>Center of mass parameters are defined in <code>vehicle_model_params.c</code>.</p>
@@ -346,10 +439,12 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
 </li>
 <li>
 <p>Switch to <code>FlightTaskIndex::ManualAcceleration</code> when in <code>vehicle_status_s::NAVIGATION_STATE_ACRO</code>. This feature is implemented in <code>FlightModeManager.cpp</code>.</p>
+</li>
+</ol>
 <blockquote>
 <p>TODO: exclusive flight task for ACRO mode (not only pitch but full pose)</p>
 </blockquote>
-</li>
+<ol start="3">
 <li>
 <p><code>FlightTask.cpp/hpp</code>: add missing variables and functions that are not implemented for roll and pitch commands.</p>
 </li>
@@ -624,11 +719,11 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
                 <div class="widget--toc">
                     <nav id="TableOfContents">
   <ol>
-    <li><a href="#info">INFO</a></li>
     <li><a href="#links">LINKS</a></li>
   </ol>
 
   <ol>
+    <li><a href="#dev-milestones">Dev Milestones</a></li>
     <li><a href="#environment-setup">Environment Setup</a></li>
     <li><a href="#usage">Usage</a>
       <ol>
@@ -639,11 +734,19 @@ PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
     <li><a href="#software-version">Software Version</a></li>
     <li><a href="#coordinate-frame">Coordinate Frame</a></li>
     <li><a href="#sw-model-to-sdf">SW Model to SDF</a></li>
+    <li><a href="#ros1-packages">ROS1 Packages</a>
+      <ol>
+        <li><a href="#mavros_client">mavros_client</a></li>
+        <li><a href="#vrpn_client">vrpn_client</a></li>
+      </ol>
+    </li>
     <li><a href="#ros2-packages">ROS2 Packages</a>
       <ol>
         <li><a href="#custom_gazebo_plugins">custom_gazebo_plugins</a></li>
         <li><a href="#px4_msgs">px4_msgs</a></li>
         <li><a href="#px4_ros_com">px4_ros_com</a></li>
+        <li><a href="#optitrack_driver">optitrack_driver</a></li>
+        <li><a href="#dynamixel_driver">dynamixel_driver</a></li>
       </ol>
     </li>
     <li><a href="#px4-tools-and-miscellaneous">PX4 Tools and Miscellaneous</a></li>
