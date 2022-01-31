@@ -14,7 +14,7 @@
       
       <guid>https://ercbunny.github.io/p/omnihex/</guid>
       <description>LINKS  Presentation of Previous Work (English) Research Proposal (Chinese)    Repository readme below
- omniHex  
+ omniHex  demo 
 Dev Milestones  [Dec 01 2021] Upgrade to ROS2: 100% [Dec 15 2021] PID and Newton-Euler Dynamics in SITL: 100% [Dec 31 2021] Real hardware drivers and maiden flight: 90% [Mar 01 2022] Adaptive MPC real flight: 0% [Apr 01 2022] Track trajectories and collect data: 0% [May 01 2022] Thesis writing: 0%  Environment Setup  Ubuntu 20.</description>
     </item>
     

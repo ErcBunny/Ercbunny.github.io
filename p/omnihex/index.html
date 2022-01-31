@@ -137,14 +137,16 @@
 <h1 id="omnihex">omniHex</h1>
 <p><figure 
 	>
-	<a href="/p/omnihex/cover_huf54f83ec7f48f4593ffcb0ac862986d3_1368328_1600x0_resize_box_3.png" >
-		<img src="/p/omnihex/cover_huf54f83ec7f48f4593ffcb0ac862986d3_1368328_1600x0_resize_box_3.png"
+	<a href="https://raw.githubusercontent.com/ErcBunny/omniHex/master/demo.png?token=GHSAT0AAAAAABQ2WM4EBBD3ZICVRH3ICXKAYPYBZPQ" >
+		<img src="https://raw.githubusercontent.com/ErcBunny/omniHex/master/demo.png?token=GHSAT0AAAAAABQ2WM4EBBD3ZICVRH3ICXKAYPYBZPQ"
 			
 			
 			
 			loading="lazy"
-			>
+			alt="demo">
 	</a>
+	
+	<figcaption>demo</figcaption>
 	
 </figure></p>
 <h2 id="dev-milestones">Dev Milestones</h2>
@@ -222,7 +224,10 @@ micrortps_agent -t UDP
 <pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
 source ./ros2-workspace/install/setup.bash
 ros2 run px4_ros_com offboard_control
-</code></pre><h3 id="real-world-flight">Real World Flight</h3>
+</code></pre><blockquote>
+<p>Above mentioned steps are implemented in <code>run_simulation.sh</code>, run this script, take off to <code>{0, 0, 2.5}</code> and run <code>offboard.sh</code> to track the 8-shape trajectory.</p>
+</blockquote>
+<h3 id="real-world-flight">Real World Flight</h3>
 <ul>
 <li>
 <p>Port connections on NUC:</p>
@@ -312,6 +317,8 @@ cd scripts
 </li>
 <li>Arm rotation: see <a class="link" href="https://doi.org/10.3929/ethz-b-000224598"  target="_blank" rel="noopener"
     >Control Allocation of a Tilting Rotor Hexacopter</a></li>
+<li>In SITL, PX4 NED x is aligned with Gazebo y</li>
+<li>In lab setting, PX4 FRD is algined with optitrack x</li>
 </ol>
 <h2 id="sw-model-to-sdf">SW Model to SDF</h2>
 <ol>
@@ -362,9 +369,21 @@ cd scripts
 </ol>
 <h3 id="px4_ros_com">px4_ros_com</h3>
 <ol>
-<li>The main purpose of this package is to generate the communication bridge <code>micrortps_agent</code> from a template file <code>src/templates/uorb_rtps_message_ids.yaml</code>. The template file should be synced with PX4 via script <code>PX4-Autopilot/msg/tools/uorb_to_ros_rtps_ids.yaml</code>.</li>
-<li>There is also an example of off-board control available in <code>src/examples/offboard</code>. This example code is modified to generate a full position-pose trajectory as the function of timestamps.</li>
-<li>It also provides useful scripts for cleaning and building the workspace.
+<li>
+<p>The main purpose of this package is to generate the communication bridge <code>micrortps_agent</code> from a template file <code>src/templates/uorb_rtps_message_ids.yaml</code>. The template file should be synced with PX4 via script <code>PX4-Autopilot/msg/tools/uorb_to_ros_rtps_ids.yaml</code>.</p>
+</li>
+<li>
+<p>There is also an example of off-board control available in <code>src/examples/offboard</code>. This example code is modified to generate a full position-pose trajectory as the function of timestamps.</p>
+<ol>
+<li>circle</li>
+<li>8-shape</li>
+</ol>
+<blockquote>
+<p>TODO: use input args or launch file to specify trajectory shape</p>
+</blockquote>
+</li>
+<li>
+<p>It also provides useful scripts for cleaning and building the workspace.</p>
 <ul>
 <li>Previously, <code>build_ros2_workspace.bash</code> is set to skip <code>custom_gazebo_plugins</code> because the latter depend on <code>px4_msgs</code>.</li>
 <li>It is better to add <code>&lt;depend&gt;px4_msg&lt;/depend&gt;</code> in <code>package.xml</code>. In this way we don&rsquo;t need to specify a order. Make sure to add <code>find_package(px4_msgs REQUIRED)</code> and <code>ament_target_dependencies(foo ...px4_msgs...)</code> in <code>CMakeLists.txt</code>.</li>
@@ -381,6 +400,11 @@ cd scripts
 <ol>
 <li><code>read_write_node</code> is the example node provided by <code>dynamixel_sdk</code>.</li>
 <li><code>arm_position_control</code> is the one used for controlling the arm positions. It communicates with dynamixel servos via UART in the callback function for receiving <code>ArmRotation_PubSubTopic</code>.</li>
+</ol>
+<h3 id="trajectory_generator">trajectory_generator</h3>
+<ol>
+<li>A package for generating trajectories in MPC framework and visualizing <code>TrajectorySetpoint_PubSubTopic</code>.</li>
+<li>Visualization is implemented in <code>rviz_translator.cpp</code></li>
 </ol>
 <h2 id="px4-tools-and-miscellaneous">PX4 Tools and Miscellaneous</h2>
 <ol>
@@ -439,12 +463,10 @@ cd scripts
 </li>
 <li>
 <p>Switch to <code>FlightTaskIndex::ManualAcceleration</code> when in <code>vehicle_status_s::NAVIGATION_STATE_ACRO</code>. This feature is implemented in <code>FlightModeManager.cpp</code>.</p>
-</li>
-</ol>
 <blockquote>
 <p>TODO: exclusive flight task for ACRO mode (not only pitch but full pose)</p>
 </blockquote>
-<ol start="3">
+</li>
 <li>
 <p><code>FlightTask.cpp/hpp</code>: add missing variables and functions that are not implemented for roll and pitch commands.</p>
 </li>
@@ -470,12 +492,21 @@ cd scripts
 <li><code>mc_pos_control_params.c</code>: define parameters for manual roll and pitch rate control, which are used in <code>FlightTaskManualAltitude.hpp</code>.</li>
 <li><code>MulticopterPositionControl.cpp/hpp</code>: call modified functions and pass correct arguments.</li>
 </ol>
+<h3 id="ekf2">EKF2</h3>
+<ol>
+<li>In <code>PublishAttitude</code>, an extra step of converting and publishing RPY is added.</li>
+</ol>
 <h2 id="motor-propeller-model">Motor-Propeller Model</h2>
 <h3 id="sitl">SITL</h3>
 <h3 id="real-world-data">Real World Data</h3>
 <blockquote>
 <p>TODO: mapping between u, PWM, angular velocity, determine thrust and torque coefficient</p>
 </blockquote>
+<h2 id="matlab-files">Matlab Files</h2>
+<ol>
+<li>In <code>matlab-workspace</code>.</li>
+<li><code>trajectory.m</code>: visualization of 8-shape trajectory.</li>
+</ol>
 
 </section>
 
@@ -747,6 +778,7 @@ cd scripts
         <li><a href="#px4_ros_com">px4_ros_com</a></li>
         <li><a href="#optitrack_driver">optitrack_driver</a></li>
         <li><a href="#dynamixel_driver">dynamixel_driver</a></li>
+        <li><a href="#trajectory_generator">trajectory_generator</a></li>
       </ol>
     </li>
     <li><a href="#px4-tools-and-miscellaneous">PX4 Tools and Miscellaneous</a></li>
@@ -759,6 +791,7 @@ cd scripts
         <li><a href="#flight_mode_manager">flight_mode_manager</a></li>
         <li><a href="#mc_att_control">mc_att_control</a></li>
         <li><a href="#mc_pos_control">mc_pos_control</a></li>
+        <li><a href="#ekf2">EKF2</a></li>
       </ol>
     </li>
     <li><a href="#motor-propeller-model">Motor-Propeller Model</a>
@@ -767,6 +800,7 @@ cd scripts
         <li><a href="#real-world-data">Real World Data</a></li>
       </ol>
     </li>
+    <li><a href="#matlab-files">Matlab Files</a></li>
   </ol>
 </nav>
                 </div>
