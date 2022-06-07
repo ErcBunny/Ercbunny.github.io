@@ -13,7 +13,7 @@
         
         <guid>https://ercbunny.github.io/p/omnihex/</guid>
         <description>&lt;img src="https://ercbunny.github.io/p/omnihex/cover.png" alt="Featured image of post OmniHex" /&gt;&lt;hr&gt;
-&lt;h2 id=&#34;links&#34;&gt;LINKS&lt;/h2&gt;
+&lt;h2 id=&#34;links--downloads&#34;&gt;LINKS &amp;amp; DOWNLOADS&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Presentation of Previous Work (English)&lt;/a&gt;&lt;/li&gt;
@@ -21,6 +21,9 @@
     &gt;Research Proposal (Chinese)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/%e4%b8%ad%e6%9c%9f%e6%8a%a5%e5%91%8a.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Midterm Summary (Chinese)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/wide.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Closing Presentation (Chinese)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Thesis to be published on the official platform.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
@@ -44,17 +47,23 @@
 &lt;/div&gt;
 
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 190; 
-			flex-basis: 456px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/xyzRPY.png&#34; data-size=&#34;1920x1009&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/xyzRPY.png&#34;
-			width=&#34;1920&#34;
-			height=&#34;1009&#34;
-			srcset=&#34;https://ercbunny.github.io/p/omnihex/xyzRPY_hude30208e40be439e54060355c3021d98_215119_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/omnihex/xyzRPY_hude30208e40be439e54060355c3021d98_215119_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/numsim.svg&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/numsim.svg&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt; &lt;figure 
+	&gt;
+	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/gzsim.svg&#34; &gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/gzsim.svg&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -63,30 +72,14 @@
 	
 		class=&#34;gallery-image&#34; 
 		style=&#34;
-			flex-grow: 190; 
-			flex-basis: 456px&#34;
+			flex-grow: 109; 
+			flex-basis: 261px&#34;
 	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/wrench%28dot%29.png&#34; data-size=&#34;1920x1009&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/wrench%28dot%29.png&#34;
-			width=&#34;1920&#34;
-			height=&#34;1009&#34;
-			srcset=&#34;https://ercbunny.github.io/p/omnihex/wrench%28dot%29_hu6437d6ca08fae50fe7d3e8de84dc7923_285399_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/omnihex/wrench%28dot%29_hu6437d6ca08fae50fe7d3e8de84dc7923_285399_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
-	
-&lt;/figure&gt; &lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 190; 
-			flex-basis: 456px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/optTime.png&#34; data-size=&#34;1920x1009&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/optTime.png&#34;
-			width=&#34;1920&#34;
-			height=&#34;1009&#34;
-			srcset=&#34;https://ercbunny.github.io/p/omnihex/optTime_hu0586ef749f9edbd1d6dce372558374a9_361614_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/omnihex/optTime_hu0586ef749f9edbd1d6dce372558374a9_361614_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/real.png&#34; data-size=&#34;1100x1008&#34;&gt;
+		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/real.png&#34;
+			width=&#34;1100&#34;
+			height=&#34;1008&#34;
+			srcset=&#34;https://ercbunny.github.io/p/omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -102,10 +95,13 @@
 &lt;li&gt;Formulate MPC solver using acados: 100%&lt;/li&gt;
 &lt;li&gt;Test MPC solver in Python: 100%&lt;/li&gt;
 &lt;li&gt;L1-MPC python simulation: 100%&lt;/li&gt;
-&lt;li&gt;ROS L1-MPC node: 5%&lt;/li&gt;
-&lt;li&gt;Track trajectories and collect data: 0%&lt;/li&gt;
-&lt;li&gt;Thesis writing: 0%&lt;/li&gt;
+&lt;li&gt;ROS L1-MPC node: 100%&lt;/li&gt;
+&lt;li&gt;Track trajectories and collect data: 100%&lt;/li&gt;
+&lt;li&gt;Thesis writing: 100%&lt;/li&gt;
 &lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Far from perfect, but done for now (May29, 2022)&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;h2 id=&#34;environment-setup&#34;&gt;Environment Setup&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;Ubuntu 20.04 LTS&lt;/code&gt; with &lt;code&gt;ROS2 foxy&lt;/code&gt; and &lt;code&gt;ROS1 noetic&lt;/code&gt; (since vrpn-client-ros is only available for ROS1).&lt;/li&gt;
@@ -137,6 +133,7 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;Install mavros for data visualization: &lt;code&gt;sudo apt install ros-noetic-mavros* ros-noetic-mavlink&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Dynamixel-sdk &lt;code&gt;ros-foxy-dynamixel-*&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;Run &lt;code&gt;build_acados.sh&lt;/code&gt; to set up the mpc code generation tool.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
@@ -144,6 +141,7 @@
 &lt;ol&gt;
 &lt;li&gt;Models and solvers are formulated in &lt;code&gt;ros2-workspace/src/adaptive_mpc/tools/omnihex.py&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;Run &lt;code&gt;acados_generate_code.sh&lt;/code&gt; to generate solver code and do numerical simulation.&lt;/li&gt;
+&lt;li&gt;ROS2 Solver node is &lt;code&gt;ros2-workspace/src/adaptive_mpc/src/l1_mpc_main.cpp&lt;/code&gt;. It has to be recompiled after regenerating the solver code (where control params are defined and stored).&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;simulation-with-gazebo&#34;&gt;Simulation with Gazebo&lt;/h3&gt;
 &lt;ol&gt;
@@ -181,6 +179,14 @@ ros2 run px4_ros_com offboard_control
 &lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
 &lt;p&gt;Above mentioned steps are implemented in &lt;code&gt;run_simulation.sh&lt;/code&gt;, run this script, take off to &lt;code&gt;{0, 0, 2.5}&lt;/code&gt; and run &lt;code&gt;offboard.sh&lt;/code&gt; to track the 8-shape trajectory.&lt;/p&gt;
 &lt;/blockquote&gt;
+&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;
+&lt;p&gt;If MPC needed, then take off, use &lt;code&gt;ros2 run trajectory_generator min_ref_publisher 0 0 -2.5 1 0 0 0 0 0 0 0 0 0&lt;/code&gt; to generate a plain state reference, and publish &lt;code&gt;/RunMpc&lt;/code&gt; topic to actually run the MPC. This topic is designed to be published once for a time when you need to change the flag status.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TODO: use service instead&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
 &lt;h3 id=&#34;real-world-flight&#34;&gt;Real World Flight&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -356,6 +362,21 @@ cd scripts
 &lt;ol&gt;
 &lt;li&gt;A package for generating trajectories in MPC framework and visualizing &lt;code&gt;TrajectorySetpoint_PubSubTopic&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;Visualization is implemented in &lt;code&gt;rviz_translator.cpp&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;adaptive_mpc&#34;&gt;adaptive_mpc&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Input topic: &lt;code&gt;/StateReferenceOcp&lt;/code&gt;, horizon 1s, 20 + 1 nodes&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Outputs wrench setpoint&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Switches and flags:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/RunMpc&lt;/code&gt;: should be published once every time you wish to change the status of &lt;code&gt;run_mpc_&lt;/code&gt;. It is switched to false if a solver reset has occurred.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&#34;px4-tools-and-miscellaneous&#34;&gt;PX4 Tools and Miscellaneous&lt;/h2&gt;
 &lt;ol&gt;

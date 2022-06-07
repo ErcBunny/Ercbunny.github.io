@@ -13,8 +13,8 @@
       <pubDate>Sat, 09 Apr 2022 12:00:00 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/omnihex/</guid>
-      <description>LINKS  Presentation of Previous Work (English) Research Proposal (Chinese) Midterm Summary (Chinese)   VIDEO DEMO      
- Dev Milestones  Upgrade to ROS2: 100% PID and Newton-Euler Dynamics in SITL: 100% Real hardware drivers and maiden flight: 100% Controller architecture and design: 100% Formulate MPC solver using acados: 100% Test MPC solver in Python: 100% L1-MPC python simulation: 100% ROS L1-MPC node: 5% Track trajectories and collect data: 0% Thesis writing: 0%  Environment Setup  Ubuntu 20.</description>
+      <description>LINKS &amp;amp; DOWNLOADS  Presentation of Previous Work (English) Research Proposal (Chinese) Midterm Summary (Chinese) Closing Presentation (Chinese) Thesis to be published on the official platform.   VIDEO DEMO      
+ Dev Milestones  Upgrade to ROS2: 100% PID and Newton-Euler Dynamics in SITL: 100% Real hardware drivers and maiden flight: 100% Controller architecture and design: 100% Formulate MPC solver using acados: 100% Test MPC solver in Python: 100% L1-MPC python simulation: 100% ROS L1-MPC node: 100% Track trajectories and collect data: 100% Thesis writing: 100%   Far from perfect, but done for now (May29, 2022)</description>
     </item>
     
     <item>
