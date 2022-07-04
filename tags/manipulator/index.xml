@@ -13,7 +13,7 @@
       <pubDate>Thu, 01 Jul 2021 15:24:52 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</guid>
-      <description>VIDEO DEMO  OVERVIEW  We were required to program QKM manipulators to play Jenga automatically My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI The robot operates like this:  Take a picture with camera and calculate target positions Do path and trajectory planning Upload planned trajectory to bot Run     HAND-EYE CALIBRATION HEC Explained in A Nutshell  Aims to find the transform matrix from camera frame to tool frame.</description>
+      <description>VIDEO DEMO OVERVIEW We were required to program QKM manipulators to play Jenga automatically My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI The robot operates like this: Take a picture with camera and calculate target positions Do path and trajectory planning Upload planned trajectory to bot Run HAND-EYE CALIBRATION HEC Explained in A Nutshell Aims to find the transform matrix from camera frame to tool frame.</description>
     </item>
     
   </channel>

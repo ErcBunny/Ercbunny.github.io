@@ -13,8 +13,7 @@
       <pubDate>Sat, 09 Apr 2022 12:00:00 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/omnihex/</guid>
-      <description>LINKS &amp;amp; DOWNLOADS  Presentation of Previous Work (English) Research Proposal (Chinese) Midterm Summary (Chinese) Closing Presentation (Chinese) Thesis to be published on the official platform.   VIDEO DEMO      
- Dev Milestones  Upgrade to ROS2: 100% PID and Newton-Euler Dynamics in SITL: 100% Real hardware drivers and maiden flight: 100% Controller architecture and design: 100% Formulate MPC solver using acados: 100% Test MPC solver in Python: 100% L1-MPC python simulation: 100% ROS L1-MPC node: 100% Track trajectories and collect data: 100% Thesis writing: 100%   Far from perfect, but done for now (May29, 2022)</description>
+      <description>LINKS &amp;amp; DOWNLOADS Presentation of Early Work (English) Research Proposal (Chinese) Midterm Summary (Chinese) Closing Presentation (Chinese) Thesis (Chinese) VIDEO DEMO Dev Milestones Upgrade to ROS2: 100% PID and Newton-Euler Dynamics in SITL: 100% Real hardware drivers and maiden flight: 100% Controller architecture and design: 100% Formulate MPC solver using acados: 100% Test MPC solver in Python: 100% L1-MPC python simulation: 100% ROS L1-MPC node: 100% Track trajectories and collect data: 100% Thesis writing: 100% Far from perfect, but done for now (May29, 2022)</description>
     </item>
     
     <item>
@@ -23,10 +22,8 @@
       <pubDate>Sat, 13 Nov 2021 16:37:33 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/dash-to-cones/</guid>
-      <description> VIDEO DEMO  RELATED LINKS   Source Code
-  View Project Report PDF (Chinese)
-   Contents of the detailed report are in Chinese as they were made originally to support the Chinese presentation. A rework and translation of illustrations, diagrams and the report is in progress, but don&amp;rsquo;t expect it to be finished soon. Best regards~
- </description>
+      <description>VIDEO DEMO RELATED LINKS Source Code
+View Project Report PDF (Chinese)</description>
     </item>
     
     <item>
@@ -35,7 +32,7 @@
       <pubDate>Thu, 01 Jul 2021 15:24:52 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</guid>
-      <description>VIDEO DEMO  OVERVIEW  We were required to program QKM manipulators to play Jenga automatically My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI The robot operates like this:  Take a picture with camera and calculate target positions Do path and trajectory planning Upload planned trajectory to bot Run     HAND-EYE CALIBRATION HEC Explained in A Nutshell  Aims to find the transform matrix from camera frame to tool frame.</description>
+      <description>VIDEO DEMO OVERVIEW We were required to program QKM manipulators to play Jenga automatically My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI The robot operates like this: Take a picture with camera and calculate target positions Do path and trajectory planning Upload planned trajectory to bot Run HAND-EYE CALIBRATION HEC Explained in A Nutshell Aims to find the transform matrix from camera frame to tool frame.</description>
     </item>
     
     <item>
@@ -44,9 +41,10 @@
       <pubDate>Fri, 23 Apr 2021 14:55:42 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/autonomous-delivery-drone/</guid>
-      <description>VIDEO DEMO  PROJECT OVERVIEW   Nothing interesting or related to cutting-edge research. Just an engineering level practice
-  Some technical approaches:
- Localization: optical flow, TOF sensor Detection and navigation: YOLO + KCF + Hough Circle Transform on TX2 Flight controller: ACFLY ADRC Communication between FC and TX2: velocity command through serial UART     DETAILED REPORT   View Control and Electronic Circuit Design Scheme PDF (Chinese)</description>
+      <description>VIDEO DEMO PROJECT OVERVIEW Nothing interesting or related to cutting-edge research. Just an engineering level practice
+Some technical approaches:
+Localization: optical flow, TOF sensor Detection and navigation: YOLO + KCF + Hough Circle Transform on TX2 Flight controller: ACFLY ADRC Communication between FC and TX2: velocity command through serial UART DETAILED REPORT View Control and Electronic Circuit Design Scheme PDF (Chinese)
+View Structure Design Scheme PDF (Chinese)</description>
     </item>
     
     <item>
@@ -55,10 +53,10 @@
       <pubDate>Thu, 15 Aug 2019 13:20:21 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/a-3-rotor-vtol-uav/</guid>
-      <description>VIDEO DEMO  SYSTEM OVERVIEW   VTOL is achieved by adding a mixing unit to the F4 flight controller running Betaflight Y3 firmware
-  The mixing unit takes in PWM outputs of a basic multicopter flight controller and yields signals for VTOL actuators
-  We only implemented attitude control. Communication between boards is via PWM
-   Illustration of the UAV | ①: Aileron, ②: Rudder &amp;amp; Elevator, ③ &amp;amp; ④: Tilt Servo, ⑤: Motor</description>
+      <description> VIDEO DEMO SYSTEM OVERVIEW VTOL is achieved by adding a mixing unit to the F4 flight controller running Betaflight Y3 firmware
+The mixing unit takes in PWM outputs of a basic multicopter flight controller and yields signals for VTOL actuators
+We only implemented attitude control. Communication between boards is via PWM
+Illustration of the UAV | ①: Aileron, ②: Rudder &amp;amp; Elevator, ③ &amp;amp; ④: Tilt Servo, ⑤: Motor System Block Diagram Essential Part of the F1 Mixing Unit Explained DETAILED REPORT View PDF (Chinese) </description>
     </item>
     
     <item>
@@ -67,7 +65,7 @@
       <pubDate>Fri, 14 Sep 2018 10:19:16 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/bunnyaat/</guid>
-      <description> VIDEO DEMO  DESIGN  Please refer to the related links   RELATED LINKS  百度贴吧 Source Code  </description>
+      <description> VIDEO DEMO DESIGN Please refer to the related links RELATED LINKS 百度贴吧 Source Code </description>
     </item>
     
   </channel>

@@ -16,14 +16,15 @@
 &lt;h2 id=&#34;links--downloads&#34;&gt;LINKS &amp;amp; DOWNLOADS&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Presentation of Previous Work (English)&lt;/a&gt;&lt;/li&gt;
+    &gt;Presentation of Early Work (English)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/omnihex.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Research Proposal (Chinese)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/%e4%b8%ad%e6%9c%9f%e6%8a%a5%e5%91%8a.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Midterm Summary (Chinese)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/wide.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Closing Presentation (Chinese)&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Thesis to be published on the official platform.&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://1drv.ms/b/s!AtUoQjeuHMpihMpIooJgC1C_nQjvbw?e=b5tRRc&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Thesis (Chinese)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
@@ -156,7 +157,7 @@ cd scripts
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/foxy/setup.bash
 source ./ros2-workspace/install/setup.bash
 cd PX4-Autopilot
-PX4_NO_FOLLOW_MODE=1 px4_sitl_ctrlalloc gazebo_omni_hex
+PX4_NO_FOLLOW_MODE=1 make px4_sitl_ctrlalloc gazebo_omni_hex
 &lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;3&#34;&gt;
 &lt;li&gt;Run &lt;code&gt;micrortps_agent&lt;/code&gt; over UDP.&lt;/li&gt;
 &lt;/ol&gt;
@@ -3094,9 +3095,6 @@ cd scripts
     &gt;View Project Report PDF (Chinese)&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Contents of the detailed report are in Chinese as they were made originally to support the Chinese presentation. A rework and translation of illustrations, diagrams and the report is in progress, but don&amp;rsquo;t expect it to be finished soon. Best regards~&lt;/p&gt;
-&lt;/blockquote&gt;
 </description>
         </item>
         <item>
@@ -3513,9 +3511,6 @@ Apply inverse kinematics with given starting, ending and via points to find corr
     &gt;View Structure Design Scheme PDF (Chinese)&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Contents of the detailed report are in Chinese as they were made originally to support the Chinese presentation. A rework and translation of illustrations, diagrams and the report is in progress, but don&amp;rsquo;t expect it to be finished soon. Best regards~&lt;/p&gt;
-&lt;/blockquote&gt;
 </description>
         </item>
         <item>
@@ -3877,9 +3872,6 @@ Apply inverse kinematics with given starting, ending and via points to find corr
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/Design%2C%20Control%20and%20Mixing%20of%203-Rotor%20VTOL%20UAVs.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;View PDF (Chinese)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Contents of the detailed report are in Chinese as they were made originally to support the Chinese presentation. A rework and translation of illustrations, diagrams and the report is in progress, but don&amp;rsquo;t expect it to be finished soon. Best regards~&lt;/p&gt;
-&lt;/blockquote&gt;
 </description>
         </item>
         <item>

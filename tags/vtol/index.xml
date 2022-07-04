@@ -13,10 +13,10 @@
       <pubDate>Thu, 15 Aug 2019 13:20:21 +0800</pubDate>
       
       <guid>https://ercbunny.github.io/p/a-3-rotor-vtol-uav/</guid>
-      <description>VIDEO DEMO  SYSTEM OVERVIEW   VTOL is achieved by adding a mixing unit to the F4 flight controller running Betaflight Y3 firmware
-  The mixing unit takes in PWM outputs of a basic multicopter flight controller and yields signals for VTOL actuators
-  We only implemented attitude control. Communication between boards is via PWM
-   Illustration of the UAV | ①: Aileron, ②: Rudder &amp;amp; Elevator, ③ &amp;amp; ④: Tilt Servo, ⑤: Motor</description>
+      <description> VIDEO DEMO SYSTEM OVERVIEW VTOL is achieved by adding a mixing unit to the F4 flight controller running Betaflight Y3 firmware
+The mixing unit takes in PWM outputs of a basic multicopter flight controller and yields signals for VTOL actuators
+We only implemented attitude control. Communication between boards is via PWM
+Illustration of the UAV | ①: Aileron, ②: Rudder &amp;amp; Elevator, ③ &amp;amp; ④: Tilt Servo, ⑤: Motor System Block Diagram Essential Part of the F1 Mixing Unit Explained DETAILED REPORT View PDF (Chinese) </description>
     </item>
     
   </channel>
