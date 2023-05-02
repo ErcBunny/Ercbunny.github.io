@@ -1,23 +1,101 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>VTOL on Yueqian&#39;s Page</title>
-    <link>https://ercbunny.github.io/tags/vtol/</link>
-    <description>Recent content in VTOL on Yueqian&#39;s Page</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Thu, 15 Aug 2019 13:20:21 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/vtol/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>A 3-Rotor VTOL UAV</title>
-      <link>https://ercbunny.github.io/p/a-3-rotor-vtol-uav/</link>
-      <pubDate>Thu, 15 Aug 2019 13:20:21 +0800</pubDate>
-      
-      <guid>https://ercbunny.github.io/p/a-3-rotor-vtol-uav/</guid>
-      <description> VIDEO DEMO SYSTEM OVERVIEW VTOL is achieved by adding a mixing unit to the F4 flight controller running Betaflight Y3 firmware
-The mixing unit takes in PWM outputs of a basic multicopter flight controller and yields signals for VTOL actuators
-We only implemented attitude control. Communication between boards is via PWM
-Illustration of the UAV | ①: Aileron, ②: Rudder &amp;amp; Elevator, ③ &amp;amp; ④: Tilt Servo, ⑤: Motor System Block Diagram Essential Part of the F1 Mixing Unit Explained DETAILED REPORT View PDF (Chinese) </description>
-    </item>
+    <channel>
+        <title>VTOL on Ryan&#39;s Page</title>
+        <link>https://ercbunny.github.io/tags/vtol/</link>
+        <description>Recent content in VTOL on Ryan&#39;s Page</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 15 Aug 2019 13:20:21 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/vtol/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>A 3-Rotor VTOL UAV</title>
+        <link>https://ercbunny.github.io/projects/190815-trivtol/</link>
+        <pubDate>Thu, 15 Aug 2019 13:20:21 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/projects/190815-trivtol/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/190815-trivtol/cover.png" alt="Featured image of post A 3-Rotor VTOL UAV" /&gt;&lt;hr&gt;
+&lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
+
+
+
+
+
+
     
-  </channel>
+
+
+&lt;div class=&#34;video-wrapper&#34;&gt;
+    &lt;iframe src=&#34;https://player.bilibili.com/player.html?as_wide=1&amp;amp;high_quality=1&amp;amp;page=1&amp;bvid=BV1H4411o7Gq&#34;
+            scrolling=&#34;no&#34;
+            frameborder=&#34;no&#34;
+            framespacing=&#34;0&#34;
+            allowfullscreen=&#34;true&#34;
+    &gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;system-overview&#34;&gt;SYSTEM OVERVIEW&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;VTOL is achieved by adding a mixing unit to the F4 flight controller running Betaflight Y3 firmware&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The mixing unit takes in PWM outputs of a basic multicopter flight controller and yields signals for VTOL actuators&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We only implemented attitude control. Communication between boards is via PWM&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/190815-trivtol/illustration.png&#34;
+	width=&#34;468&#34;
+	height=&#34;395&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/190815-trivtol/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/190815-trivtol/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Illustration of the UAV | ①: Aileron, ②: Rudder &amp; Elevator, ③ &amp; ④: Tilt Servo, ⑤: Motor&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;118&#34;
+		data-flex-basis=&#34;284px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/190815-trivtol/overview.png&#34;
+	width=&#34;1312&#34;
+	height=&#34;314&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/190815-trivtol/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/190815-trivtol/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;System Block Diagram&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;417&#34;
+		data-flex-basis=&#34;1002px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/190815-trivtol/math.png&#34;
+	width=&#34;3840&#34;
+	height=&#34;2160&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/190815-trivtol/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/190815-trivtol/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Essential Part of the F1 Mixing Unit Explained&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;detailed-report&#34;&gt;DETAILED REPORT&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/Design%2C%20Control%20and%20Mixing%20of%203-Rotor%20VTOL%20UAVs.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;View PDF (Chinese)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

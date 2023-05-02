@@ -1,0 +1,1480 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Notes on Ryan&#39;s Page</title>
+        <link>https://ercbunny.github.io/categories/notes/</link>
+        <description>Recent content in Notes on Ryan&#39;s Page</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Mon, 01 May 2023 21:40:00 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/categories/notes/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Extended Kalman Filter</title>
+        <link>https://ercbunny.github.io/notes/230501-ekf/</link>
+        <pubDate>Mon, 01 May 2023 21:40:00 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/notes/230501-ekf/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/notes/230501-ekf/cover.jpg" alt="Featured image of post Extended Kalman Filter" /&gt;&lt;p&gt;&lt;code&gt;WIP&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This post summarizes my understanding of the Extended Kalman Filter (EKF). I once used EKF to filter noisy barometer data in my antenna tracking system. At that time I wrote in the repository:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I don&amp;rsquo;t quite understand how a kalman filter works (just for now), so the code for this part is written by Similar_Fair. Click the link below for more information: &lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/sunhaobo1996/article/details/53861752&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://blog.csdn.net/sunhaobo1996/article/details/53861752&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;And that was on Sep 9, 2018. Four years later, I had to use EKF in my adaptive controller project and finally had it figured out.&lt;/p&gt;
+&lt;h2 id=&#34;linear-kalman-filter&#34;&gt;Linear Kalman Filter&lt;/h2&gt;
+&lt;p&gt;The Kalman Filter is also called the optimal linear estimator or filter, as it aims to minimize the sum of autocovariance of variables. While the original Kalman Filter works with linear systems, the EKF extends its working domain to non-linear systems by using Taylor expansion linearization. Understanding KF is the first step towards understanding the EKF. The &lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1ez4y1X7eR/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;videos&lt;/a&gt; here are very helpful.&lt;/p&gt;
+&lt;h3 id=&#34;problem-formulation&#34;&gt;Problem Formulation&lt;/h3&gt;
+&lt;p&gt;Consider a discrete-time linear system:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{cases}
+\bm{x}&lt;em&gt;k = \bm{G} \bm{x}&lt;/em&gt;{k-1} + \bm{H} \bm{u}&lt;em&gt;{k-1} + \bm{w}&lt;/em&gt;{k-1} \
+\bm{z}_k = \bm{M} \bm{x}_k + \bm{v}_k
+\end{cases}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;where $\bm{x}$ is the state vector, $\bm{w}$ is the process noise that is assumed to satisfy normal distribution of $N(0, \bm{Q})$, $\bm{z}$ is the observation vector, and $\bm{v}$ is the measurement noise s.t. $N(0, \bm{R})$. The dynamics of the process noise and measurement noise are unknown, which is the reason for modeling them as stochastic variables.&lt;/p&gt;
+&lt;p&gt;With these two equations, the mean value of the state vector can be estimated in two ways:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{cases}
+\hat{\bm{x}}&lt;em&gt;k^- = \bm{G} \bm{x}&lt;/em&gt;{k-1} + \bm{H} \bm{u}_{k-1} \
+\hat{\bm{x}}_k^+ = \bm{M}^{-1} \bm{z}_k
+\end{cases}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;one by propagating system states and inputs from the last time step, and one by inferring from the measured values. In most cases $\hat{\bm{x}}_k^- \neq \hat{\bm{x}}_k^+$, which means we need to combine, or &amp;ldquo;fuse&amp;rdquo;, these two estimations into one $\hat{\bm{x}}_k$. This step is often implemented using the weighted average. The weight $\rho_k$ may be different for different time steps:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\hat{\bm{x}}_k
+&amp;amp;= (1 - \rho_k) \hat{\bm{x}}_k^- + \rho_k \hat{\bm{x}}_k^+ \
+&amp;amp;= \hat{\bm{x}}_k^- + \rho_k (\hat{\bm{x}}_k^+ - \hat{\bm{x}}_k^-) \
+&amp;amp;= \hat{\bm{x}}_k^- + \rho_k (\bm{M}^{-1} \bm{z}_k - \hat{\bm{x}}_k^-) \
+&amp;amp;= \hat{\bm{x}}_k^- + \rho_k \bm{M}^{-1} (\bm{z}_k - \bm{M} \hat{\bm{x}}_k^-) \
+&amp;amp;= \hat{\bm{x}}_k^- + \bm{K}_k (\bm{z}_k - \bm{M} \hat{\bm{x}}_k^-)
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;where $\bm{K}_k = \rho_k \bm{M}^{-1}$ is often called the &amp;ldquo;Kalman gain&amp;rdquo;. Now, how to determine the value of $\bm{K}_k$? Please remember that we are looking at stochastic variables with variances: let&amp;rsquo;s define a variable for estimation error as $\bm{e}_k = \bm{x}_k - \hat{\bm{x}}_k$, and $\bm{e}_k \sim N(0, \bm{P}_k)$. We ultimately want to find a $\bm{K}_k$ that makes $\text{trace}(\bm{P}_k)$ minimal, which means minimizing the sum of error autocovariance.&lt;/p&gt;
+&lt;h3 id=&#34;error-covariance-calculation&#34;&gt;Error Covariance Calculation&lt;/h3&gt;
+&lt;p&gt;By the definition of covariance, we can express $\bm{P}_k$ as:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}_k
+&amp;amp;= \mathbb{E}[\bm{e}_k \bm{e}_k^\intercal] \
+&amp;amp;= \mathbb{E}[(\bm{x}_k - \hat{\bm{x}}_k) (\bm{x}_k - \hat{\bm{x}}_k^\intercal)]
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Swap $\hat{\bm{x}}_k$ with the weighted average expression, and note $\bm{x}_k - \hat{\bm{x}}_k^-$ as $\bm{e}_k^-$, we have:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}_k = \mathbb{E}[
+&amp;amp;(\mathbb{I}-\bm{K}_k\bm{M})\bm{e}_k^-((\mathbb{I}-\bm{K}_k\bm{M})\bm{e}_k^-)^\intercal\
+&amp;amp;- (\mathbb{I}-\bm{K}_k\bm{M})\bm{e}_k^-\bm{v}_k\bm{K}_k^\intercal\
+&amp;amp;- \bm{K}_k \bm{v}_k {\bm{e}_k^-}^\intercal(\mathbb{I}-\bm{K}_k\bm{M})^\intercal\
+&amp;amp;+ \bm{K}_k \bm{v}_k (\bm{K}_k \bm{v}_k)^\intercal]
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Then calculate the expectation of each term:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}_k &amp;amp;= (\mathbb{I}-\bm{K}_k\bm{M}) \mathbb{E}[\bm{e}_k^- {\bm{e}_k^-}^\intercal] (\mathbb{I}-\bm{K}_k\bm{M})^\intercal\
+&amp;amp;- 0 \
+&amp;amp;- 0 \
+&amp;amp;+ \bm{K}_k\bm{R}{\bm{K}_k}^\intercal
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Nice, the second and third terms are all expected to be zero since $\bm{e}$ and $\bm{v}$ are not correlated. Here we encounter $\mathbb{E}[\bm{e}_k^-{\bm{e}_k^-}^\intercal]$, let&amp;rsquo;s call it $\bm{P}_k^-$. Then we can expand $\bm{P}_k$ to an even simpler form:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\bm{P}_k = \bm{P}_k^- - \bm{K}_k\bm{M}\bm{P}_k^- - (\bm{K}_k\bm{M}\bm{P}_k^-)^\intercal + \bm{K}_k\bm{M}\bm{P}_k^-(\bm{K}_k\bm{M})^\intercal+\bm{K}_k\bm{R}\bm{K}_k^\intercal
+\end{equation}
+$$&lt;/p&gt;
+&lt;h3 id=&#34;minimizing-the-trace&#34;&gt;Minimizing the Trace&lt;/h3&gt;
+&lt;p&gt;From the last equation we have:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\text{tr}(\bm{P}_k) = \text{tr}(\bm{P}_k^-) - 2\text{tr}(\bm{K}_k\bm{M}\bm{P}_k^-) + \text{tr}(\bm{K}_k\bm{M}\bm{P}_k^-(\bm{K}_k\bm{M})^\intercal) + \text{tr}(\bm{K}_k\bm{R}\bm{K}_k^\intercal)
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;which is a function of $\bm{K}_k$ with a minima at some point. Now, the problem is reduced to solving $\frac{d\text{tr}(\bm{P}_k)}{d\bm{K}_k} = 0$. There are two equations that greatly help the solving process:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\frac{d\text{tr}(\bm{A}\bm{B})}{d\bm{A}} = \bm{B}^\intercal
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\frac{d\text{tr}(\bm{A}\bm{B}{\bm{A}}^\intercal)}{d\bm{A}} = 2\bm{A}\bm{B}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Expand $\frac{d\text{tr}(\bm{P}_k)}{d\bm{K}_k} = 0$:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\frac{d\text{tr}(\bm{P}_k)}{d\bm{K}_k} = 0 - 2(\bm{M}\bm{P}_k^-)^\intercal + 2\bm{K}_k\bm{M}\bm{P}_k^-\bm{M}^\intercal+2\bm{K}_k\bm{R} = 0
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Solving the above equation gives the Kalman gain: $\bm{K}_k = \frac{\bm{P}_k^-\bm{M}^\intercal}{\bm{M}\bm{P}_k^-\bm{M}^\intercal+\bm{R}}$. Problem solved! Well, not really. The final step is to calculate $\bm{P}_k^-$. Since&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\bm{e}_k^-=\bm{x}&lt;em&gt;k - \hat{\bm{x}}&lt;em&gt;k^-=\bm{G}\bm{e}&lt;/em&gt;{k-1}+\bm{w}&lt;/em&gt;{k-1}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;and $\bm{P}_k^-$ can be written in the expectation form, we have:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}&lt;em&gt;k^-
+&amp;amp;= \mathbb{E}[\bm{G}\bm{e}&lt;/em&gt;{k-1}(\bm{G}\bm{e}&lt;em&gt;{k-1})^\intercal] + \bm{G}\mathbb{E}[\bm{e}&lt;/em&gt;{k-1}\bm{w}&lt;em&gt;{k-1}^\intercal]+\mathbb{E}[\bm{e}&lt;/em&gt;{k-1}\bm{w}&lt;em&gt;{k-1}^\intercal]\bm{G}^\intercal+\mathbb{E}[\bm{w}&lt;/em&gt;{k-1}\bm{w}&lt;em&gt;{k-1}^\intercal] \
+&amp;amp;=\bm{G}\bm{P}&lt;/em&gt;{k-1}\bm{G}^\intercal+\bm{Q}
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Now the derivation is complete - we&amp;rsquo;ve found the optimal gain to fuse two estimations together to make covariance minimal. The complete update steps of the Kalman Filter are:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+&amp;amp;\text{1.}\ \hat{\bm{x}}&lt;em&gt;k^- = \bm{G} \bm{x}&lt;/em&gt;{k-1} + \bm{H} \bm{u}_{k-1} \
+&amp;amp;\text{2.}\ \bm{P}&lt;em&gt;k^- = \bm{G}\bm{P}&lt;/em&gt;{k-1}\bm{G}^\intercal+\bm{Q} \
+&amp;amp;\text{3.}\ \bm{K}_k = \frac{\bm{P}_k^-\bm{M}^\intercal}{\bm{M}\bm{P}_k^-\bm{M}^\intercal+\bm{R}} \
+&amp;amp;\text{4.}\ \hat{\bm{x}}_k=\hat{\bm{x}}_k^- + \bm{K}_k (\bm{z}_k - \bm{M} \hat{\bm{x}}_k^-) \
+&amp;amp;\text{5.}&lt;br&gt;
+\begin{split}
+\bm{P}_k &amp;amp;= \bm{P}_k^- - \bm{K}_k\bm{M}\bm{P}_k^- - (\bm{K}_k\bm{M}\bm{P}_k^-)^\intercal + \bm{K}_k\bm{M}\bm{P}_k^-(\bm{K}_k\bm{M})^\intercal+\bm{K}_k\bm{R}\bm{K}_k^\intercal \
+&amp;amp;= \bm{P}_k^- - \bm{K}_k\bm{M}\bm{P}_k^-
+\end{split}
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;extended-kalman-filter&#34;&gt;Extended Kalman Filter&lt;/h2&gt;
+&lt;p&gt;EKF extends the original flavored KF to nonlinear systems by using Taylor series expansion. That is it.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+&amp;amp;\begin{cases}
+\bm{x}&lt;em&gt;k = f&lt;/em&gt;{RK4}(\bm{x}&lt;em&gt;{k-1}, \bm{u}&lt;/em&gt;{k-1}, \bm{w}&lt;em&gt;{k-1})\
+\bm{z}&lt;em&gt;k = g(\bm{x}&lt;/em&gt;{k},\bm{v}&lt;em&gt;k)
+\end{cases} \
+\rightarrow
+&amp;amp;\begin{cases}
+\bm{x}&lt;em&gt;k = f&lt;/em&gt;{RK4}(\hat{\bm{x}}&lt;/em&gt;{k-1}, \bm{u}&lt;/em&gt;{k-1}, \bm{0}) + \frac{\partial f_{RK4}(\hat{\bm{x}}&lt;em&gt;{k-1},\bm{u}&lt;/em&gt;{k-1},\bm{0})}{\partial \bm{x}}(\bm{x}&lt;em&gt;{k-1}-\hat{\bm{x}}&lt;/em&gt;{k-1}) + \frac{\partial f_{RK4}(\hat{\bm{x}}&lt;em&gt;{k-1},\bm{u}&lt;/em&gt;{k-1},\bm{0})}{\partial \bm{w}}\bm{w}&lt;em&gt;{k-1}\
+\bm{z}&lt;em&gt;k = g(\hat{\bm{x}}&lt;/em&gt;{k},\bm{0})+\frac{\partial g(\hat{\bm{x}}&lt;/em&gt;{k},\bm{0})}{\partial \bm{x}}(\bm{x}&lt;em&gt;{k}-\hat{\bm{x}}&lt;/em&gt;{k})+\frac{\partial g(\hat{\bm{x}}&lt;em&gt;{k},\bm{0})}{\partial \bm{v}}\bm{v}&lt;/em&gt;{k}
+\end{cases} \
+:=
+&amp;amp;\begin{cases}
+\bm{x}_k = \hat{\bm{x}}&lt;em&gt;k^- + \bm{G}&lt;em&gt;k(\bm{x}&lt;/em&gt;{k-1}-\hat{\bm{x}}&lt;/em&gt;{k-1}) + \bm{W}&lt;em&gt;k\bm{w}&lt;/em&gt;{k-1} \
+\bm{z}_k = \hat{\bm{z}}&lt;em&gt;k + \bm{M}&lt;em&gt;k(\bm{x}&lt;/em&gt;{k}-\hat{\bm{x}}&lt;/em&gt;{k})+\bm{V}&lt;em&gt;k\bm{v}&lt;/em&gt;{k-1}
+\end{cases}
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;The linearized version is slightly different from the original linear form, but the derivation for the algorithm is largely the same. I won&amp;rsquo;t type everything again here but only give the complete result below. Interested readers are suggested to work it out independently.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q. Quan, Introduction to multicopter design and control. Springer, 2017.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+&amp;amp;\text{1.}\ \hat{\bm{x}}&lt;em&gt;k^- = f&lt;/em&gt;{RK4}(\hat{\bm{x}}&lt;em&gt;{k-1}, \bm{u}&lt;/em&gt;{k-1}, \bm{0}) \
+&amp;amp;\text{2.}\ \bm{P}&lt;em&gt;k^- = \bm{G}&lt;/em&gt;{k-1}\bm{P}&lt;em&gt;{k-1}\bm{G}&lt;/em&gt;{k-1}^\intercal+ \bm{W}&lt;em&gt;{k-1}\bm{Q}&lt;/em&gt;{k-1}\bm{W}_{k-1}^\intercal \
+&amp;amp;\text{3.}\ \bm{K}_k = \frac{\bm{P}_k^-\bm{M}_k^\intercal}{\bm{M}_k\bm{P}_k^-\bm{M}_k^\intercal+\bm{V}_k\bm{R}\bm{V}_k^\intercal} \
+&amp;amp;\text{4.}\ \hat{\bm{x}}_k=\hat{\bm{x}}_k^- + \bm{K}_k (\bm{z}_k - \hat{\bm{z}}_k) \
+&amp;amp;\text{5.}\ \bm{P}_k = \bm{P}_k^- - \bm{K}_k\bm{M}_k\bm{P}_k^-
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Notes for Introduction to Autonomous Mobile Robots</title>
+        <link>https://ercbunny.github.io/notes/211229-mobilerobot/</link>
+        <pubDate>Wed, 29 Dec 2021 15:24:52 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/notes/211229-mobilerobot/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/notes/211229-mobilerobot/cover.jpg" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" /&gt;&lt;blockquote&gt;
+&lt;p&gt;篇幅较长，请先浏览目录，方便导航哦～&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2021年1231考试内容&#34;&gt;2021年12.31考试内容&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;机器人的自由度计算&lt;/li&gt;
+&lt;li&gt;轮子的自由度&lt;/li&gt;
+&lt;li&gt;sobel算子作用&lt;/li&gt;
+&lt;li&gt;直线检测各种算法原理&lt;/li&gt;
+&lt;li&gt;搜索算法哪个完备&lt;/li&gt;
+&lt;li&gt;概率框架下的定位模型&lt;/li&gt;
+&lt;li&gt;什么噪声没办法去除&lt;/li&gt;
+&lt;li&gt;dijkstra&lt;/li&gt;
+&lt;li&gt;markov定位图&lt;/li&gt;
+&lt;li&gt;split merge&lt;/li&gt;
+&lt;li&gt;势场法导航&lt;/li&gt;
+&lt;li&gt;卡尔曼滤波的k矩阵&lt;/li&gt;
+&lt;li&gt;单轮驱动的运动模型，自由度&lt;/li&gt;
+&lt;li&gt;odom模型和误差传播&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;绪论&#34;&gt;绪论&lt;/h2&gt;
+&lt;h3 id=&#34;按功能分类&#34;&gt;按功能分类&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;移动机器人&lt;/li&gt;
+&lt;li&gt;操作机器人&lt;/li&gt;
+&lt;li&gt;移动作业机器人&lt;/li&gt;
+&lt;li&gt;举些例子：机械臂，月球车，心脏手术，扫地，UAV，自驾车&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;应用领域&#34;&gt;应用领域&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;工业&lt;/li&gt;
+&lt;li&gt;空间探测&lt;/li&gt;
+&lt;li&gt;军事&lt;/li&gt;
+&lt;li&gt;医疗手术&lt;/li&gt;
+&lt;li&gt;家庭&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;自动化&#34;&gt;自动化&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;自主性(autonomy)是行为主体按自己意愿行事的动机、能力或特性
+&lt;ul&gt;
+&lt;li&gt;自主移动机器人是一类可以根据任务需求、具有在单维或多维空间主动改变自身位姿以及空间位置能力的机器人统称&lt;/li&gt;
+&lt;li&gt;自动驾驶分级：0-2级需要驾驶员实时介入，自动驾驶提供辅助速度和车道控制；3级有时会要求接管驾驶，4级开始是在特定环境下完全自主，5级是所有环境下全自主
+&lt;ul&gt;
+&lt;li&gt;0-2：特斯拉，小鹏，未来&lt;/li&gt;
+&lt;li&gt;没有一个达到了3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;三大关键问题：在哪，去哪，怎么去&lt;/li&gt;
+&lt;li&gt;经典3环节
+&lt;ul&gt;
+&lt;li&gt;see (perception): sensing, info extraction (filtering, keypoint extraction and matching)&lt;/li&gt;
+&lt;li&gt;think (planning/understanding): localizatoon, mapping, planning&lt;/li&gt;
+&lt;li&gt;act (motion control): tracking, actuator driving&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/see-think-act.png&#34;
+	width=&#34;1288&#34;
+	height=&#34;788&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;general pipeline&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;163&#34;
+		data-flex-basis=&#34;392px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;运动形式&#34;&gt;运动形式&lt;/h2&gt;
+&lt;h3 id=&#34;运动相关的概念&#34;&gt;运动相关的概念&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;locomotion，运动，是一种机器人与环境的物理交互&lt;/li&gt;
+&lt;li&gt;稳定性考虑：接触点数目和形状（角度，摩擦），重心，环境（地形，空气），本体稳定性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;两种地面运动形式&#34;&gt;两种地面运动形式&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;腿式运动
+&lt;ul&gt;
+&lt;li&gt;自然界偏爱，自然界表面粗糙，环境复杂&lt;/li&gt;
+&lt;li&gt;通过性强，控制困难，非连续点接触&lt;/li&gt;
+&lt;li&gt;效率取决于本体质量&lt;/li&gt;
+&lt;li&gt;近似滚动多边形，随着步距减小，接近圆形&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;轮式运动
+&lt;ul&gt;
+&lt;li&gt;自然界基本没有，因为关节不能旋转&lt;/li&gt;
+&lt;li&gt;在平面上运动效率高，控制简单，受环境约束大&lt;/li&gt;
+&lt;li&gt;效率取决于环境质量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;腿式机器人&#34;&gt;腿式机器人&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;特点（因为不同场景下优点和弱点互相转换）包括：适应地形，自主调节重心高度，运动执行器也能当成操作器，主动隔离震动，自由度高，难控制建模，对关节驱动要求高，需要配合地形感知，落地有冲击&lt;/li&gt;
+&lt;li&gt;稳定性
+&lt;ul&gt;
+&lt;li&gt;动态稳定指的是执行器停止工作时机器人摔倒，反之则是静态稳定的&lt;/li&gt;
+&lt;li&gt;静止时保持稳定的条件
+&lt;ul&gt;
+&lt;li&gt;点接触腿需要三支同时着地（波士顿动力方案，快，动态稳定，能耗低）&lt;/li&gt;
+&lt;li&gt;面接触腿只需要一支（比如日本方案的双足，静态稳定，慢，能耗高）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;运动时保持稳定的条件
+&lt;ul&gt;
+&lt;li&gt;静态步态行走需要4-6条腿&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;关节数和自由度：每个腿至少需要两个自由度，增加自由度可以提高机动性、步态稳定性，同时增加设计难度&lt;/li&gt;
+&lt;li&gt;可能事件总数Gait/步态：一个行进周期内腿式机器人每条腿抬起和落地可能性的组合$=(2k-1)!$注意与腿状态数区分 $=2^k$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;轮式机器人&#34;&gt;轮式机器人&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;特点：人造结构的高效性（滚动摩擦，重心不会起伏变化），结构简单，成本低，控制简单，系统复杂度低，运行速度高&lt;/li&gt;
+&lt;li&gt;稳定性：至少有三个车轮同时接触地面才能保证静态稳定性（重心落在接触点的三角形内部），3个轮子以上需要悬挂系统使所有轮子保持与地面接触&lt;/li&gt;
+&lt;li&gt;轮子类型
+&lt;ul&gt;
+&lt;li&gt;标准轮，DOF=2&lt;/li&gt;
+&lt;li&gt;脚轮，DOF=3，调向时会对机器人底盘施加一个扭矩，偏心距d:触地点到垂直旋转轴的距离&lt;/li&gt;
+&lt;li&gt;瑞典轮（十字连续切换90/麦克纳姆45），DOF=3，无法单独使用，至少需三个或以上共同使用，对地面冲击大，噪音大，易破坏地面，运行震动大，对机器人本体机构冲击大&lt;/li&gt;
+&lt;li&gt;球轮，DOF=3，无约束:具有很高的灵活性，成本高:制造和维护成本均很高，积灰、磨损&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;全向驱动经典布局：等边三角形，瑞典轮，转向标准轮，4麦克纳姆&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;轮式机器人运动学&#34;&gt;轮式机器人运动学&lt;/h2&gt;
+&lt;h3 id=&#34;非完整约束&#34;&gt;非完整约束&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;大部分轮式机器人形态均含有非完整约束，即无法从位置空间找到一一对应的关系，和历史状态有关&lt;/li&gt;
+&lt;li&gt;需要扩展到速度空间 (车轮间相对位置增量的差别)考虑微分运动学&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;坐标系描述&#34;&gt;坐标系描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;惯性参考坐标系 $\xi_I$ ：机器人作业目标及控制指令，传感器感知测量的环境信息&lt;/li&gt;
+&lt;li&gt;机器人参考坐标系 $\xi_R$ ：机器人控制器的误差输入以及控制指令&lt;/li&gt;
+&lt;li&gt;config矩阵可以是 $3 \times 3$ ：因为只有两个维度&lt;/li&gt;
+&lt;li&gt;$\bold{\dot{\xi_I}=R(\theta)\dot{\xi_R}}$ ，两个坐标系下的速度之间关系为旋转矩阵&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/coord.png&#34;
+	width=&#34;2288&#34;
+	height=&#34;1006&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;坐标系的一般设置&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;227&#34;
+		data-flex-basis=&#34;545px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;前向运动学模型&#34;&gt;(前向)运动学模型&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;指建立惯性系下参考点速度和执行器速度之间的关系&lt;/li&gt;
+&lt;li&gt;中间桥梁为机器人系下参考点速度&lt;/li&gt;
+&lt;li&gt;构建方法
+&lt;ul&gt;
+&lt;li&gt;作用法：从轮运动参数（转速，半径，轮距），进行速度的合成与分解（同时考虑约束作用），得到参考点在机体坐标系下的速度，然后通过旋转矩阵转为世界坐标系&lt;/li&gt;
+&lt;li&gt;约束法：把每个轮子的约束方程写出来（轮运动参数与机体坐标下速度的关系），合并成一个式子并转换为世界坐标速度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;标准轮约束
+&lt;ul&gt;
+&lt;li&gt;主动固定标准轮：$v_{\parallel}=r \dot{\phi}$ 以及 $v_{\perp}=0$ ；将 $v_{\parallel}$ 和 $v_{\perp}$ 用机体坐标系下的速度表示出来&lt;/li&gt;
+&lt;li&gt;主动转向标准轮：滚动约束，可控制角度来改变运动： $v_{\parallel}=r \dot{\phi}$&lt;/li&gt;
+&lt;li&gt;随动固定标准轮：无侧滑约束（滑动约束）： $v_{\perp}=0$&lt;/li&gt;
+&lt;li&gt;随动转向标准轮：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;脚轮约束
+&lt;ul&gt;
+&lt;li&gt;作为主动轮：滚动约束，可控制角度来改变运动&lt;/li&gt;
+&lt;li&gt;作为从动轮：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;球轮约束
+&lt;ul&gt;
+&lt;li&gt;主动：与主动转向标准轮一致&lt;/li&gt;
+&lt;li&gt;从动：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;瑞典轮约束
+&lt;ul&gt;
+&lt;li&gt;主动：驱动速度 $\dot{\phi} r$ 往转子上投影作为最终这个执行器产生的速度，没有无侧滑约束
+&lt;ul&gt;
+&lt;li&gt;记 $\gamma$ 为滚子轴与轮平面的夹角，则滚动约束为 $\dot{\phi} r \cos(\gamma)=v_{\parallel}$ ，这里 $v_{\parallel}$ 指的是机体坐标系下速度滚子轴方向的投影&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;从动：自由&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;零运动直线：几何上经过轮子的轴心并垂直于轮平面的线，当受无侧滑约束时，轮子在该直线上不能存在运动
+&lt;ul&gt;
+&lt;li&gt;脚轮、瑞典轮：不存在无侧滑约束，不存在零运动直线&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;轮式移动机器人运动学建模仅考虑平面运动，因此其对应的输出状态为三维向量，因此，最多有三个独立约束&lt;/li&gt;
+&lt;li&gt;动力学建模在运动变化较为快速、动态响应比较明显的情况下适用，比如无人机上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kine-example.png&#34;
+	width=&#34;2060&#34;
+	height=&#34;2188&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;运动学模型例子&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;94&#34;
+		data-flex-basis=&#34;225px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;自由度&#34;&gt;自由度&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;自由度是机动性的度量&lt;/li&gt;
+&lt;li&gt;总自由度=移动mobility自由度+操纵steerability自由度：$\delta_{M}=\delta_{m}+\delta_{s}$
+&lt;ul&gt;
+&lt;li&gt;$\delta_{M}=3$：瞬心可在平面的任意点，可在工作空间中跟踪任何路径&lt;/li&gt;
+&lt;li&gt;$\delta_{M}=2$：瞬心被限制在某条直线上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;移动自由度（可移动度）$\delta_{m}$
+&lt;ul&gt;
+&lt;li&gt;$\delta_{m}=$ 工作空间维度 $-$ 独立约束数目 $=$ 状态向量的维度 $-$ 滑动约束中的独立约束个数&lt;/li&gt;
+&lt;li&gt;考虑 $\bold{AR\dot{\xi_I}} = [\bold{B,0}]^T$ 这样动力学模型的基本形式，与 $\bold{0}$ 对应的 $\bold{A}$ 的部分子矩阵零空间维度 $=$ 列数 $-$ 秩 $=\delta_{m}$&lt;/li&gt;
+&lt;li&gt;$\delta_{m}=0$ 时无法在平面中运动， $\delta_{m}=1$ 时只能沿着圆弧/直线行走（移动性退化）， $\delta_{m}=2$ 时可原地（线速度和角速度解耦）， $\delta_{m}=3$ 时全向
+&lt;ul&gt;
+&lt;li&gt;二轮差速小车：通过改变轮转速可同时控制角速度和线速度， $\delta_{m}=2$&lt;/li&gt;
+&lt;li&gt;自行车：改变主动轮转速只能改变线速度，角速度要通过另一个轮子的方向， $\delta_{m}=1$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;操纵自由度（可操纵度） $\delta_{s}$
+&lt;ul&gt;
+&lt;li&gt;等于独立的能够转向的舵机的个数，范围是 $[0,2]$&lt;/li&gt;
+&lt;li&gt;考虑 $\bold{A}$ 矩阵中滑动约束部分，挑出其中转向轮的子矩阵，求秩，则等于 $\delta_{s}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;机器人的完整性判据：可移动度等于工作空间维度
+&lt;ul&gt;
+&lt;li&gt;对于地面移动机器人，工作空间维度是3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/dof-example.png&#34;
+	width=&#34;1904&#34;
+	height=&#34;2500&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;自由度计算例子&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;76&#34;
+		data-flex-basis=&#34;182px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二轮差速机器人的控制&#34;&gt;二轮差速机器人的控制&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;只考虑运动学控制，仅分析二轮差速小车&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;术语和零碎知识点&#34;&gt;术语和零碎知识点&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;定点(镇定)控制Regulation Control：以指定姿态到达指定工作位置&lt;/li&gt;
+&lt;li&gt;路径跟踪控制Path Tracking Control：跟随给定路线&lt;/li&gt;
+&lt;li&gt;轨迹跟踪控制Trajectory Tracking Control：跟随给定的轨迹&lt;/li&gt;
+&lt;li&gt;对于非完整约束机器人而言，不存在静态反馈控制律，使得机器人达到目标位姿&lt;/li&gt;
+&lt;li&gt;移动机器人反馈控制器设计一般步骤
+&lt;ol&gt;
+&lt;li&gt;根据作业需求定义系统开环误差信号&lt;/li&gt;
+&lt;li&gt;误差信号描述变换:惯性参考坐标系、机器人参考坐标系&lt;/li&gt;
+&lt;li&gt;基于机器人模型，构建闭环系统误差模型&lt;/li&gt;
+&lt;li&gt;控制器设计&lt;/li&gt;
+&lt;li&gt;稳定性分析&lt;/li&gt;
+&lt;li&gt;仿真实验&lt;/li&gt;
+&lt;li&gt;实际实验&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;自治系统(Autonomous system)：控制量只依赖状态不依赖时间&lt;/li&gt;
+&lt;li&gt;微分平坦(differentially flat)系统：控制量可以用状态量及其导数来表示&lt;/li&gt;
+&lt;li&gt;非完整约束系统总是欠驱动系统&lt;/li&gt;
+&lt;li&gt;可控：能通过施加控制使系统到达状态空间中的任意一个状态，是模型本身的性质，与控制量无关&lt;/li&gt;
+&lt;li&gt;系统存在光滑的反馈控制的必要条件，Brockett定理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;定点控制&#34;&gt;定点控制&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/robot2ctrl.png&#34;
+	width=&#34;2344&#34;
+	height=&#34;1112&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;机器人模型&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;210&#34;
+		data-flex-basis=&#34;505px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;记号和问题描述
+&lt;ul&gt;
+&lt;li&gt;$q=[x,y,\theta]^T$ 为世界坐标系下的状态&lt;/li&gt;
+&lt;li&gt;$q_r=[x_r,y_r,\theta_r]^T$ 为世界坐标系下参考状态&lt;/li&gt;
+&lt;li&gt;$\tilde{q}=[\tilde{x},\tilde{y},\tilde{\theta}]^T=q-q_r$ 为开环误差&lt;/li&gt;
+&lt;li&gt;$e=\bold{R(\theta)^T} \tilde{q}$ 为机体坐标系下误差信号&lt;/li&gt;
+&lt;li&gt;误差的动态模型是 $\dot{e}$ 使用“左导右不导……”可展开，矩阵求导这里是每个元素分别求导即可&lt;/li&gt;
+&lt;li&gt;定点控制是找到一系列 $\bold{\dot{\xi_R}} = [v(t),\omega(t)]^T = [\dot{x}(t), \dot{y}(t), \omega(t)]^T = \bold{K}e$ 使 $e(t)=0$， 这里 $\bold{K}$ 为控制矩阵，是要设计的变量， $\bold{\dot{\xi_R}}$ 则能通过运动学模型转化为执行器需要的输出&lt;/li&gt;
+&lt;li&gt;这个模型中 $\dot{y}(t)=0$ ， $\dot{x}(t)=v(t)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;惯性坐标系中机器人的运动学模型
+&lt;ul&gt;
+&lt;li&gt;$\bold{\dot{\xi_I}} = \bold{R(\theta)\bold{\dot{\xi_R}}}$&lt;/li&gt;
+&lt;li&gt;根据此以及Brockett定理可判定对于这个模型，没有光滑的反馈控制&lt;/li&gt;
+&lt;li&gt;根据Chow定理是可控的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;非线性控制器
+&lt;ul&gt;
+&lt;li&gt;记机体坐标系下误差信号为 $e=[e_1,e_2,e_3]^T$&lt;/li&gt;
+&lt;li&gt;可令 $v(t)=-k_1 e_1$ ，单纯的比例控制&lt;/li&gt;
+&lt;li&gt;可令 $\omega(t)=-k_2 e_3 + {e_2}^2\sin(t)$ ，比例控制加前馈&lt;/li&gt;
+&lt;li&gt;如此带入误差的动态模型 $\dot{e}$ 可以进行稳定性分析&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;极坐标线性化
+&lt;ul&gt;
+&lt;li&gt;$\tilde{q}=[\rho, \alpha, \beta]$&lt;/li&gt;
+&lt;li&gt;误差模型则是 $\dot{\tilde{q}}=\bold{A} [v,\omega]^T$&lt;/li&gt;
+&lt;li&gt;控制器则可以令 $v=k_{\rho}\rho, \omega=k_1 \alpha + k_2 \beta$&lt;/li&gt;
+&lt;li&gt;带入到误差模型里后还是存在三角非线性，因为 $\alpha$ 始终比较小，可以做三角函数的线性化得 $\dot{\tilde{q}} = \bold{A_{linear}} \tilde{q}$&lt;/li&gt;
+&lt;li&gt;由Hurwitz判据知系统指数收敛，又近似了LTI，所以渐进收敛&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole1.png&#34;
+	width=&#34;1752&#34;
+	height=&#34;666&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;误差模型的推导&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;263&#34;
+		data-flex-basis=&#34;631px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole2.png&#34;
+	width=&#34;1752&#34;
+	height=&#34;758&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;控制器和线性化&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;231&#34;
+		data-flex-basis=&#34;554px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole3.png&#34;
+	width=&#34;1752&#34;
+	height=&#34;898&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;稳定性分析&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;195&#34;
+		data-flex-basis=&#34;468px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;并不是说极坐标一定要线性化，也可以指定 $v,\omega$ 为其他的函数，非线性的也可以，只不过就得用Lyapnuov理论了&lt;/p&gt;
+&lt;p&gt;&lt;u&gt;&lt;strong&gt;一般方法都是得到误差状态变量的导数与 $[v,w]^T$ 的关系（误差模型），然后设计控制率，也就是 $v, w$ 的关于状态变量的函数，然后带入到误差模型中，得到误差的动态，对其做稳定性分析&lt;/strong&gt;&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;轨迹跟踪控制&#34;&gt;轨迹跟踪控制&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;$q_r$ 这时候是规定的一条轨迹了，类似上面的定点控制&lt;/li&gt;
+&lt;li&gt;更高级的在这里有&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/weixin_46723764/article/details/108885265&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;「横向自动控制方法：Purepursuit, Stanley, MPC对比」&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;规划&#34;&gt;规划&lt;/h2&gt;
+&lt;h3 id=&#34;几个基本概念&#34;&gt;几个基本概念&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;The workspace is often the representation of the world, possibly independent of the robot itself. Often describes some notion of reachability, what space is free or occupied? 不一定是笛卡尔空间，关节空间或者参数空间都可以&lt;/li&gt;
+&lt;li&gt;Configuration space describes the full state of the robot in the world (actuator positions, orientation, etc.)&lt;/li&gt;
+&lt;li&gt;Let’s consider that our robot is no longer a point, but occupies an area&amp;hellip;&lt;/li&gt;
+&lt;li&gt;structured: occupancy grid map, distance field; Unstructured: graph, mesh, exact&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;基于搜索树的路径查找&#34;&gt;基于搜索树的路径查找&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://qiao.github.io/PathFinding.js/visual/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;一个很好的视觉实现&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;广度优先搜索BFS
+&lt;ul&gt;
+&lt;li&gt;从起点开始，首先遍历起点周围邻近的点，然后再遍历已经遍历过的点邻近的点，逐步的向外扩散&lt;/li&gt;
+&lt;li&gt;一旦到达终点，便可以从终点开始，反过来顺着父节点的顺序找到起点，由此就构成了一条路径&lt;/li&gt;
+&lt;li&gt;完备&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;深度优先搜索DFS
+&lt;ul&gt;
+&lt;li&gt;从起点开始，不断沿着路径进行扩展，直到找到终点或者无路可走，再重新选取父节点进行深度搜索&lt;/li&gt;
+&lt;li&gt;不完备，可能无限走错路&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Edsger W. Dijkstra
+&lt;ul&gt;
+&lt;li&gt;寻找图形中节点之间的最短路径，需要计算每一个节点距离起点的总移动代价&lt;/li&gt;
+&lt;li&gt;节点放入优先队列中会按照代价进行排序，运行时优选选出代价最小的作为下一个遍历的节点&lt;/li&gt;
+&lt;li&gt;Asymptotically the fastest known single-source shortest path algorithm for arbitrary directed graphs&lt;/li&gt;
+&lt;li&gt;Doesn’t really know the goal exists until it reaches it&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;从Dijkstra到A*
+&lt;ul&gt;
+&lt;li&gt;综合代价=代价+启发函数&lt;/li&gt;
+&lt;li&gt;优先选取综合代价小的节点作为下一个路径点&lt;/li&gt;
+&lt;li&gt;启发函数是节点n距离终点的预计代价
+&lt;ul&gt;
+&lt;li&gt;估计值 $&amp;lt;=$ 实际代价：一定能找到最短路径，估计值越小则遍历的节点越多&lt;/li&gt;
+&lt;li&gt;估计值 $=$ 实际代价：一定能找到最短路径，最理想的情况&lt;/li&gt;
+&lt;li&gt;估计值 $&amp;gt;$ 实际代价：不能保证找到最短路径，不过此时会很快，若远大于则变为最佳优先搜索&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;在低维度空间里很常用，限制是需要构造一个图，启发函数比较难找，比较难栅格化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/Dijk-Astar.png&#34;
+	width=&#34;2092&#34;
+	height=&#34;1174&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Dijkstra和A*区别&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;178&#34;
+		data-flex-basis=&#34;427px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;D*: Dynamic A*
+&lt;ul&gt;
+&lt;li&gt;动态环境下可能各种条件代价会变化所以进行了改进&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;基于采样的路径查找&#34;&gt;基于采样的路径查找&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;主要是为了防止维数爆炸，防止连通性降级，以及直接在config空间里（不好grid化）直接plan&lt;/li&gt;
+&lt;li&gt;主要思路
+&lt;ol&gt;
+&lt;li&gt;在config空间中采样（uniform，gaussian，obstacle involved）&lt;/li&gt;
+&lt;li&gt;将新采样点和附近的已有点进行连接，判据一般是范数&lt;/li&gt;
+&lt;li&gt;检查碰撞（计算量大户），如果没碰撞则添加一条边到路径中&lt;/li&gt;
+&lt;li&gt;检查是否到达目标（附近）&lt;/li&gt;
+&lt;li&gt;loop&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/norm.png&#34;
+	width=&#34;2388&#34;
+	height=&#34;1088&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;范数&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;219&#34;
+		data-flex-basis=&#34;526px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Probabilistic Roadmaps (PRM, 1996)
+&lt;ul&gt;
+&lt;li&gt;特性
+&lt;ul&gt;
+&lt;li&gt;为multiple-queries设计，允许大量预先计算&lt;/li&gt;
+&lt;li&gt;对于single-query问题则可以省略一些预先计算来加速&lt;/li&gt;
+&lt;li&gt;先全图采样完再寻找一条路径&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;主要步骤
+&lt;ol&gt;
+&lt;li&gt;在空间中sample一堆没有碰撞的点&lt;/li&gt;
+&lt;li&gt;用这些点构造一个图，包括碰撞检测&lt;/li&gt;
+&lt;li&gt;使用A*做搜索&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;限制
+&lt;ul&gt;
+&lt;li&gt;限制为完整约束运动&lt;/li&gt;
+&lt;li&gt;窄通道无视问题&lt;/li&gt;
+&lt;li&gt;动态环境不适用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Rapidly-exploring random trees (RRT, 1998)
+&lt;ul&gt;
+&lt;li&gt;不断生长的树，而不是把全部空间都采样完&lt;/li&gt;
+&lt;li&gt;designed for single-query search&lt;/li&gt;
+&lt;li&gt;适用于非完整性约束运动和动态环境，比PRM更容易整合控制和运动学约束&lt;/li&gt;
+&lt;li&gt;可用于高维空间问题，无需几何划分，可以尽可能的探索未知区域&lt;/li&gt;
+&lt;li&gt;改进型
+&lt;ul&gt;
+&lt;li&gt;Goal-Bias：将目标节点作为采样点出现，可以控制目标点出现的概率&lt;/li&gt;
+&lt;li&gt;Extend RRT：引入路径点集合，加快了收敛速度，提高了路径的稳定性&lt;/li&gt;
+&lt;li&gt;RRT-Connect：初始点和目标点生成两棵树，直到两棵树连在一起算法收敛&lt;/li&gt;
+&lt;li&gt;Local-tree-RRT：对随机采样算法狭窄通道难以迅速通过的问题，提出局部树方法加以解决&lt;/li&gt;
+&lt;li&gt;Dynamic RRT：提出了修剪和合并操作，去除掉无效的节点后再继续进行搜索&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;局部规划避障&#34;&gt;局部规划（避障）&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;BUG算法&lt;/li&gt;
+&lt;li&gt;动态窗口：认为一小段时间内twist恒定&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;势场法&#34;&gt;势场法&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;主要思想：避免层级结构，同时考虑全局和局部路径，建立一个全局势能场，机器人自动沿着最大梯度方向下降到目标点&lt;/li&gt;
+&lt;li&gt;一种常见的实现：总场=目标场+障碍场&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/goal.png&#34;
+	width=&#34;1780&#34;
+	height=&#34;742&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/goal_hu714d753056c144d85d9749d39b2dd203_1884771_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/goal_hu714d753056c144d85d9749d39b2dd203_1884771_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;目标场&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;239&#34;
+		data-flex-basis=&#34;575px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/obs.png&#34;
+	width=&#34;2224&#34;
+	height=&#34;862&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;障碍场&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;258&#34;
+		data-flex-basis=&#34;619px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/total.png&#34;
+	width=&#34;2224&#34;
+	height=&#34;862&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;总势场&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;258&#34;
+		data-flex-basis=&#34;619px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;传感器大类和指标&#34;&gt;传感器大类和指标&lt;/h2&gt;
+&lt;h3 id=&#34;分类&#34;&gt;分类&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor1.png&#34;
+	width=&#34;1526&#34;
+	height=&#34;716&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;213&#34;
+		data-flex-basis=&#34;511px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor2.png&#34;
+	width=&#34;1354&#34;
+	height=&#34;674&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;常见传感器&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;200&#34;
+		data-flex-basis=&#34;482px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;常见传感器的原理&#34;&gt;常见传感器的原理&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;rangefinder
+&lt;ul&gt;
+&lt;li&gt;TOF
+&lt;ul&gt;
+&lt;li&gt;sonar&lt;/li&gt;
+&lt;li&gt;lidar&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;RSS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;infra-red：发光二极管发出包括红外的光，由物体反射，传感器接收检测强度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;主要性能指标&#34;&gt;主要性能指标&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;动态范围&lt;/li&gt;
+&lt;li&gt;测量范围&lt;/li&gt;
+&lt;li&gt;分辨率&lt;/li&gt;
+&lt;li&gt;线性度&lt;/li&gt;
+&lt;li&gt;频率/带宽&lt;/li&gt;
+&lt;li&gt;误差
+&lt;ul&gt;
+&lt;li&gt;系统误差由理论上可建模的因素或过程造成，是确定性的（deterministic 知道解析形式的），可测的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;标定和不确定性&#34;&gt;标定和不确定性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;标定：确定一个从传感器读数到有意义数据的映射
+&lt;ol&gt;
+&lt;li&gt;获得ground truth和测试数据&lt;/li&gt;
+&lt;li&gt;拟合模型&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;不确定性一般处理办法
+&lt;ul&gt;
+&lt;li&gt;储存测试值和准确值的pair&lt;/li&gt;
+&lt;li&gt;获得确定性变换模型&lt;/li&gt;
+&lt;li&gt;获得概率模型（比如假设高斯分布）
+&lt;ul&gt;
+&lt;li&gt;可以用平均值（第一moment）和方差（第二moment）&lt;/li&gt;
+&lt;li&gt;贝叶斯公式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;基于视觉的感知&#34;&gt;基于视觉的感知&lt;/h2&gt;
+&lt;h3 id=&#34;cv的常见应用&#34;&gt;CV的常见应用&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;语义分割&lt;/li&gt;
+&lt;li&gt;图像分类&lt;/li&gt;
+&lt;li&gt;目标检测&lt;/li&gt;
+&lt;li&gt;实例分割&lt;/li&gt;
+&lt;li&gt;目标追踪&lt;/li&gt;
+&lt;li&gt;三维重建&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;相机图像获取&#34;&gt;相机图像获取&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;小孔成像-&amp;gt;光圈虚化原理-&amp;gt;使用透镜&lt;/li&gt;
+&lt;li&gt;小孔成像与透视原理
+&lt;ul&gt;
+&lt;li&gt;radial distortion&lt;/li&gt;
+&lt;li&gt;intrinsic calibration: Use camera model to interpret the projection from world to image plane
+&lt;ul&gt;
+&lt;li&gt;To estimate 11 unknowns, we need at least 6 points to calibrate the camera (linear least squares)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;数字图像处理&#34;&gt;数字图像处理&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;相关和卷积，都是对应位置相乘之后相加，但是卷积的核要倒过来，但是因为图像处理中基本是对称的，所以区别不大&lt;/li&gt;
+&lt;li&gt;空间滤波基础（模糊和锐化）&lt;/li&gt;
+&lt;li&gt;边缘检测，一阶和二阶导数的区别，如果加入了高斯模糊，则一阶对应用gussian一阶导DOG卷原图，二阶对应LOG卷原图&lt;/li&gt;
+&lt;li&gt;图像匹配
+&lt;ul&gt;
+&lt;li&gt;normalized cross correlation&lt;/li&gt;
+&lt;li&gt;zero-mean correlation&lt;/li&gt;
+&lt;li&gt;dot product&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;立体视觉&#34;&gt;立体视觉&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Triangulation：给出一组对应的图像坐标和相机位置，确定像素对应点的3D位置
+&lt;ul&gt;
+&lt;li&gt;geometric approach&lt;/li&gt;
+&lt;li&gt;linear approach&lt;/li&gt;
+&lt;li&gt;non-linear approach&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Stereo camera
+&lt;ul&gt;
+&lt;li&gt;标定：外参数（relative pose between the cameras (rotation, translation)）；内参数（focal length, optical center, radial distortion）&lt;/li&gt;
+&lt;li&gt;像素匹配
+&lt;ul&gt;
+&lt;li&gt;Epipolar Constraint
+&lt;ol&gt;
+&lt;li&gt;Epipolar rectification: warps image pairs into new “rectified” images, whose epipolar lines are parallel &amp;amp; collinear (aligned to the baseline)&lt;/li&gt;
+&lt;li&gt;计算相似度来匹配，Typical similarity measures: Normalized Cross-Correlation (NCC) , Sum of Squared Differences (SSD), Sum of Absolute Differences (SAD)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;得到像素的匹配之后可以获得视差图：同一个场景在两个相机下成像的像素的位置偏差，因为通常下两个双目相机是水平放置的，所以该位置偏差一般体现在水平方向&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;对双目成像来说，视差图和深度图在某种程度上是等价的，知道了两个相机的相关参数，是可以将视差图转换为深度图的（最近有工作直接用AI输出深度图）&lt;/li&gt;
+&lt;li&gt;双目间距的影响：太小则深度误差大看不远，太大则看不近&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Structure from motion (SFM)
+&lt;ul&gt;
+&lt;li&gt;Simultaneously estimate both 3D geometry (structure) and camera pose (motion): solve via non-linear minimization of the reprojection errors&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;光流lucaskanade&#34;&gt;光流（Lucas–Kanade）&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;根据相邻两帧图像估计运动信息&lt;/li&gt;
+&lt;li&gt;三个假设
+&lt;ul&gt;
+&lt;li&gt;光强（像素值）不变： $I(x,y,t)=I(x+dx,y+dy,t+dt)$&lt;/li&gt;
+&lt;li&gt;时间差较小： $dt=0$&lt;/li&gt;
+&lt;li&gt;空间相关性，空间不变形&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;步骤图如下&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow1.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;698&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;568px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow2.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;698&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;光流法&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;568px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;点检测&#34;&gt;点检测&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Harris Corner &amp;amp; Shi-Tomasi（可判断是edge类型还是corner）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同平面旋转不变性，线性光照强度变化不变性；但对于尺度和仿射变换没有不变性&lt;/li&gt;
+&lt;li&gt;corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner1.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;698&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;568px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner2.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;678&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;角落检测一般分析思路&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;243&#34;
+		data-flex-basis=&#34;585px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;特征值的解法 $det(A-\lambda I)=0$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner3.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;478&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Eigen Visualization&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;346&#34;
+		data-flex-basis=&#34;830px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner4.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;722&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Shi-Tomasi&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;229&#34;
+		data-flex-basis=&#34;549px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner5.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;736&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Harris实际上也可以采用单阈值筛选&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;224&#34;
+		data-flex-basis=&#34;539px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;解决特征检测的尺度变换问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Scale detector
+&lt;ul&gt;
+&lt;li&gt;思想是根据不同的图片尺度选择不同大小的检测区域大小/shifting region大小&lt;/li&gt;
+&lt;li&gt;Sharp, local intensity changes in an image, are good regions to monitor for identifying relative scale in usual images
+&lt;ul&gt;
+&lt;li&gt;Use DOG and LOG&lt;/li&gt;
+&lt;li&gt;convolve image with kernel to identify sharp intensity discontinuities&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;SIFT = Scale Invariant Feature Transform: an approach for detecting and describing regions of interest in an image
+&lt;ul&gt;
+&lt;li&gt;invariant to changes in: rotation, scaling, illumination&lt;/li&gt;
+&lt;li&gt;Very powerful in capturing + describing distinctive structure, but also computationally demanding&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一些快速算法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;FAST corner detector&lt;/li&gt;
+&lt;li&gt;BRIEF descriptor，Not scale/rotation invariant (extensions exist&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;BRISK （快，仅次于BRIEF，但旋转和尺度不变）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;线检测&#34;&gt;线检测&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;算法比较
+&lt;ul&gt;
+&lt;li&gt;Split-and-merge and Line-Regression: fastest
+&lt;ul&gt;
+&lt;li&gt;best applied on laser scans&lt;/li&gt;
+&lt;li&gt;Deterministic &amp;amp; make use of the sequential ordering of raw scan points&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;If applied on randomly captured points only last 3 algorithms would segment all lines&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/lines.png&#34;
+	width=&#34;1648&#34;
+	height=&#34;412&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/lines_hud36468f48f180a9d6665864372b9f2bb_151644_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/lines_hud36468f48f180a9d6665864372b9f2bb_151644_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;一图对比&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;400&#34;
+		data-flex-basis=&#34;960px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Hough没什么好说的，参考DIP&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Split-and-merge&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split1.png&#34;
+	width=&#34;1648&#34;
+	height=&#34;530&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;310&#34;
+		data-flex-basis=&#34;746px&#34;
+	
+&gt;
+&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split2.png&#34;
+	width=&#34;654&#34;
+	height=&#34;530&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split2_hucfa5d437b4868d2da828ae07f655727f_70688_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/split2_hucfa5d437b4868d2da828ae07f655727f_70688_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;123&#34;
+		data-flex-basis=&#34;296px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/full.png&#34;
+	width=&#34;1592&#34;
+	height=&#34;730&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/full_hu25c2696c0cbc81a3a74d863979996dae_222264_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/full_hu25c2696c0cbc81a3a74d863979996dae_222264_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;full process&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;218&#34;
+		data-flex-basis=&#34;523px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Linear regression&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/iterReg.png&#34;
+	width=&#34;1592&#34;
+	height=&#34;554&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;line regression&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;287&#34;
+		data-flex-basis=&#34;689px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;RANSAC: RANdom SAmple Consensus.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A generic &amp;amp; robust fitting algorithm of models in the presence of outliers (i.e. points which do not satisfy a model)&lt;/li&gt;
+&lt;li&gt;Typical applications in robotics are: line extraction from 2D range data, plane extraction from 3D data, feature matching, structure from motion, camera calibration, homography estimation, etc.&lt;/li&gt;
+&lt;li&gt;iterative and non-deterministic, the probability to find a set free of outliers increases as more iterations are used&lt;/li&gt;
+&lt;li&gt;a non-deterministic method, results are different between runs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;地方检测&#34;&gt;地方检测&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;地方的图像抽象为bag of words：We can describe a scene as a collection of words and look up in the database for images with a similar collection of words&lt;/li&gt;
+&lt;li&gt;图像各种feature通过某种方法得到descriptor space里面的一个个点，用k聚类算法归类
+&lt;ul&gt;
+&lt;li&gt;k-means
+&lt;ol&gt;
+&lt;li&gt;先定义总共有多少个类/蔟 (cluster)&lt;/li&gt;
+&lt;li&gt;将每个蔟心 (cluster centers）随机定在一个点上&lt;/li&gt;
+&lt;li&gt;将每个数据点关联到最近蔟中心所属的蔟上&lt;/li&gt;
+&lt;li&gt;对于每一个蔟找到其所有关联点的中心点（取每一个点坐标的平均值)&lt;/li&gt;
+&lt;li&gt;将上述点变为新的蔟心&lt;/li&gt;
+&lt;li&gt;不停重复，直到每个蔟所拥有的点不变&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;根据聚类生成一个单词树，树的最末端代表word，上一级代表一个聚类，拿去跟训练好的模型进行比较即可知道是什么单词&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;移动机器人的定位&#34;&gt;移动机器人的定位&lt;/h2&gt;
+&lt;h3 id=&#34;相关概念&#34;&gt;相关概念&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Perception : the robot must interpret its sensors to extract meaningful data;&lt;/li&gt;
+&lt;li&gt;Localization : the robot must determine its position in the environment;&lt;/li&gt;
+&lt;li&gt;Cognition : the robot must decide how to act to achieve its goals;&lt;/li&gt;
+&lt;li&gt;Motion control : the robot must modulate its motor outputs to achieve the desired trajectory.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;挑战&#34;&gt;挑战&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;noise: illumination, jitter, gain, bloom, blur&lt;/li&gt;
+&lt;li&gt;sensor aliasing (混叠)&lt;/li&gt;
+&lt;li&gt;odometry
+&lt;ul&gt;
+&lt;li&gt;Limited resolution during integration (time increments, measurement resolution, etc.);&lt;/li&gt;
+&lt;li&gt;Misalignment of the wheels (deterministic);&lt;/li&gt;
+&lt;li&gt;Uncertainty in the wheel diameter and in particular unequal wheel diameter (deterministic);&lt;/li&gt;
+&lt;li&gt;Variation in the contact point of the wheel;&lt;/li&gt;
+&lt;li&gt;Unequal floor contact (slipping, nonplanar surface, etc.)&lt;/li&gt;
+&lt;li&gt;error types
+&lt;ol&gt;
+&lt;li&gt;Range error: 积分 integrated path length (distance) of the robot’s movement, sum of the wheel movements&lt;/li&gt;
+&lt;li&gt;Turn error: 运动学参数 similar to range error, but for turns, difference of the wheel motions&lt;/li&gt;
+&lt;li&gt;Drift error: 打滑 difference in the error of the wheels leads to an error in the robot’s angular orientation&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;差速模型里程计误差&#34;&gt;差速模型里程计误差&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;基于RK2的运动学模型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/rk2.png&#34;
+	width=&#34;1608&#34;
+	height=&#34;510&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/rk2_hudc19162e910f97f96f42ffd127d72765_230742_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/rk2_hudc19162e910f97f96f42ffd127d72765_230742_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;运动学模型&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;315&#34;
+		data-flex-basis=&#34;756px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;误差传导模型结论&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errprop.png&#34;
+	width=&#34;1608&#34;
+	height=&#34;642&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;新的协方差矩阵&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;250&#34;
+		data-flex-basis=&#34;601px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errpropv.png&#34;
+	width=&#34;2258&#34;
+	height=&#34;776&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;可视化&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;290&#34;
+		data-flex-basis=&#34;698px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;马尔可夫定位&#34;&gt;马尔可夫定位&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Markov localization tracks the robot’s belief state using an arbitrary probability density function to represent the robot’s position&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/markov.png&#34;
+	width=&#34;1606&#34;
+	height=&#34;898&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;markov流程&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;178&#34;
+		data-flex-basis=&#34;429px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于2D定位，需要实时更新一个立方体的数据，很慢
+&lt;ul&gt;
+&lt;li&gt;One possible solution would be to increase the cell size at the expense of localization accuracy.&lt;/li&gt;
+&lt;li&gt;Another solution is to use an adaptive cell decomposition instead of a fixed cell decomposition.&lt;/li&gt;
+&lt;li&gt;reduce the number of states that are updated in each step&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;卡尔曼滤波定位&#34;&gt;卡尔曼滤波定位&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;卡尔曼滤波是迭代的，线性系统高斯噪声下最优的，实时性好&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman1.png&#34;
+	width=&#34;1606&#34;
+	height=&#34;896&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;kalman流程&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman2.png&#34;
+	width=&#34;3028&#34;
+	height=&#34;1612&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;kalman update&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;187&#34;
+		data-flex-basis=&#34;450px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;卡尔曼滤波器和信息融合&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/fuse.png&#34;
+	width=&#34;2974&#34;
+	height=&#34;1254&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;kalman fusion&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;237&#34;
+		data-flex-basis=&#34;569px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>さよなら〜GRE</title>
+        <link>https://ercbunny.github.io/notes/211212-gre/</link>
+        <pubDate>Sun, 12 Dec 2021 21:40:00 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/notes/211212-gre/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/notes/211212-gre/cover.png" alt="Featured image of post さよなら〜GRE" /&gt;&lt;hr&gt;
+&lt;h2 id=&#34;先来说说结果&#34;&gt;先来说说结果&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Oct10在广外大学城考的是V150，Q166，AW4&lt;/li&gt;
+&lt;li&gt;Dec12在赛格人才培训中心考的V160，Q168，AW应该不出意外4还是可以的&lt;/li&gt;
+&lt;li&gt;好像两次Q都有问题啊，听说不满分不是冲国人是吗呜呜呜，反正再您*的见哇哈哈哈哈哈（请脑补荒泷派笑声&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;旅途一波三折&#34;&gt;旅途一波三折&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;最开始决定要考GRE是在暑假时套瓷的时候破了个防，HK那边没有老师明确说愿意收我，如果不考GRE那很多地方都去不了，就……应该八月底左右开始准备来着。怎么说，当时应该是高估了自己的能力，背3000也是一直在abandon（笑），觉得在雷哥网上练了几套自适应模拟题熟悉了一下题型就可以了。就这？对，就这……&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;然后当然3000都没背下来，考前是国庆还一口气把「进击的巨人」给补完了……（悲，离谱）。考试当天，起了一个大早坐地铁，到地铁站突发恶疾然后还滚去某个昏暗的WC里解决了一下……到了大学城北还得坐公交过去，下车了还得走一大段路。然后考试中基本上大脑一片空白，1080P屏幕实在是辣眼睛，鼠标和键盘声属实难顶唔。不过偶遇好多老同学哈哈哈。嘛，这次就战略性放弃了（逃&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;回到家之后还是决定二战Nov7，毕竟这时候停止自己也咽不下这口气。但具体怎么做还是很迷茫的，就先认定是词汇量不行，打算先把机经1300生词给过了一遍，之后继续认真刷3000了。后来雷宝（yyds）出分了，告诉我主要是做题，我觉得有道理，3000也就大概过了2000词然后滚去做机经了～到Nov7的时候大概刷了200左右选择填空题（Q和AW基本有手就行，就完全没管过），打算就这么迎接二战&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;离谱的事情是深大医院当时没能在合适的时间给出核算检测结果导致当天没办法考试……还好能退钱，然后赶紧预约后面的Dec12，还是广外。当时还发了个说说狠狠批判了自己&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在要求成功率1的情况下选择已验证可行的方法会比较好&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;回执凭证这些拿到手上一定一定一定要检查信息&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;还是要提前做准备，最好关键时刻前一天要double check&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;规则就是规则，不要想着侥幸；提前补救比赌规则要有用的多&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;然后就是继续刷机经咯，最后是刷了800多个选择填空题，KPP5套左右的完整Verbal……其实在Dec8左右收到广州考试被取消的短信，当初差点就想放弃了的说。最后还好深圳还有座位而且没有放弃，要不然真的就是寄了（最后发现赛格那边真的很不戳，方便，环境好，工作人员也更nice一点儿）。说实话，如果要我那个时候去考可能还真不一定就能过，所以很难不想起下面这一段话&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;那么人呐就都不知道，自己就不可以预料。你一个人的命运啊，当然要靠自我奋斗，但是也要考虑到历史的行程。我绝对不知道，我作为一个……怎么把我选到北京去了，所以…跟我讲话，说“中央都决定啦……”，我说另请高明吧。我实在我也不是谦虚，我一个……怎么跑到……去了呢？但是呢，……“大家已经研究决定了”，所以后来我就念了两首诗，叫“苟利……”，那么所以我就……。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;Dec12考试当天：7点半起床，洗漱吃早餐，放空自己（物理意义上）。8点10分左右网约车出发往市中心去，9点不到就到了考试中心，（有电梯，各种设施齐全干净，指引齐全，好评）。考完试大概一点四十左右，在华强北DJI，Apple店里溜达一下，玩一玩公共钢琴，跑去地下茶餐厅吃个午饭，天气很好，心情当然也不错～&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;一些备考建议&#34;&gt;一些备考建议&lt;/h2&gt;
+&lt;h3 id=&#34;verbal&#34;&gt;Verbal&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;词汇量部分可以先认真学一遍张巍老师的机经生词伴侣以及等价词，然后用Excel过一遍3000词（这个表格是B站上某个视频下分享的，忘记来源了，侵删）；背3000的时候不要太死心眼了，实在记不住就算了，只求有个大致印象就可以，免得影响心情。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/%e5%a1%ab%e7%a9%ba%e6%9c%ba%e7%bb%8f1300%e9%a2%98%e7%94%9f%e8%af%8d%e4%bc%b4%e4%be%a3.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;填空机经1300题生词伴侣.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/%e7%9c%9f%e7%bb%8fGRE%e7%ad%89%e4%bb%b7%e8%af%8d%e6%b1%87%e6%80%bb.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;真经GRE等价词汇总.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/%e8%a6%81%e4%bd%a0%e5%91%bd3000%e8%af%8d%e8%a1%a8.xlsx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;要你命3000词表.xlsx&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;对我帮助比较大的是刷题。把&lt;a class=&#34;link&#34; href=&#34;https://gre.kmf.com&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;考满分&lt;/a&gt;（还挺好用，比雷哥网的网页写得好，评论区也好玩）的经典填空题至少刷完90个小节，当然越多越好，但是刷完90也基本差不多了。10min一个小节，不能再多了，顺便要注意练习节奏。阅读也可以做，但我自己的阅读还可以就放养了……模考可以用来练习整体节奏，我是把base+medium和hard以及KAPLAN下面popular的给做了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;quantitative&#34;&gt;Quantitative&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;没有多余精力，没有满分需求的同学建议裸考&lt;/li&gt;
+&lt;li&gt;要满分的话还是刷点题吧，有些条件概率在英语语境下我经常会寄，其他基本是有手就行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;aw&#34;&gt;AW&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;基本观点是，逻辑清晰为上，结构直白就行，不求perfect，但求good和properly written，关键是自圆其说&lt;/li&gt;
+&lt;li&gt;30min能写得越多越好，但在此之前结构完整更重要（不要虎头蛇尾）&lt;/li&gt;
+&lt;li&gt;可以参考这个油主的&lt;a class=&#34;link&#34; href=&#34;https://www.youtube.com/watch?v=OFa8oeXXuoA&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;一些视频&lt;/a&gt;，可以获得最基本的一些概念&lt;/li&gt;
+&lt;li&gt;Issue（论点+论据）：
+&lt;ol&gt;
+&lt;li&gt;第一段=背景（题干信息）+我的论点+描述文章结构&lt;/li&gt;
+&lt;li&gt;body几段的每一段（也就是为什么）=中心论点+阐述逻辑+例子+回扣论点&lt;/li&gt;
+&lt;li&gt;避免绝对说法/让步段&lt;/li&gt;
+&lt;li&gt;总结=rephrase in a more sententious way&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Argument（挑逻辑漏洞）：
+&lt;ol&gt;
+&lt;li&gt;原文论点+声明题干要求&lt;/li&gt;
+&lt;li&gt;分段阐述逻辑，可以quote原文&lt;/li&gt;
+&lt;li&gt;回扣题干要求&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

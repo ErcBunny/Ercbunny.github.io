@@ -1,20 +1,519 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>MPC on Yueqian&#39;s Page</title>
-    <link>https://ercbunny.github.io/tags/mpc/</link>
-    <description>Recent content in MPC on Yueqian&#39;s Page</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 09 Apr 2022 12:00:00 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/mpc/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>OmniHex</title>
-      <link>https://ercbunny.github.io/p/omnihex/</link>
-      <pubDate>Sat, 09 Apr 2022 12:00:00 +0800</pubDate>
-      
-      <guid>https://ercbunny.github.io/p/omnihex/</guid>
-      <description>LINKS &amp;amp; DOWNLOADS Presentation of Early Work (English) Research Proposal (Chinese) Midterm Summary (Chinese) Closing Presentation (Chinese) Thesis (Chinese) VIDEO DEMO Dev Milestones Upgrade to ROS2: 100% PID and Newton-Euler Dynamics in SITL: 100% Real hardware drivers and maiden flight: 100% Controller architecture and design: 100% Formulate MPC solver using acados: 100% Test MPC solver in Python: 100% L1-MPC python simulation: 100% ROS L1-MPC node: 100% Track trajectories and collect data: 100% Thesis writing: 100% Far from perfect, but done for now (May29, 2022)</description>
-    </item>
+    <channel>
+        <title>MPC on Ryan&#39;s Page</title>
+        <link>https://ercbunny.github.io/tags/mpc/</link>
+        <description>Recent content in MPC on Ryan&#39;s Page</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 09 Apr 2022 12:00:00 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/mpc/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>OmniHex</title>
+        <link>https://ercbunny.github.io/projects/220409-omnihex/</link>
+        <pubDate>Sat, 09 Apr 2022 12:00:00 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/projects/220409-omnihex/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/220409-omnihex/cover.png" alt="Featured image of post OmniHex" /&gt;&lt;hr&gt;
+&lt;h2 id=&#34;links--downloads&#34;&gt;LINKS &amp;amp; DOWNLOADS&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Presentation of Early Work (English)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/omnihex.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Research Proposal (Chinese)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/%e4%b8%ad%e6%9c%9f%e6%8a%a5%e5%91%8a.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Midterm Summary (Chinese)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/wide.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Closing Presentation (Chinese)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://1drv.ms/b/s!AtUoQjeuHMpihMpIooJgC1C_nQjvbw?e=b5tRRc&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Thesis (Chinese)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
+
+
+
+
+
+
     
-  </channel>
+
+
+&lt;div class=&#34;video-wrapper&#34;&gt;
+    &lt;iframe src=&#34;https://player.bilibili.com/player.html?as_wide=1&amp;amp;high_quality=1&amp;amp;page=1&amp;bvid=BV1ov4y1g7R6&#34;
+            scrolling=&#34;no&#34;
+            frameborder=&#34;no&#34;
+            framespacing=&#34;0&#34;
+            allowfullscreen=&#34;true&#34;
+    &gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/220409-omnihex/numsim.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt; &lt;img src=&#34;https://ercbunny.github.io/projects/220409-omnihex/gzsim.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt; &lt;img src=&#34;https://ercbunny.github.io/projects/220409-omnihex/real.png&#34;
+	width=&#34;1100&#34;
+	height=&#34;1008&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/220409-omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/220409-omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;109&#34;
+		data-flex-basis=&#34;261px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;dev-milestones&#34;&gt;Dev Milestones&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Upgrade to ROS2: 100%&lt;/li&gt;
+&lt;li&gt;PID and Newton-Euler Dynamics in SITL: 100%&lt;/li&gt;
+&lt;li&gt;Real hardware drivers and maiden flight: 100%&lt;/li&gt;
+&lt;li&gt;Controller architecture and design: 100%&lt;/li&gt;
+&lt;li&gt;Formulate MPC solver using acados: 100%&lt;/li&gt;
+&lt;li&gt;Test MPC solver in Python: 100%&lt;/li&gt;
+&lt;li&gt;L1-MPC python simulation: 100%&lt;/li&gt;
+&lt;li&gt;ROS L1-MPC node: 100%&lt;/li&gt;
+&lt;li&gt;Track trajectories and collect data: 100%&lt;/li&gt;
+&lt;li&gt;Thesis writing: 100%&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Far from perfect, but done for now (May29, 2022)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;environment-setup&#34;&gt;Environment Setup&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;Ubuntu 20.04 LTS&lt;/code&gt; with &lt;code&gt;ROS2 foxy&lt;/code&gt; and &lt;code&gt;ROS1 noetic&lt;/code&gt; (since vrpn-client-ros is only available for ROS1).&lt;/li&gt;
+&lt;li&gt;Install ROS2 &lt;a class=&#34;link&#34; href=&#34;https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;via debian&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://docs.px4.io/master/en/ros/ros2_comm.html#install-ros-2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;additional tools&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Install Fast-RTPS-Gen using source code.
+&lt;ul&gt;
+&lt;li&gt;Install &lt;a class=&#34;link&#34; href=&#34;https://gradle.org/install/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Gradle v6.3&lt;/a&gt; through &lt;a class=&#34;link&#34; href=&#34;https://sdkman.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;sdkman&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Use Gradle to build and install Fast-RTPS-Gen.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git clone --recursive https://github.com/eProsima/Fast-DDS-Gen.git -b v1.0.4 ~/Fast-RTPS-Gen \
+    &amp;amp;&amp;amp; cd ~/Fast-RTPS-Gen \
+    &amp;amp;&amp;amp; gradle assemble \
+    &amp;amp;&amp;amp; sudo env &amp;#34;PATH=$PATH&amp;#34; gradle install
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Install dependencies for PX4: &lt;code&gt;PX4-Autopilot/Tools/setup/ubuntu.sh&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Install officially provided ROS2 plug-ins for Gazebo: &lt;code&gt;sudo apt install ros-foxy-gazebo-ros-pkgs&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Install &lt;a class=&#34;link&#34; href=&#34;http://qgroundcontrol.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;QgroundControl&lt;/a&gt; ground station.&lt;/li&gt;
+&lt;li&gt;Install packages for optitrack: &lt;code&gt;sudo apt install ros-foxy-ros1-bridge ros-noetic-vrpn ros-noetic-vrpn-client-ros&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;vrpn-client-ros&lt;/code&gt; publishes the built in message type &lt;code&gt;geometry-msgs&lt;/code&gt;, it is OK to use debian release of &lt;code&gt;ros1-bridge&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Building &lt;code&gt;ros1-bridge&lt;/code&gt; form source enables extra support for custom message and service types but has conflicts with &lt;code&gt;ros-foxy-controller-manager-msgs&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Install mavros for data visualization: &lt;code&gt;sudo apt install ros-noetic-mavros* ros-noetic-mavlink&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Dynamixel-sdk &lt;code&gt;ros-foxy-dynamixel-*&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;build_acados.sh&lt;/code&gt; to set up the mpc code generation tool.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
+&lt;h3 id=&#34;l1-mpc&#34;&gt;L1-MPC&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Models and solvers are formulated in &lt;code&gt;ros2-workspace/src/adaptive_mpc/tools/omnihex.py&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;acados_generate_code.sh&lt;/code&gt; to generate solver code and do numerical simulation.&lt;/li&gt;
+&lt;li&gt;ROS2 Solver node is &lt;code&gt;ros2-workspace/src/adaptive_mpc/src/l1_mpc_main.cpp&lt;/code&gt;. It has to be recompiled after regenerating the solver code (where control params are defined and stored).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;simulation-with-gazebo&#34;&gt;Simulation with Gazebo&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Build ROS2 workspace.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/foxy/setup.bash
+cd scripts
+./build_all_ros_clean.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Build and run PX4 SITL simulation. It is required to source ROS2 setup file.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+cd PX4-Autopilot
+PX4_NO_FOLLOW_MODE=1 make px4_sitl_ctrlalloc gazebo_omni_hex
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Run &lt;code&gt;micrortps_agent&lt;/code&gt; over UDP.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+micrortps_agent -t UDP
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Use QGC to give commands to the simulation environment. Several useful buttons and modes are listed below.
+&lt;ul&gt;
+&lt;li&gt;Takeoff and land&lt;/li&gt;
+&lt;li&gt;Virtual joysticks&lt;/li&gt;
+&lt;li&gt;Position mode, altitude mode, ACRO mode&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Or use the offboard control node to generate a trajectory for omniHex to track.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+ros2 run px4_ros_com offboard_control
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;Above mentioned steps are implemented in &lt;code&gt;run_simulation.sh&lt;/code&gt;, run this script, take off to &lt;code&gt;{0, 0, 2.5}&lt;/code&gt; and run &lt;code&gt;offboard.sh&lt;/code&gt; to track the 8-shape trajectory.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;
+&lt;p&gt;If MPC needed, then take off, use &lt;code&gt;ros2 run trajectory_generator min_ref_publisher 0 0 -2.5 1 0 0 0 0 0 0 0 0 0&lt;/code&gt; to generate a plain state reference, and publish &lt;code&gt;/RunMpc&lt;/code&gt; topic to actually run the MPC. This topic is designed to be published once for a time when you need to change the flag status.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TODO: use service instead&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;real-world-flight&#34;&gt;Real World Flight&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Port connections on NUC:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;dynamixel servos on &lt;code&gt;/dev/ttyUSB0 @ 115200&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;urtps_bridge on &lt;code&gt;/dev/ttyUSB1 @ 3000000&lt;/code&gt; -&amp;gt; MCU &lt;code&gt;TELEM1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;QGC/mavlink on &lt;code&gt;/dev/ttyACM0 @ any baud&lt;/code&gt; (&lt;code&gt;ACM1&lt;/code&gt; occurs after a reboot) -&amp;gt; MCU &lt;code&gt;microUSB&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;About RC:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;switch A is the kill switch&lt;/li&gt;
+&lt;li&gt;switch F sets different flight modes (up: altitude, mid: position, down: acro).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;Setup the motion capture system.
+&lt;ol&gt;
+&lt;li&gt;Open motive software and open the most recent project (Z-up configuration).&lt;/li&gt;
+&lt;li&gt;Go to capture layout (upper-right corner) and delete default rigid bodies.&lt;/li&gt;
+&lt;li&gt;Aligned markers with the world frame and create a new rigid body from the selected ones, rename this new instance to &lt;code&gt;uav&lt;/code&gt; (as it is fixed in &lt;code&gt;ros1-workspace/src/vrpn_client/launch/default.launch&lt;/code&gt;). Data is automatically published to local network.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Build PX4 firmware.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/foxy/setup.bash
+cd PX4-Autopilot
+make cubepilot_cubeorange_ctrlalloc
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Upload firmware to MCU.
+&lt;ol&gt;
+&lt;li&gt;Open QGC and navigate to &amp;ldquo;Vehicle Setup-Firmware&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Plug in MCU through USB (ttyACM) port and QGC will auto detect the MCU. This step requires the MCU only powered by USB.&lt;/li&gt;
+&lt;li&gt;Select custom firmware and upload &lt;code&gt;PX4-Autopilot/build/cubepilot_cubeorange_ctrlalloc/cubepilot_cubeorange_ctrlalloc.px4&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Restart QGC so that airframe files could be loaded by QGC, then you can do further settings and calibration.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;Build ROS1 workspace.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/noetic/setup.bash
+cd ros1-workspace
+catkin build
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Build ROS2 workspace.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;source /opt/ros/foxy/setup.bash
+cd scripts
+./build_all_ros_clean.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;Start packages on NUC: &lt;code&gt;setup_real_flight.sh&lt;/code&gt;. This script starts the following necessary drivers.
+&lt;ul&gt;
+&lt;li&gt;ROS1 &lt;code&gt;vrpn_client&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ROS2 &lt;code&gt;ros1_bridge&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ROS2  &lt;code&gt;micrortps_bridge&lt;/code&gt;, &lt;code&gt;dyanmixel_driver&lt;/code&gt;, &lt;code&gt;optitrack&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Now you can use packages like rqt or rviz for data monitor and visualization. Make sure to source the corresponding ROS version and workspace.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;software-version&#34;&gt;Software Version&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;The original version of &lt;code&gt;PX4&lt;/code&gt; is &lt;code&gt;stable release v1.12.3&lt;/code&gt;. Modified submodules derive from the commit that is referenced by PX4.&lt;/li&gt;
+&lt;li&gt;The original version of &lt;code&gt;px4_msg&lt;/code&gt; is commit &lt;code&gt;0f550f436547fccc6b86d448e095ad914f5de94a&lt;/code&gt; on master branch.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;px4_ros_com&lt;/code&gt;: commit &lt;code&gt;c618d757bd64113ccbee17ad0ae17ab8122337e8&lt;/code&gt; on master branch.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;coordinate-frame&#34;&gt;Coordinate Frame&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;SDF and Solidworks models
+&lt;ul&gt;
+&lt;li&gt;front-x, left-y, up-z (body)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;PX4
+&lt;ul&gt;
+&lt;li&gt;NED (world)&lt;/li&gt;
+&lt;li&gt;front-x, right-y, down-z (body)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Gazebo
+&lt;ul&gt;
+&lt;li&gt;N-Green-y, E-Red-x, U-Blue-z (world)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Arm rotation: see &lt;a class=&#34;link&#34; href=&#34;https://doi.org/10.3929/ethz-b-000224598&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Control Allocation of a Tilting Rotor Hexacopter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;In SITL, PX4 NED x is aligned with Gazebo y&lt;/li&gt;
+&lt;li&gt;In lab setting, PX4 FRD is algined with optitrack x&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;sw-model-to-sdf&#34;&gt;SW Model to SDF&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;There are several useful links
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://gazebosim.org/tutorials?cat=build_robot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Gazebo official guide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://sdformat.org/spec&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Format standard of &lt;code&gt;.sdf&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Do NOT use SW2018SP0&lt;/li&gt;
+&lt;li&gt;Minimize the number of links. It is good to treat parts that do not move relatively as a whole. Only separate parts into links if there must be a joint in between. Usually, a link corresponds to an assembly.&lt;/li&gt;
+&lt;li&gt;In the assembly that represents a link, make sure to attach a coordinate frame in the SDF convention to the model. This frame will be used as the reference frame when exporting &lt;code&gt;.stl&lt;/code&gt; and calculating mass properties.&lt;/li&gt;
+&lt;li&gt;When exporting to &lt;code&gt;.stl&lt;/code&gt; files, hide fine parts otherwise your file would be too big. Choose the aforementioned reference frame, use meter as the scale, and select &amp;ldquo;do not transform to positive space&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Write the SDF
+&lt;ul&gt;
+&lt;li&gt;SDF uses kilogram and meter as the default unit.&lt;/li&gt;
+&lt;li&gt;Don&amp;rsquo;t use mesh as collision. Use the geometry shapes instead.&lt;/li&gt;
+&lt;li&gt;Specify a &lt;code&gt;min_depth&lt;/code&gt; property to the collision that is in contact with the ground.&lt;/li&gt;
+&lt;li&gt;Use numbers in &amp;ldquo;Moments of inertia, taken at the center of mass and aligned with the output coordinate system&amp;rdquo;. Numbers that are not on the diagonal line of the matrix should be inverted.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sitl_gazebo&lt;/code&gt; plug-ins: &amp;ldquo;IMU&amp;rdquo; should be loaded after &amp;ldquo;mavlink interface&amp;rdquo;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;ros1-packages&#34;&gt;ROS1 Packages&lt;/h2&gt;
+&lt;h3 id=&#34;mavros_client&#34;&gt;mavros_client&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;An overlay package for customizing the launch file. Note that this package should not be named &lt;code&gt;mavros&lt;/code&gt;, otherwise ROS may not find the right package path.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;vrpn_client&#34;&gt;vrpn_client&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;An overlay package for customizing the launch file.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;ros2-packages&#34;&gt;ROS2 Packages&lt;/h2&gt;
+&lt;h3 id=&#34;custom_gazebo_plugins&#34;&gt;custom_gazebo_plugins&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;This package is a supplement to &lt;a class=&#34;link&#34; href=&#34;https://github.com/ros-simulation/gazebo_ros_pkgs/tree/foxy&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;officially provided ROS2 plug-ins&lt;/a&gt; and those provided in &lt;code&gt;PX4-Autopilot/Tool/sitl_gazebo&lt;/code&gt;. The official repository provides example code for writing a plug-in.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gazebo_ros_arm_rotation.cpp&lt;/code&gt; is for controlling the position of six arm joints of omniHex via the &lt;code&gt;PID&lt;/code&gt; API. Similarly, &lt;code&gt;gazebo_ros_joint_pid_ctrl.cpp&lt;/code&gt; controls the position of a single joint via &lt;code&gt;PID&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gazebo_ros_joint_motor.cpp&lt;/code&gt; is for controlling joint position or velocity via &lt;code&gt;SetParam&lt;/code&gt; and &lt;code&gt;SetPosition&lt;/code&gt; API.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gazebo_ros_motor_model.cpp&lt;/code&gt; is a simplified ROS2 adaptation of the original version in &lt;code&gt;PX4-Autopilot/Tool/sitl_gazebo&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;px4_msgs&#34;&gt;px4_msgs&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;This package contains message types needed by &lt;code&gt;px4_ros_com&lt;/code&gt; and other packages that might use the PX4 types, as well as &lt;code&gt;rqt&lt;/code&gt; utility.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;msg&lt;/code&gt; folder is updated by the script in &lt;code&gt;PX4-Autopilot/msg/tools/uorb_to_ros_msgs.py&lt;/code&gt;. It should be synced whenever a message definition in &lt;code&gt;PX4-Autopilot/msg&lt;/code&gt; is changed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;px4_ros_com&#34;&gt;px4_ros_com&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;The main purpose of this package is to generate the communication bridge &lt;code&gt;micrortps_agent&lt;/code&gt; from a template file &lt;code&gt;src/templates/uorb_rtps_message_ids.yaml&lt;/code&gt;. The template file should be synced with PX4 via script &lt;code&gt;PX4-Autopilot/msg/tools/uorb_to_ros_rtps_ids.yaml&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;There is also an example of off-board control available in &lt;code&gt;src/examples/offboard&lt;/code&gt;. This example code is modified to generate a full position-pose trajectory as the function of timestamps.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;circle&lt;/li&gt;
+&lt;li&gt;8-shape&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TODO: use input args or launch file to specify trajectory shape&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;It also provides useful scripts for cleaning and building the workspace.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Previously, &lt;code&gt;build_ros2_workspace.bash&lt;/code&gt; is set to skip &lt;code&gt;custom_gazebo_plugins&lt;/code&gt; because the latter depend on &lt;code&gt;px4_msgs&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;It is better to add &lt;code&gt;&amp;lt;depend&amp;gt;px4_msg&amp;lt;/depend&amp;gt;&lt;/code&gt; in &lt;code&gt;package.xml&lt;/code&gt;. In this way we don&amp;rsquo;t need to specify a order. Make sure to add &lt;code&gt;find_package(px4_msgs REQUIRED)&lt;/code&gt; and &lt;code&gt;ament_target_dependencies(foo ...px4_msgs...)&lt;/code&gt; in &lt;code&gt;CMakeLists.txt&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;optitrack_driver&#34;&gt;optitrack_driver&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;visual_odom_publisher&lt;/code&gt; receives pose data from MOCAP, performs frame transformation and publishes data to topic &lt;code&gt;VehicleVisualOdometry_PubSubTopic&lt;/code&gt;. In this target, the message is published in a timer callback at 50Hz.&lt;/li&gt;
+&lt;li&gt;Timestamps are taken from &lt;code&gt;VehicleImu_PubSubTopic&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;callback_relay&lt;/code&gt; is a simple relay. It is similar to &lt;code&gt;visual_odom_publisher&lt;/code&gt; but instead of publishing data in a timer callback, it publishes data in the callback for receiving pose data.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;dynamixel_driver&#34;&gt;dynamixel_driver&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;read_write_node&lt;/code&gt; is the example node provided by &lt;code&gt;dynamixel_sdk&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;arm_position_control&lt;/code&gt; is the one used for controlling the arm positions. It communicates with dynamixel servos via UART in the callback function for receiving &lt;code&gt;ArmRotation_PubSubTopic&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;trajectory_generator&#34;&gt;trajectory_generator&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;A package for generating trajectories in MPC framework and visualizing &lt;code&gt;TrajectorySetpoint_PubSubTopic&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Visualization is implemented in &lt;code&gt;rviz_translator.cpp&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;adaptive_mpc&#34;&gt;adaptive_mpc&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Input topic: &lt;code&gt;/StateReferenceOcp&lt;/code&gt;, horizon 1s, 20 + 1 nodes&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Outputs wrench setpoint&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Switches and flags:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/RunMpc&lt;/code&gt;: should be published once every time you wish to change the status of &lt;code&gt;run_mpc_&lt;/code&gt;. It is switched to false if a solver reset has occurred.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;px4-tools-and-miscellaneous&#34;&gt;PX4 Tools and Miscellaneous&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Set the correct URL in &lt;code&gt;.gitmodules&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Custom models for Gazebo simulation is put in &lt;code&gt;PX4-Autopilot/Tools/sitl_gazebo/models&lt;/code&gt; with a corresponding &lt;code&gt;.world&lt;/code&gt; file in &lt;code&gt;PX4-Autopilot/Tools/sitl_gazebo/worlds&lt;/code&gt;.
+&lt;ul&gt;
+&lt;li&gt;The initial condition of the simulation could be set in &lt;code&gt;PX4-Autopilot/Tools/sitl_run.sh&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Some plug-ins are built externally (in the ROS2 workspace). So &lt;code&gt;PX4-Autopilot/Tools/setup_gazebo.bash&lt;/code&gt; is modified to export the correct library paths.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;As we are using the &lt;code&gt;micrortps_bridge&lt;/code&gt;, we need to build this module in PX4. We can specify this feature by uncommenting the &lt;code&gt;micrortps_bridge&lt;/code&gt; line in &lt;code&gt;PX4-Autopilot/boards/px4/sitl/ctrlalloc.cmake&lt;/code&gt;, which is the module configuration file for SITL targets. We can choose what modules to be built and what not to be built. The same rule applies to &lt;code&gt;.cmake&lt;/code&gt; files for other boards.&lt;/li&gt;
+&lt;li&gt;Add our custom model for gazebo simulation in &lt;code&gt;PX4-Autopilot/platforms/posix/cmake/sitl_target.cmake&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Add our airframe file (a model-dependent script for loading parameters and modules) for simulation in &lt;code&gt;PX4-Autopilot/ROMFS/init.d-posix/airframes&lt;/code&gt; and make sure to add this file to the &lt;code&gt;CMakeLists.txt&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The airframe for real hardware is &lt;code&gt;init.d/airframes/6004_omni_hex&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;A new mixer is in use: &lt;code&gt;omnihex.main.mix&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mc_rate_control&lt;/code&gt; isn&amp;rsquo;t started in &lt;code&gt;rc.mc_apps&lt;/code&gt; if &lt;code&gt;MIXER = omnihex&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;px4-messages&#34;&gt;PX4 Messages&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Add a message to hold arm positions and limit status: &lt;code&gt;arm_rotation.msg&lt;/code&gt;. After adding a new message file, don&amp;rsquo;t forget to indicate it in &lt;code&gt;CmakeList.txt&lt;/code&gt;, otherwise it won&amp;rsquo;t be compiled.&lt;/li&gt;
+&lt;li&gt;Every message should be assigned an ID in &lt;code&gt;msg/tools/urob_rtps_message_ids.yaml&lt;/code&gt; or targets with &lt;code&gt;micrortps_bridge&lt;/code&gt; enabled cannot be compiled. Also, we can specify how &lt;code&gt;micrortps_bridge&lt;/code&gt; treat each message.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vehicle_attitude_setpoint.msg&lt;/code&gt; and &lt;code&gt;vehicle_local_position_setpoint.msg&lt;/code&gt; are modified to handle roll and pitch movements.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;px4-modules&#34;&gt;PX4 Modules&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Generally, a good way to read the code is to look at the header files first. Look at topic subscriptions and publications. Then look at the &lt;code&gt;run()&lt;/code&gt; function in &lt;code&gt;.cpp&lt;/code&gt; files.&lt;/li&gt;
+&lt;li&gt;Modified modules are &lt;code&gt;angular_velocity_controller&lt;/code&gt;, &lt;code&gt;commander&lt;/code&gt;, &lt;code&gt;control_allocator&lt;/code&gt;, &lt;code&gt;flight_mode_manager&lt;/code&gt;, &lt;code&gt;mc_att_control&lt;/code&gt; and &lt;code&gt;mc_pos_control&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;angular_velocity_controller&#34;&gt;angular_velocity_controller&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Center of mass compensation $x_{com} \cross F_{sp}$ in &lt;code&gt;AngularVelocityControl.cpp/hpp&lt;/code&gt;, &lt;code&gt;void AngularVelocityControl::update()&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Read center of mass parameters and call &lt;code&gt;AngularVelocityControl::update()&lt;/code&gt; with additional arguments in&lt;code&gt;AngularVelocityController.cpp/hpp&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Newton-Euler equation cross term $\omega_b \cross v_b$ in &lt;code&gt;void AngularVelocityController::Run()&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Center of mass parameters are defined in &lt;code&gt;vehicle_model_params.c&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;commander&#34;&gt;commander&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;In &lt;code&gt;void Commander::update_control_mode()&lt;/code&gt;, ACRO mode is added with the same set of configuration as POSCTL mode.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;control_allocator&#34;&gt;control_allocator&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;The allocation matrix (actuator effectiveness) is implemented as a subclass of &lt;code&gt;ControlAllocationPseudoInverse&lt;/code&gt; and &lt;code&gt;ModuleParams&lt;/code&gt;. See &lt;code&gt;ActuatorEffectivenessOmniHex.cpp/hpp/params.c&lt;/code&gt; for more detail. In PX4 convention, torque comes above force in a wrench.&lt;/li&gt;
+&lt;li&gt;Add omniHex to enum classes, switch cases, and includes in &lt;code&gt;ControlAllocator.cpp/hpp&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Publish control signals to &lt;code&gt;actuator_controls_0&lt;/code&gt; instead of &lt;code&gt;actuator_controls_4&lt;/code&gt;, with &lt;code&gt;actuator_controls_0[3]&lt;/code&gt; reserved for total thrust signal.&lt;/li&gt;
+&lt;li&gt;Always check &lt;code&gt;CMakeLists.txt&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;flight_mode_manager&#34;&gt;flight_mode_manager&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;This module takes care of controller setpoints in different flight modes.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Switch to &lt;code&gt;FlightTaskIndex::ManualAcceleration&lt;/code&gt; when in &lt;code&gt;vehicle_status_s::NAVIGATION_STATE_ACRO&lt;/code&gt;. This feature is implemented in &lt;code&gt;FlightModeManager.cpp&lt;/code&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TODO: exclusive flight task for ACRO mode (not only pitch but full pose)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;FlightTask.cpp/hpp&lt;/code&gt;: add missing variables and functions that are not implemented for roll and pitch commands.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;FlightTaskManualAltitude.hpp&lt;/code&gt;: add scaling factors from stick to roll and pitch rate.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;FlightTaskManualAcceleration.cpp/hpp&lt;/code&gt;: generate different setpoints in different navigation states.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set roll pitch angle and angular speed setpoint in &lt;code&gt;FlightTaskFoo::activate()&lt;/code&gt; function of tasks such as &lt;code&gt;Auto&lt;/code&gt;, &lt;code&gt;Failsafe&lt;/code&gt; and &lt;code&gt;ManualAltitudeSmoothVel&lt;/code&gt;. This is necessary because otherwise the vehicle loses roll and pitch control when auto buttons in QGC is pressed.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;mc_att_control&#34;&gt;mc_att_control&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;AttitudeControl.cpp&lt;/code&gt;: &lt;code&gt;matrix::Vector3f AttitudeControl::update()&lt;/code&gt; is modified to consider turning rate feed-forward.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;AttitudeControl.hpp&lt;/code&gt;: add roll and pitch in &lt;code&gt;void setAttitudeSetpoint()&lt;/code&gt;, also variables.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mc_att_control_main.cpp&lt;/code&gt; and &lt;code&gt;mc_att_control.hpp&lt;/code&gt;: call modified function with the right arguments.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;mc_pos_control&#34;&gt;mc_pos_control&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;PositionControl.cpp/hpp&lt;/code&gt;: add variables to take care of roll and pitch rotation. In &lt;code&gt;void PositionControl::getAttitudeSetpoint()&lt;/code&gt; attitude setpoints are passed down and thrust setpoint is converted into body frame.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mc_pos_control_params.c&lt;/code&gt;: define parameters for manual roll and pitch rate control, which are used in &lt;code&gt;FlightTaskManualAltitude.hpp&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MulticopterPositionControl.cpp/hpp&lt;/code&gt;: call modified functions and pass correct arguments.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;ekf2&#34;&gt;EKF2&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;In &lt;code&gt;PublishAttitude&lt;/code&gt;, an extra step of converting and publishing RPY is added.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;mixer--px4io&#34;&gt;mixer &amp;amp; px4io&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;AllocatedActuatorMixer.cpp&lt;/code&gt; now listens to &lt;code&gt;actuator_controls_0&lt;/code&gt; instead of &lt;code&gt;actuator_controls_4&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ESC calibration parts in &lt;code&gt;px4io.cpp&lt;/code&gt; and &lt;code&gt;mixer_module.cpp&lt;/code&gt; are modified for &lt;code&gt;control[0]&lt;/code&gt; to &lt;code&gt;control[6]&lt;/code&gt;, except &lt;code&gt;control[3]&lt;/code&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TODO: test calibration function, &lt;u&gt;&lt;em&gt;&lt;strong&gt;make sure props are removed&lt;/strong&gt;&lt;/em&gt;&lt;/u&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;motor-propeller-model&#34;&gt;Motor-Propeller Model&lt;/h2&gt;
+&lt;h3 id=&#34;sitl&#34;&gt;SITL&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;In &lt;code&gt;gazebo_motor_model&lt;/code&gt; and &lt;code&gt;omni_hex.sdf&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;motorConstant = thrustCoef = 8.5e-06&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;torqueCoef = thrustCoef * momentConstant = 8.5e-06 * 0.06&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;In &lt;code&gt;px4&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;The thrust coefficient if defined as &lt;code&gt;Thrust = CT * u^2&lt;/code&gt;, where u (with value between CA_ACT0_MIN and CA_ACT0_MAX) is the output signal sent to the motor controller. &lt;code&gt;CT = 19.125&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The moment coefficient is defined as Torque = KM * Thrust (is consistent with momentConstant). &lt;code&gt;KM = 0.06&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;From u (PX4) to $\omega$(real rotor angular velocity)
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;PWM = 1000 * (1 + u)&lt;/code&gt; (observation from print-debugging), where &lt;code&gt;u = actuator_setpoint[0, 1]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;omega = (u + offset) * scaling + idle&lt;/code&gt; @(line ~1121 mavlink interface plugin), in sdf &lt;code&gt;offset = 0; scaling = 1500; idle = 100&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Conversion between &lt;code&gt;CT&lt;/code&gt;(PX4) and &lt;code&gt;motor constant&lt;/code&gt; (thrust coef, paper, plugin), we assume that the idle value is negligable
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;CT = scaling^2 * motorConstant&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;real-world-data&#34;&gt;Real World Data&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TODO: mapping between PWM and angular velocity, determine thrust and torque coefficient&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;x = actuator_setpoint[0, 1]&lt;/code&gt; to &lt;code&gt;y = actuator_controls_0[-1, 1]&lt;/code&gt;: $y=2x-1$&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x = actuator_controls_0[-1, 1]&lt;/code&gt; to &lt;code&gt;y = PWM[min, max]&lt;/code&gt;: $y=\frac{x(y_{max}-y_{min})}{2}+\frac{y_{max}+y_{min}}{2}$&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x = PWM[min, max]&lt;/code&gt; &amp;amp; &lt;code&gt;y = relative_thrust[0, 1]&lt;/code&gt;: $ay^2+(1-a)y-x=0$, where $a\in[0.25,0.35]$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;matlab-files&#34;&gt;Matlab Files&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;In &lt;code&gt;matlab-workspace&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;trajectory.m&lt;/code&gt;: visualization of 8-shape trajectory.&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

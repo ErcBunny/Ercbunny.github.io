@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>UGV on Yueqian&#39;s Page</title>
-    <link>https://ercbunny.github.io/tags/ugv/</link>
-    <description>Recent content in UGV on Yueqian&#39;s Page</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 13 Nov 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/ugv/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Dash To Cones</title>
-      <link>https://ercbunny.github.io/p/dash-to-cones/</link>
-      <pubDate>Sat, 13 Nov 2021 16:37:33 +0800</pubDate>
-      
-      <guid>https://ercbunny.github.io/p/dash-to-cones/</guid>
-      <description>VIDEO DEMO RELATED LINKS Source Code
-View Project Report PDF (Chinese)</description>
-    </item>
+    <channel>
+        <title>UGV on Ryan&#39;s Page</title>
+        <link>https://ercbunny.github.io/tags/ugv/</link>
+        <description>Recent content in UGV on Ryan&#39;s Page</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 13 Nov 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/ugv/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Dash To Cones</title>
+        <link>https://ercbunny.github.io/projects/211113-dashtocones/</link>
+        <pubDate>Sat, 13 Nov 2021 16:37:33 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/projects/211113-dashtocones/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/211113-dashtocones/cover.png" alt="Featured image of post Dash To Cones" /&gt;&lt;hr&gt;
+&lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
+
+
+
+
+
+
     
-  </channel>
+
+
+&lt;div class=&#34;video-wrapper&#34;&gt;
+    &lt;iframe src=&#34;https://player.bilibili.com/player.html?as_wide=1&amp;amp;high_quality=1&amp;amp;page=1&amp;bvid=BV1E44y1v7D8&#34;
+            scrolling=&#34;no&#34;
+            frameborder=&#34;no&#34;
+            framespacing=&#34;0&#34;
+            allowfullscreen=&#34;true&#34;
+    &gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;related-links&#34;&gt;RELATED LINKS&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/DashToCones&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Source Code&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/DIP-d2c.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;View Project Report PDF (Chinese)&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

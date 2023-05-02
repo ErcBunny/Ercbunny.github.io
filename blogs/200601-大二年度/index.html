@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='主要工作 学分绩 大一摸清了一些考试规律，所以大二更加注重对知识的掌握程度，而非仅仅停留在把握整体框架上，于是在最后考试的时候做题不会感觉生疏。虽然有些课是真的不戳我兴趣点，但是还是硬着头皮去学了，毕竟抛开卷的问题，学分绩在哪里都是很重要的，所以丝毫不敢放松。
+最终结果是把均分从84.4拉到了88.0，只看第二学年的话均分有92.0，算是一个进步。本来的目标是上90就好，除了数电，其他都达到这个目标，于是我有些小得意，认为做到这已经足够了，但实际上还是没多少竞争力，所以接下来还需要向满分看齐才是。
+工训省赛 其实之前也没有特意向去参加这个比赛，但是因为它给了一个机会继续捣鼓捣鼓无人机，就索性参加了。我们基本试遍了各种可能的方式，对无人机现在的局限和未来的发展方向也有了更清楚的认识。主要局限还是在传感器融合和定位问题上面。
+RM2020 说起来比较惭愧，这个赛季我比较划水，做的都是些比较基础的工作。视觉部分代码沿用的是SJTU2019的框架，而使用的相机硬件上不一样，于是需要为我们选用的大恒相机写相机驱动代码。考虑到这部分工作比较简单，这工作就交给我了。这部分工作确实也比较简单，重新写了一份wrapper就结束了，所以后面又跟着把SJTU的整份代码过了一遍。之前一直不明白用C&#43;&#43;到底应该怎么组织一个大项目，理清之后算是明白了。最终效果还不错，能够在480p分辨率下稳定达到60FPS以上，在低快门速度条件下大概能稳定在110FPS左右。具体记不太清了，但应该是比较顺滑的。
+准备UCB交换项目 有个同伴一起准备还是真的挺不错的。我们可以同步信息，一起练习口语之类的，所以准备过程还是非常轻松的。之前我20年元旦写道：如果不出意外的话再过一个学期就可以去交换了……然后果真出意外了，所以申请到之后与那边不断联系的过程是令人焦虑的，最后是再三推迟，一直推迟到了大四学年，到时候看自己更加清楚自己发展方向之后再决定去不去吧。
+展望 接下来的学年是学分绩竞争的决赛圈了，学分很重，但幸好对几门课比较有兴趣，希望能保持上升之势。再有就是希望自己能尽早确定自己的方向叭。'>
+<title>大二学年总结</title>
+
+<link rel='canonical' href='https://ercbunny.github.io/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='大二学年总结'>
+<meta property='og:description' content='主要工作 学分绩 大一摸清了一些考试规律，所以大二更加注重对知识的掌握程度，而非仅仅停留在把握整体框架上，于是在最后考试的时候做题不会感觉生疏。虽然有些课是真的不戳我兴趣点，但是还是硬着头皮去学了，毕竟抛开卷的问题，学分绩在哪里都是很重要的，所以丝毫不敢放松。
+最终结果是把均分从84.4拉到了88.0，只看第二学年的话均分有92.0，算是一个进步。本来的目标是上90就好，除了数电，其他都达到这个目标，于是我有些小得意，认为做到这已经足够了，但实际上还是没多少竞争力，所以接下来还需要向满分看齐才是。
+工训省赛 其实之前也没有特意向去参加这个比赛，但是因为它给了一个机会继续捣鼓捣鼓无人机，就索性参加了。我们基本试遍了各种可能的方式，对无人机现在的局限和未来的发展方向也有了更清楚的认识。主要局限还是在传感器融合和定位问题上面。
+RM2020 说起来比较惭愧，这个赛季我比较划水，做的都是些比较基础的工作。视觉部分代码沿用的是SJTU2019的框架，而使用的相机硬件上不一样，于是需要为我们选用的大恒相机写相机驱动代码。考虑到这部分工作比较简单，这工作就交给我了。这部分工作确实也比较简单，重新写了一份wrapper就结束了，所以后面又跟着把SJTU的整份代码过了一遍。之前一直不明白用C&#43;&#43;到底应该怎么组织一个大项目，理清之后算是明白了。最终效果还不错，能够在480p分辨率下稳定达到60FPS以上，在低快门速度条件下大概能稳定在110FPS左右。具体记不太清了，但应该是比较顺滑的。
+准备UCB交换项目 有个同伴一起准备还是真的挺不错的。我们可以同步信息，一起练习口语之类的，所以准备过程还是非常轻松的。之前我20年元旦写道：如果不出意外的话再过一个学期就可以去交换了……然后果真出意外了，所以申请到之后与那边不断联系的过程是令人焦虑的，最后是再三推迟，一直推迟到了大四学年，到时候看自己更加清楚自己发展方向之后再决定去不去吧。
+展望 接下来的学年是学分绩竞争的决赛圈了，学分很重，但幸好对几门课比较有兴趣，希望能保持上升之势。再有就是希望自己能尽早确定自己的方向叭。'>
+<meta property='og:url' content='https://ercbunny.github.io/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/'>
+<meta property='og:site_name' content='Ryan&#39;s Page'>
+<meta property='og:type' content='article'><meta property='article:section' content='Blogs' /><meta property='article:tag' content='阶段性总结' /><meta property='article:published_time' content='2020-06-01T18:52:23&#43;08:00'/><meta property='article:modified_time' content='2020-06-01T18:52:23&#43;08:00'/><meta property='og:image' content='https://ercbunny.github.io/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/grade2.png' />
+<meta name="twitter:site" content="@yueqianliu1">
+    <meta name="twitter:creator" content="@yueqianliu1"><meta name="twitter:title" content="大二学年总结">
+<meta name="twitter:description" content="主要工作 学分绩 大一摸清了一些考试规律，所以大二更加注重对知识的掌握程度，而非仅仅停留在把握整体框架上，于是在最后考试的时候做题不会感觉生疏。虽然有些课是真的不戳我兴趣点，但是还是硬着头皮去学了，毕竟抛开卷的问题，学分绩在哪里都是很重要的，所以丝毫不敢放松。
+最终结果是把均分从84.4拉到了88.0，只看第二学年的话均分有92.0，算是一个进步。本来的目标是上90就好，除了数电，其他都达到这个目标，于是我有些小得意，认为做到这已经足够了，但实际上还是没多少竞争力，所以接下来还需要向满分看齐才是。
+工训省赛 其实之前也没有特意向去参加这个比赛，但是因为它给了一个机会继续捣鼓捣鼓无人机，就索性参加了。我们基本试遍了各种可能的方式，对无人机现在的局限和未来的发展方向也有了更清楚的认识。主要局限还是在传感器融合和定位问题上面。
+RM2020 说起来比较惭愧，这个赛季我比较划水，做的都是些比较基础的工作。视觉部分代码沿用的是SJTU2019的框架，而使用的相机硬件上不一样，于是需要为我们选用的大恒相机写相机驱动代码。考虑到这部分工作比较简单，这工作就交给我了。这部分工作确实也比较简单，重新写了一份wrapper就结束了，所以后面又跟着把SJTU的整份代码过了一遍。之前一直不明白用C&#43;&#43;到底应该怎么组织一个大项目，理清之后算是明白了。最终效果还不错，能够在480p分辨率下稳定达到60FPS以上，在低快门速度条件下大概能稳定在110FPS左右。具体记不太清了，但应该是比较顺滑的。
+准备UCB交换项目 有个同伴一起准备还是真的挺不错的。我们可以同步信息，一起练习口语之类的，所以准备过程还是非常轻松的。之前我20年元旦写道：如果不出意外的话再过一个学期就可以去交换了……然后果真出意外了，所以申请到之后与那边不断联系的过程是令人焦虑的，最后是再三推迟，一直推迟到了大四学年，到时候看自己更加清楚自己发展方向之后再决定去不去吧。
+展望 接下来的学年是学分绩竞争的决赛圈了，学分很重，但幸好对几门课比较有兴趣，希望能保持上升之势。再有就是希望自己能尽早确定自己的方向叭。"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://ercbunny.github.io/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/grade2.png' />
+    <link rel="shortcut icon" href="/img/user.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu047d7df235c50937c4e2e6b6880cc61b_117975_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Ryan&#39;s Page</a></h1>
+            <h2 class="site-description">Yueqian Liu | 刘越千</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/ErcBunny'
+                        target="_blank"
+                        title="1-GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/ryan-yql/'
+                        target="_blank"
+                        title="2-linkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0,0,256,256" width="50px" height="50px" fill-rule="nonzero"><g fill-opacity="1" fill="#cdcdcd" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.12,5.12)"><path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.76 2.24,5 5,5h32c2.76,0 5,-2.24 5,-5v-32c0,-2.76 -2.24,-5 -5,-5zM17,20v19h-6v-19zM11,14.47c0,-1.4 1.2,-2.47 3,-2.47c1.8,0 2.93,1.07 3,2.47c0,1.4 -1.12,2.53 -3,2.53c-1.8,0 -3,-1.13 -3,-2.53zM39,39h-6c0,0 0,-9.26 0,-10c0,-2 -1,-4 -3.5,-4.04h-0.08c-2.42,0 -3.42,2.06 -3.42,4.04c0,0.91 0,10 0,10h-6v-19h6v2.56c0,0 1.93,-2.56 5.81,-2.56c3.97,0 7.19,2.73 7.19,8.26z"></path></g></g></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/16031917'
+                        target="_blank"
+                        title="3-BiliBili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg t="1638771673560" class="icon" viewBox="0 0 2299 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2977" width="200" height="200"><path d="M1775.840814 322.588002c6.0164 1.002733 53.144869-9.525967 55.150336-6.016401 3.0082 4.5123 24.065601 155.92504 18.550567 156.927774s-44.621635 10.027334-44.621635 10.027334c-3.0082-20.556034-28.577901-147.903173-29.079268-160.938707m75.205003-14.539634l20.556034 162.944174c10.5287-0.501367 53.144869-3.509567 57.155803-4.010934-6.0164-61.668103-16.545101-158.933241-16.545101-158.93324-20.054668-4.010934-41.112069-4.010934-61.166736 0m-40.610702 226.116376s92.752838-23.564234 126.344406-12.0328c17.046467 61.668103 48.131202 407.611118 51.139402 421.649386-21.057401 2.506833-90.246004 8.523234-95.761037 10.027333-4.5123-26.071068-81.72277-403.098818-81.722771-419.643919m343.436183-207.565809c5.515034 1.5041 54.648969-5.013667 55.150335-1.5041 1.002733 12.032801 6.0164 157.42914 0.501367 157.930507s-44.621635 4.010934-44.621635 4.010934c-1.002733-20.054668-12.032801-146.90044-11.030067-160.437341m75.70637-4.010933l4.010933 160.938707c10.5287 0 52.643502 2.506833 57.155803 2.005467-1.002733-61.668103 0-158.933241 0-158.933241-20.054668-3.509567-40.610702-5.013667-61.166736-4.010933m-64.676303 216.089043s94.758304-12.534167 126.845772 2.506833c7.019134 72.196803 6.0164 408.613852 7.019134 422.652119-21.558768 0-90.246004 1.002733-95.761038 2.005467-1.002733-26.071068-39.607968-410.619319-38.103868-427.164419m-220.099977-413.627519c54.648969 278.759879 96.262404 755.058234 97.766504 785.641602 0 0 43.117535 1.002733 91.750105 4.010934C2105.740095 614.383415 2070.644427 134.575493 2071.145794 119.033126c-12.032801-13.536901-126.344406 6.0164-126.344406 6.0164m-120.328005 659.297196c-10.5287-78.213204-290.291313-166.955108-447.720454-138.377206 0 0-19.553301-172.470141-27.073801-339.425248-6.517767-143.390873-1.002733-282.770813 0.501366-305.833681-10.5287-7.5205-123.837572 46.627102-185.004308 69.188603 0 0 73.199537 309.844614 126.344406 952.59671 0 0 84.730971 9.0246 230.12731-19.051934s317.365114-115.815705 302.825481-219.097244m-341.932083 140.88404l-24.566967-176.982441c6.0164-3.0082 156.927774 53.144869 172.971507 63.172203-2.506833 11.030067-148.40454 113.810238-148.40454 113.810238M610.664628 322.588002c6.0164 1.002733 53.144869-9.525967 55.150335-6.016401 3.0082 4.5123 24.065601 155.92504 18.550568 156.927774s-44.621635 10.027334-44.621635 10.027334c-3.0082-20.556034-28.577901-147.903173-29.079268-160.938707m75.205003-14.539634l20.556034 162.944174c10.5287-0.501367 53.144869-3.509567 57.155803-4.010934-6.517767-61.668103-16.545101-158.933241-16.545101-158.93324-20.054668-4.010934-41.112069-4.010934-61.166736 0m-40.610702 226.116376s92.752838-23.564234 126.344406-12.0328c17.046467 61.668103 48.131202 407.611118 51.139402 421.649386-21.057401 2.506833-90.246004 8.523234-95.761037 10.027333-4.5123-26.071068-81.72277-403.098818-81.722771-419.643919m343.436182-207.565809c5.515034 1.5041 54.648969-5.013667 55.150336-1.5041 1.002733 12.032801 6.0164 157.42914 0.501367 157.930507s-44.621635 4.010934-44.621635 4.010934c-1.002733-20.054668-11.531434-146.90044-11.030068-160.437341m75.706371-4.010933l4.010933 160.938707c10.5287 0 52.643502 2.506833 57.155803 2.005467-1.002733-61.668103 0-158.933241 0-158.933241-20.054668-3.509567-40.610702-4.5123-61.166736-4.010933m-64.676303 216.089043s94.758304-12.534167 126.845772 2.506833c7.019134 72.196803 6.0164 408.613852 7.019134 422.652119-21.558768 0-90.246004 1.002733-95.761038 2.005467-0.501367-26.071068-39.607968-410.619319-38.103868-427.164419m-220.099977-413.627519c54.648969 278.759879 96.262404 755.058234 97.766504 785.641602 0 0 43.117535 1.002733 91.750105 4.010934-28.577901-300.318647-63.67357-780.126569-63.172203-796.170303-12.032801-13.035534-126.344406 6.517767-126.344406 6.517767m-120.328005 659.297196c-10.5287-78.213204-290.291313-166.955108-447.720454-138.377206 0 0-19.553301-172.470141-27.073801-339.425248-6.517767-143.390873-1.002733-282.770813 0.501366-305.833681C174.475608-6.308547 61.166736 47.337689 0 69.89919c0 0 73.199537 309.844614 126.344406 952.59671 0 0 84.730971 9.0246 230.12731-19.051934s317.365114-115.815705 302.825481-219.097244m-341.932083 140.88404l-24.566967-176.982441c6.0164-3.0082 156.927774 53.144869 172.971507 63.172203-2.506833 11.030067-148.40454 113.810238-148.40454 113.810238" p-id="2978" fill="#cdcdcd"></path></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/">
+                <img src="/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/grade2_hu65db3d3950f69fe59edc17a383b8c148_35066_800x0_resize_box_3.png"
+                        srcset="/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/grade2_hu65db3d3950f69fe59edc17a383b8c148_35066_800x0_resize_box_3.png 800w, /blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/grade2_hu65db3d3950f69fe59edc17a383b8c148_35066_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="450" 
+                        loading="lazy"
+                        alt="Featured image of post 大二学年总结" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/blogs/" style="background-color: #66ccff; color: #fff;">
+                Blogs
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/">大二学年总结</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 01, 2020</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <hr>
+<h2 id="主要工作">主要工作</h2>
+<h3 id="学分绩">学分绩</h3>
+<p>大一摸清了一些考试规律，所以大二更加注重对知识的掌握程度，而非仅仅停留在把握整体框架上，于是在最后考试的时候做题不会感觉生疏。虽然有些课是真的不戳我兴趣点，但是还是硬着头皮去学了，毕竟抛开卷的问题，学分绩在哪里都是很重要的，所以丝毫不敢放松。</p>
+<p>最终结果是把均分从84.4拉到了88.0，只看第二学年的话均分有92.0，算是一个进步。本来的目标是上90就好，除了数电，其他都达到这个目标，于是我有些小得意，认为做到这已经足够了，但实际上还是没多少竞争力，所以接下来还需要向满分看齐才是。</p>
+<h3 id="工训省赛">工训省赛</h3>
+<p>其实之前也没有特意向去参加这个比赛，但是因为它给了一个机会继续捣鼓捣鼓无人机，就索性参加了。我们基本试遍了各种可能的方式，对无人机现在的局限和未来的发展方向也有了更清楚的认识。主要局限还是在传感器融合和定位问题上面。</p>
+<h3 id="rm2020">RM2020</h3>
+<p>说起来比较惭愧，这个赛季我比较划水，做的都是些比较基础的工作。视觉部分代码沿用的是SJTU2019的框架，而使用的相机硬件上不一样，于是需要为我们选用的大恒相机写相机驱动代码。考虑到这部分工作比较简单，这工作就交给我了。这部分工作确实也比较简单，重新写了一份wrapper就结束了，所以后面又跟着把SJTU的整份代码过了一遍。之前一直不明白用C++到底应该怎么组织一个大项目，理清之后算是明白了。最终效果还不错，能够在480p分辨率下稳定达到60FPS以上，在低快门速度条件下大概能稳定在110FPS左右。具体记不太清了，但应该是比较顺滑的。</p>
+<h3 id="准备ucb交换项目">准备UCB交换项目</h3>
+<p>有个同伴一起准备还是真的挺不错的。我们可以同步信息，一起练习口语之类的，所以准备过程还是非常轻松的。之前我20年元旦写道：如果不出意外的话再过一个学期就可以去交换了……然后果真出意外了，所以申请到之后与那边不断联系的过程是令人焦虑的，最后是再三推迟，一直推迟到了大四学年，到时候看自己更加清楚自己发展方向之后再决定去不去吧。</p>
+<hr>
+<h2 id="展望">展望</h2>
+<p>接下来的学年是学分绩竞争的决赛圈了，学分很重，但幸好对几门课比较有兴趣，希望能保持上升之势。再有就是希望自己能尽早确定自己的方向叭。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%80%BB%E7%BB%93/">阶段性总结</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/blogs/211231-summary21/">
+        
+        
+            <div class="article-image">
+                <img src="/blogs/211231-summary21/2021.6f7589652f7cc16294b8944553f92c38_huc1402657d641ca3660474bfa88b56f1c_479703_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 2021年度总结"
+                        
+                        data-hash="md5-b3WJZS98wWKUuJRFU/ksOA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2021年度总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/blogs/201231-summary20/">
+        
+        
+            <div class="article-image">
+                <img src="/blogs/201231-summary20/2020.b580654f19288fd9902069f4efd0b09e_hu4961ff54ea972e84eb5ca448ce932c40_2786506_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 2020年度总结"
+                        
+                        data-hash="md5-tYBlTxkoj9mQIGn079Cwng==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2020年度总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/blogs/192131-summary19/">
+        
+        
+            <div class="article-image">
+                <img src="/blogs/192131-summary19/2019.b247f8388304a9cd5b1fa3ffb7c475d8_hu0801e8d3e958bda0c56cce287f8c2963_265171_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 2019年度总结"
+                        
+                        data-hash="md5-skf4OIMEqc1bH6P/t8R12A==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2019年度总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/blogs/210801-%E5%85%A5%E6%B5%B7/">
+        
+        
+            <div class="article-image">
+                <img src="/blogs/210801-%E5%85%A5%E6%B5%B7/%E5%85%A5%E6%B5%B7cover.1fa5c918402147cf2cc921b87ab2bacb_hud2efaeeb3ba0db5d048dc11641d2cfa5_73340_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 入海MV结尾问题我的答案"
+                        
+                        data-hash="md5-H6XJGEAhR88sySG4erK6yw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">入海MV结尾问题我的答案</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/blogs/200101-wishlist/">
+        
+        
+            <div class="article-image">
+                <img src="/blogs/200101-wishlist/wishListCover.56555f156f4492b8146522e9172b2cd3_hu71f9f5bd7aed0ef327064504eac5e160_673682_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 愿望清单"
+                        
+                        data-hash="md5-VlVfFW9EkrgUZSLpFyss0w==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">愿望清单</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2021 - 
+        
+        2023 Ryan&#39;s Page
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

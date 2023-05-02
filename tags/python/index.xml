@@ -1,21 +1,71 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>PYTHON on Yueqian&#39;s Page</title>
-    <link>https://ercbunny.github.io/tags/python/</link>
-    <description>Recent content in PYTHON on Yueqian&#39;s Page</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 22 Jan 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>pyTimelapse</title>
-      <link>https://ercbunny.github.io/p/pytimelapse/</link>
-      <pubDate>Fri, 22 Jan 2021 16:37:33 +0800</pubDate>
-      
-      <guid>https://ercbunny.github.io/p/pytimelapse/</guid>
-      <description>VIDEO DEMO LINKS Open Source Repository
-Daily Update of Captured Images (Onedrive)</description>
-    </item>
+    <channel>
+        <title>PYTHON on Ryan&#39;s Page</title>
+        <link>https://ercbunny.github.io/tags/python/</link>
+        <description>Recent content in PYTHON on Ryan&#39;s Page</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 22 Jan 2021 16:37:33 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>pyTimelapse</title>
+        <link>https://ercbunny.github.io/projects/210122-timelapse/</link>
+        <pubDate>Fri, 22 Jan 2021 16:37:33 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/projects/210122-timelapse/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/210122-timelapse/cover.jpg" alt="Featured image of post pyTimelapse" /&gt;&lt;hr&gt;
+&lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
+
+
+
+
+
+
     
-  </channel>
+
+
+&lt;div class=&#34;video-wrapper&#34;&gt;
+    &lt;iframe src=&#34;https://player.bilibili.com/player.html?as_wide=1&amp;amp;high_quality=1&amp;amp;page=1&amp;bvid=BV1fA411u7bN&#34;
+            scrolling=&#34;no&#34;
+            frameborder=&#34;no&#34;
+            framespacing=&#34;0&#34;
+            allowfullscreen=&#34;true&#34;
+    &gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+
+
+
+
+
+
+
+    
+
+
+&lt;div class=&#34;video-wrapper&#34;&gt;
+    &lt;iframe src=&#34;https://player.bilibili.com/player.html?as_wide=1&amp;amp;high_quality=1&amp;amp;page=1&amp;bvid=BV1Qq4y1C7kc&#34;
+            scrolling=&#34;no&#34;
+            frameborder=&#34;no&#34;
+            framespacing=&#34;0&#34;
+            allowfullscreen=&#34;true&#34;
+    &gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;links&#34;&gt;LINKS&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/pyTimelapse&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Open Source Repository&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://1drv.ms/u/s!AtUoQjeuHMpig8JX0S1abcFsuyfjlw?e=GkEuG5&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Daily Update of Captured Images (Onedrive)&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

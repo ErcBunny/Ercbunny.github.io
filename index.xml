@@ -1,28 +1,205 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Yueqian&#39;s Page</title>
+        <title>Ryan&#39;s Page</title>
         <link>https://ercbunny.github.io/</link>
-        <description>Recent content on Yueqian&#39;s Page</description>
+        <description>Recent content on Ryan&#39;s Page</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 27 Apr 2023 12:00:00 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Page No Longer Maintained</title>
-        <link>https://ercbunny.github.io/p/page-no-longer-maintained/</link>
-        <pubDate>Thu, 27 Apr 2023 12:00:00 +0800</pubDate>
+        <lastBuildDate>Mon, 01 May 2023 21:40:00 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Extended Kalman Filter</title>
+        <link>https://ercbunny.github.io/notes/230501-ekf/</link>
+        <pubDate>Mon, 01 May 2023 21:40:00 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/page-no-longer-maintained/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/page-no-longer-maintained/cover.png" alt="Featured image of post Page No Longer Maintained" /&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/aboutMe&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Click me to go to the new site&lt;/a&gt;, new page is &lt;code&gt;Work in Progress&lt;/code&gt;. Old stuff are left untouched, thank you for reading. Cheers ~&lt;/p&gt;
+        <guid>https://ercbunny.github.io/notes/230501-ekf/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/notes/230501-ekf/cover.jpg" alt="Featured image of post Extended Kalman Filter" /&gt;&lt;p&gt;&lt;code&gt;WIP&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This post summarizes my understanding of the Extended Kalman Filter (EKF). I once used EKF to filter noisy barometer data in my antenna tracking system. At that time I wrote in the repository:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I don&amp;rsquo;t quite understand how a kalman filter works (just for now), so the code for this part is written by Similar_Fair. Click the link below for more information: &lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/sunhaobo1996/article/details/53861752&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://blog.csdn.net/sunhaobo1996/article/details/53861752&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;And that was on Sep 9, 2018. Four years later, I had to use EKF in my adaptive controller project and finally had it figured out.&lt;/p&gt;
+&lt;h2 id=&#34;linear-kalman-filter&#34;&gt;Linear Kalman Filter&lt;/h2&gt;
+&lt;p&gt;The Kalman Filter is also called the optimal linear estimator or filter, as it aims to minimize the sum of autocovariance of variables. While the original Kalman Filter works with linear systems, the EKF extends its working domain to non-linear systems by using Taylor expansion linearization. Understanding KF is the first step towards understanding the EKF. The &lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1ez4y1X7eR/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;videos&lt;/a&gt; here are very helpful.&lt;/p&gt;
+&lt;h3 id=&#34;problem-formulation&#34;&gt;Problem Formulation&lt;/h3&gt;
+&lt;p&gt;Consider a discrete-time linear system:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{cases}
+\bm{x}&lt;em&gt;k = \bm{G} \bm{x}&lt;/em&gt;{k-1} + \bm{H} \bm{u}&lt;em&gt;{k-1} + \bm{w}&lt;/em&gt;{k-1} \
+\bm{z}_k = \bm{M} \bm{x}_k + \bm{v}_k
+\end{cases}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;where $\bm{x}$ is the state vector, $\bm{w}$ is the process noise that is assumed to satisfy normal distribution of $N(0, \bm{Q})$, $\bm{z}$ is the observation vector, and $\bm{v}$ is the measurement noise s.t. $N(0, \bm{R})$. The dynamics of the process noise and measurement noise are unknown, which is the reason for modeling them as stochastic variables.&lt;/p&gt;
+&lt;p&gt;With these two equations, the mean value of the state vector can be estimated in two ways:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{cases}
+\hat{\bm{x}}&lt;em&gt;k^- = \bm{G} \bm{x}&lt;/em&gt;{k-1} + \bm{H} \bm{u}_{k-1} \
+\hat{\bm{x}}_k^+ = \bm{M}^{-1} \bm{z}_k
+\end{cases}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;one by propagating system states and inputs from the last time step, and one by inferring from the measured values. In most cases $\hat{\bm{x}}_k^- \neq \hat{\bm{x}}_k^+$, which means we need to combine, or &amp;ldquo;fuse&amp;rdquo;, these two estimations into one $\hat{\bm{x}}_k$. This step is often implemented using the weighted average. The weight $\rho_k$ may be different for different time steps:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\hat{\bm{x}}_k
+&amp;amp;= (1 - \rho_k) \hat{\bm{x}}_k^- + \rho_k \hat{\bm{x}}_k^+ \
+&amp;amp;= \hat{\bm{x}}_k^- + \rho_k (\hat{\bm{x}}_k^+ - \hat{\bm{x}}_k^-) \
+&amp;amp;= \hat{\bm{x}}_k^- + \rho_k (\bm{M}^{-1} \bm{z}_k - \hat{\bm{x}}_k^-) \
+&amp;amp;= \hat{\bm{x}}_k^- + \rho_k \bm{M}^{-1} (\bm{z}_k - \bm{M} \hat{\bm{x}}_k^-) \
+&amp;amp;= \hat{\bm{x}}_k^- + \bm{K}_k (\bm{z}_k - \bm{M} \hat{\bm{x}}_k^-)
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;where $\bm{K}_k = \rho_k \bm{M}^{-1}$ is often called the &amp;ldquo;Kalman gain&amp;rdquo;. Now, how to determine the value of $\bm{K}_k$? Please remember that we are looking at stochastic variables with variances: let&amp;rsquo;s define a variable for estimation error as $\bm{e}_k = \bm{x}_k - \hat{\bm{x}}_k$, and $\bm{e}_k \sim N(0, \bm{P}_k)$. We ultimately want to find a $\bm{K}_k$ that makes $\text{trace}(\bm{P}_k)$ minimal, which means minimizing the sum of error autocovariance.&lt;/p&gt;
+&lt;h3 id=&#34;error-covariance-calculation&#34;&gt;Error Covariance Calculation&lt;/h3&gt;
+&lt;p&gt;By the definition of covariance, we can express $\bm{P}_k$ as:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}_k
+&amp;amp;= \mathbb{E}[\bm{e}_k \bm{e}_k^\intercal] \
+&amp;amp;= \mathbb{E}[(\bm{x}_k - \hat{\bm{x}}_k) (\bm{x}_k - \hat{\bm{x}}_k^\intercal)]
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Swap $\hat{\bm{x}}_k$ with the weighted average expression, and note $\bm{x}_k - \hat{\bm{x}}_k^-$ as $\bm{e}_k^-$, we have:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}_k = \mathbb{E}[
+&amp;amp;(\mathbb{I}-\bm{K}_k\bm{M})\bm{e}_k^-((\mathbb{I}-\bm{K}_k\bm{M})\bm{e}_k^-)^\intercal\
+&amp;amp;- (\mathbb{I}-\bm{K}_k\bm{M})\bm{e}_k^-\bm{v}_k\bm{K}_k^\intercal\
+&amp;amp;- \bm{K}_k \bm{v}_k {\bm{e}_k^-}^\intercal(\mathbb{I}-\bm{K}_k\bm{M})^\intercal\
+&amp;amp;+ \bm{K}_k \bm{v}_k (\bm{K}_k \bm{v}_k)^\intercal]
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Then calculate the expectation of each term:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}_k &amp;amp;= (\mathbb{I}-\bm{K}_k\bm{M}) \mathbb{E}[\bm{e}_k^- {\bm{e}_k^-}^\intercal] (\mathbb{I}-\bm{K}_k\bm{M})^\intercal\
+&amp;amp;- 0 \
+&amp;amp;- 0 \
+&amp;amp;+ \bm{K}_k\bm{R}{\bm{K}_k}^\intercal
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Nice, the second and third terms are all expected to be zero since $\bm{e}$ and $\bm{v}$ are not correlated. Here we encounter $\mathbb{E}[\bm{e}_k^-{\bm{e}_k^-}^\intercal]$, let&amp;rsquo;s call it $\bm{P}_k^-$. Then we can expand $\bm{P}_k$ to an even simpler form:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\bm{P}_k = \bm{P}_k^- - \bm{K}_k\bm{M}\bm{P}_k^- - (\bm{K}_k\bm{M}\bm{P}_k^-)^\intercal + \bm{K}_k\bm{M}\bm{P}_k^-(\bm{K}_k\bm{M})^\intercal+\bm{K}_k\bm{R}\bm{K}_k^\intercal
+\end{equation}
+$$&lt;/p&gt;
+&lt;h3 id=&#34;minimizing-the-trace&#34;&gt;Minimizing the Trace&lt;/h3&gt;
+&lt;p&gt;From the last equation we have:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\text{tr}(\bm{P}_k) = \text{tr}(\bm{P}_k^-) - 2\text{tr}(\bm{K}_k\bm{M}\bm{P}_k^-) + \text{tr}(\bm{K}_k\bm{M}\bm{P}_k^-(\bm{K}_k\bm{M})^\intercal) + \text{tr}(\bm{K}_k\bm{R}\bm{K}_k^\intercal)
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;which is a function of $\bm{K}_k$ with a minima at some point. Now, the problem is reduced to solving $\frac{d\text{tr}(\bm{P}_k)}{d\bm{K}_k} = 0$. There are two equations that greatly help the solving process:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\frac{d\text{tr}(\bm{A}\bm{B})}{d\bm{A}} = \bm{B}^\intercal
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\frac{d\text{tr}(\bm{A}\bm{B}{\bm{A}}^\intercal)}{d\bm{A}} = 2\bm{A}\bm{B}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Expand $\frac{d\text{tr}(\bm{P}_k)}{d\bm{K}_k} = 0$:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\frac{d\text{tr}(\bm{P}_k)}{d\bm{K}_k} = 0 - 2(\bm{M}\bm{P}_k^-)^\intercal + 2\bm{K}_k\bm{M}\bm{P}_k^-\bm{M}^\intercal+2\bm{K}_k\bm{R} = 0
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Solving the above equation gives the Kalman gain: $\bm{K}_k = \frac{\bm{P}_k^-\bm{M}^\intercal}{\bm{M}\bm{P}_k^-\bm{M}^\intercal+\bm{R}}$. Problem solved! Well, not really. The final step is to calculate $\bm{P}_k^-$. Since&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\bm{e}_k^-=\bm{x}&lt;em&gt;k - \hat{\bm{x}}&lt;em&gt;k^-=\bm{G}\bm{e}&lt;/em&gt;{k-1}+\bm{w}&lt;/em&gt;{k-1}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;and $\bm{P}_k^-$ can be written in the expectation form, we have:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+\bm{P}&lt;em&gt;k^-
+&amp;amp;= \mathbb{E}[\bm{G}\bm{e}&lt;/em&gt;{k-1}(\bm{G}\bm{e}&lt;em&gt;{k-1})^\intercal] + \bm{G}\mathbb{E}[\bm{e}&lt;/em&gt;{k-1}\bm{w}&lt;em&gt;{k-1}^\intercal]+\mathbb{E}[\bm{e}&lt;/em&gt;{k-1}\bm{w}&lt;em&gt;{k-1}^\intercal]\bm{G}^\intercal+\mathbb{E}[\bm{w}&lt;/em&gt;{k-1}\bm{w}&lt;em&gt;{k-1}^\intercal] \
+&amp;amp;=\bm{G}\bm{P}&lt;/em&gt;{k-1}\bm{G}^\intercal+\bm{Q}
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;Now the derivation is complete - we&amp;rsquo;ve found the optimal gain to fuse two estimations together to make covariance minimal. The complete update steps of the Kalman Filter are:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+&amp;amp;\text{1.}\ \hat{\bm{x}}&lt;em&gt;k^- = \bm{G} \bm{x}&lt;/em&gt;{k-1} + \bm{H} \bm{u}_{k-1} \
+&amp;amp;\text{2.}\ \bm{P}&lt;em&gt;k^- = \bm{G}\bm{P}&lt;/em&gt;{k-1}\bm{G}^\intercal+\bm{Q} \
+&amp;amp;\text{3.}\ \bm{K}_k = \frac{\bm{P}_k^-\bm{M}^\intercal}{\bm{M}\bm{P}_k^-\bm{M}^\intercal+\bm{R}} \
+&amp;amp;\text{4.}\ \hat{\bm{x}}_k=\hat{\bm{x}}_k^- + \bm{K}_k (\bm{z}_k - \bm{M} \hat{\bm{x}}_k^-) \
+&amp;amp;\text{5.}&lt;br&gt;
+\begin{split}
+\bm{P}_k &amp;amp;= \bm{P}_k^- - \bm{K}_k\bm{M}\bm{P}_k^- - (\bm{K}_k\bm{M}\bm{P}_k^-)^\intercal + \bm{K}_k\bm{M}\bm{P}_k^-(\bm{K}_k\bm{M})^\intercal+\bm{K}_k\bm{R}\bm{K}_k^\intercal \
+&amp;amp;= \bm{P}_k^- - \bm{K}_k\bm{M}\bm{P}_k^-
+\end{split}
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;extended-kalman-filter&#34;&gt;Extended Kalman Filter&lt;/h2&gt;
+&lt;p&gt;EKF extends the original flavored KF to nonlinear systems by using Taylor series expansion. That is it.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+&amp;amp;\begin{cases}
+\bm{x}&lt;em&gt;k = f&lt;/em&gt;{RK4}(\bm{x}&lt;em&gt;{k-1}, \bm{u}&lt;/em&gt;{k-1}, \bm{w}&lt;em&gt;{k-1})\
+\bm{z}&lt;em&gt;k = g(\bm{x}&lt;/em&gt;{k},\bm{v}&lt;em&gt;k)
+\end{cases} \
+\rightarrow
+&amp;amp;\begin{cases}
+\bm{x}&lt;em&gt;k = f&lt;/em&gt;{RK4}(\hat{\bm{x}}&lt;/em&gt;{k-1}, \bm{u}&lt;/em&gt;{k-1}, \bm{0}) + \frac{\partial f_{RK4}(\hat{\bm{x}}&lt;em&gt;{k-1},\bm{u}&lt;/em&gt;{k-1},\bm{0})}{\partial \bm{x}}(\bm{x}&lt;em&gt;{k-1}-\hat{\bm{x}}&lt;/em&gt;{k-1}) + \frac{\partial f_{RK4}(\hat{\bm{x}}&lt;em&gt;{k-1},\bm{u}&lt;/em&gt;{k-1},\bm{0})}{\partial \bm{w}}\bm{w}&lt;em&gt;{k-1}\
+\bm{z}&lt;em&gt;k = g(\hat{\bm{x}}&lt;/em&gt;{k},\bm{0})+\frac{\partial g(\hat{\bm{x}}&lt;/em&gt;{k},\bm{0})}{\partial \bm{x}}(\bm{x}&lt;em&gt;{k}-\hat{\bm{x}}&lt;/em&gt;{k})+\frac{\partial g(\hat{\bm{x}}&lt;em&gt;{k},\bm{0})}{\partial \bm{v}}\bm{v}&lt;/em&gt;{k}
+\end{cases} \
+:=
+&amp;amp;\begin{cases}
+\bm{x}_k = \hat{\bm{x}}&lt;em&gt;k^- + \bm{G}&lt;em&gt;k(\bm{x}&lt;/em&gt;{k-1}-\hat{\bm{x}}&lt;/em&gt;{k-1}) + \bm{W}&lt;em&gt;k\bm{w}&lt;/em&gt;{k-1} \
+\bm{z}_k = \hat{\bm{z}}&lt;em&gt;k + \bm{M}&lt;em&gt;k(\bm{x}&lt;/em&gt;{k}-\hat{\bm{x}}&lt;/em&gt;{k})+\bm{V}&lt;em&gt;k\bm{v}&lt;/em&gt;{k-1}
+\end{cases}
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
+&lt;p&gt;The linearized version is slightly different from the original linear form, but the derivation for the algorithm is largely the same. I won&amp;rsquo;t type everything again here but only give the complete result below. Interested readers are suggested to work it out independently.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Q. Quan, Introduction to multicopter design and control. Springer, 2017.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;$$
+\begin{equation}
+\begin{split}
+&amp;amp;\text{1.}\ \hat{\bm{x}}&lt;em&gt;k^- = f&lt;/em&gt;{RK4}(\hat{\bm{x}}&lt;em&gt;{k-1}, \bm{u}&lt;/em&gt;{k-1}, \bm{0}) \
+&amp;amp;\text{2.}\ \bm{P}&lt;em&gt;k^- = \bm{G}&lt;/em&gt;{k-1}\bm{P}&lt;em&gt;{k-1}\bm{G}&lt;/em&gt;{k-1}^\intercal+ \bm{W}&lt;em&gt;{k-1}\bm{Q}&lt;/em&gt;{k-1}\bm{W}_{k-1}^\intercal \
+&amp;amp;\text{3.}\ \bm{K}_k = \frac{\bm{P}_k^-\bm{M}_k^\intercal}{\bm{M}_k\bm{P}_k^-\bm{M}_k^\intercal+\bm{V}_k\bm{R}\bm{V}_k^\intercal} \
+&amp;amp;\text{4.}\ \hat{\bm{x}}_k=\hat{\bm{x}}_k^- + \bm{K}_k (\bm{z}_k - \hat{\bm{z}}_k) \
+&amp;amp;\text{5.}\ \bm{P}_k = \bm{P}_k^- - \bm{K}_k\bm{M}_k\bm{P}_k^-
+\end{split}
+\end{equation}
+$$&lt;/p&gt;
 </description>
         </item>
         <item>
         <title>OmniHex</title>
-        <link>https://ercbunny.github.io/p/omnihex/</link>
+        <link>https://ercbunny.github.io/projects/220409-omnihex/</link>
         <pubDate>Sat, 09 Apr 2022 12:00:00 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/omnihex/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/omnihex/cover.png" alt="Featured image of post OmniHex" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/projects/220409-omnihex/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/220409-omnihex/cover.png" alt="Featured image of post OmniHex" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;links--downloads&#34;&gt;LINKS &amp;amp; DOWNLOADS&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -57,45 +234,32 @@
     &lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&lt;figure 
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/numsim.svg&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/numsim.svg&#34;
-			
-			
-			
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/220409-omnihex/numsim.svg&#34;
 	
-&lt;/figure&gt; &lt;figure 
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/gzsim.svg&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/gzsim.svg&#34;
-			
-			
-			
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
 	
-&lt;/figure&gt; &lt;figure 
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt; &lt;img src=&#34;https://ercbunny.github.io/projects/220409-omnihex/gzsim.svg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+	
+&gt; &lt;img src=&#34;https://ercbunny.github.io/projects/220409-omnihex/real.png&#34;
+	width=&#34;1100&#34;
+	height=&#34;1008&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/220409-omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/220409-omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 109; 
-			flex-basis: 261px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/omnihex/real.png&#34; data-size=&#34;1100x1008&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/omnihex/real.png&#34;
-			width=&#34;1100&#34;
-			height=&#34;1008&#34;
-			srcset=&#34;https://ercbunny.github.io/p/omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;109&#34;
+		data-flex-basis=&#34;261px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;dev-milestones&#34;&gt;Dev Milestones&lt;/h2&gt;
 &lt;ol&gt;
@@ -538,30 +702,183 @@ cd scripts
 </description>
         </item>
         <item>
+        <title>About Me</title>
+        <link>https://ercbunny.github.io/page/about/</link>
+        <pubDate>Mon, 03 Jan 2022 12:00:00 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/page/about/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/page/assets/about.png" alt="Featured image of post About Me" /&gt;&lt;p&gt;&lt;code&gt;WIP&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;I have 5+ years of experience designing, coding, and simulating &lt;strong&gt;autonomous micro aerial vehicles&lt;/strong&gt;. During my study and research, I developed a great interest in &lt;strong&gt;perception-related&lt;/strong&gt; tasks and algorithms, as well as &lt;strong&gt;data-driven&lt;/strong&gt; and &lt;strong&gt;learning-based&lt;/strong&gt; methods of solving practical problems. Now, my main interests are &lt;strong&gt;3D vision/SLAM/VIO&lt;/strong&gt;, &lt;strong&gt;ML/AI&lt;/strong&gt;, and &lt;strong&gt;image/video processing&lt;/strong&gt;. Click &lt;a class=&#34;link&#34; href=&#34;https://ercbunny.github.io/page/assets/CV.pdf&#34; &gt;me&lt;/a&gt; to download my CV.&lt;/p&gt;
+&lt;h2 id=&#34;experience&#34;&gt;Experience&lt;/h2&gt;
+&lt;h3 id=&#34;masters-student-in-aerospace-engineering&#34;&gt;Master&amp;rsquo;s Student in Aerospace Engineering&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.tudelft.nl/en/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Delft University of Technology&lt;/strong&gt;&lt;/a&gt; · Full-time &lt;br&gt;
+&lt;em&gt;Sep 2022 - Present&lt;/em&gt; &lt;br&gt;
+Delft, South Holland, Netherlands&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Program profile: &lt;a class=&#34;link&#34; href=&#34;https://www.tudelft.nl/onderwijs/opleidingen/masters/ae/msc-aerospace-engineering/master-tracks/control-operations/programme/profile-cs&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Control and Simulation&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;research-assistant&#34;&gt;Research Assistant&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.hitsz.edu.cn/index.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;strong&gt;Harbin Institute of Technology, Shenzhen&lt;/strong&gt;&lt;/a&gt; · Part-time &lt;br&gt;
+&lt;em&gt;Mar 2021 - Sep 2021&lt;/em&gt; &lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://github.com/HITSZ-NRSL&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;nROS-lab&lt;/a&gt;, Shenzhen, China&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Project video demo: &lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV12P4y1g7dH/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Omnihex&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;I made a drone that can hover at any orientation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Released a PX4-Autopilot firmware optimized for over-actuated hexacopters by reworking the flight control algorithm, flight mode manager, and control allocation algorithm&lt;/li&gt;
+&lt;li&gt;Created a digital twin of our hexacopter (in SDFormat) and wrote ROS2 plugins for doing software-in-the-loop Gazebo simulation&lt;/li&gt;
+&lt;li&gt;Built an over-actuated hexacopter from scratch using the Solidworks software, 3D printing and CNC machining technics&lt;/li&gt;
+&lt;li&gt;Implemented ROS2-PX4 wrappers for Dynamixel servos and the OptiTrack indoor motion-capturing system&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;My work has also been used as a basic building component in 2 other lab projects researching trajectory planning of over-actuated drones&lt;/p&gt;
+&lt;/details&gt;
+&lt;h2 id=&#34;publications&#34;&gt;Publications&lt;/h2&gt;
+&lt;h3 id=&#34;adaptive-nonlinear-mpc-for-trajectory-tracking-of-an-overactuated-tiltrotor-hexacopter&#34;&gt;Adaptive Nonlinear MPC for Trajectory Tracking of An Overactuated Tiltrotor Hexacopter&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;arXiv · Nov 12, 2022&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://arxiv.org/abs/2211.06762&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;paper&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;collision-free-6-dof-trajectory-generation-for-omnidirectional-multi-rotor-aerial-vehicle&#34;&gt;Collision-Free 6-DoF Trajectory Generation for Omnidirectional Multi-rotor Aerial Vehicle&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;arXiv · Sep 14, 2022&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://arxiv.org/abs/2209.06764&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;paper&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;rgb-d-inertial-odometry-for-a-resource-restricted-robot-in-dynamic-environments&#34;&gt;RGB-D Inertial Odometry for a Resource-Restricted Robot in Dynamic Environments&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;IEEE Robotics and Automation Letters · Jul 15, 2022&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://ieeexplore.ieee.org/document/9830851&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;paper&lt;/a&gt;, &lt;a class=&#34;link&#34; href=&#34;https://github.com/HITSZ-NRSL/Dynamic-VINS&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;code&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;projects&#34;&gt;Projects&lt;/h2&gt;
+&lt;h3 id=&#34;the-maze-runner-mav-collision-free-navigation-in-cyberzoo&#34;&gt;The Maze Runner: MAV Collision-Free Navigation in Cyberzoo&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Mar 2023 - Apr 2023&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/paparazzi-coursework-2023&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;code&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;This is a coursework project for &lt;em&gt;AE4317 Autonomous Flight of MAVs&lt;/em&gt;. We propose a way to guide the Bebop drone towards a goal waypoint while making it avoid obstacles in the Cyberzoo, using monocular dense optical flow and image gradient calculations.&lt;/p&gt;
+&lt;/details&gt;
+&lt;h3 id=&#34;solving-vehicle-routing-problem-with-time-windows&#34;&gt;Solving Vehicle Routing Problem with Time Windows&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Nov 2022 - Dec 2022&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/VRPTW-gurobipy/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;code&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;Course project &lt;em&gt;Operations Optimization (AE4441)&lt;/em&gt;&lt;/p&gt;
+&lt;/details&gt;
+&lt;h3 id=&#34;wheeled-robot-navigation-on-color--perspective&#34;&gt;Wheeled Robot Navigation on Color &amp;amp; Perspective&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Oct 2021 - Nov 2021&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/DashToCones&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;code&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;Course project &lt;em&gt;Digital Image Processing&lt;/em&gt;&lt;/p&gt;
+&lt;/details&gt;
+&lt;h3 id=&#34;visual-servo-jenga-manipulator&#34;&gt;Visual-Servo Jenga Manipulator&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Jun 2021 - Jul 2021&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://github.com/TANGBEN7/HLJenga&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;code&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;Course project &lt;em&gt;Introduction to Robotics&lt;/em&gt;&lt;/p&gt;
+&lt;/details&gt;
+&lt;h3 id=&#34;autonomous-delivery-drone&#34;&gt;Autonomous Delivery Drone&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Oct 2020 - Apr 2021&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://ercbunny.github.io/projects/210423-delivery/&#34; &gt;documentation&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;&lt;em&gt;National Undergraduate Engineering Training Integration Ability Competition&lt;/em&gt;&lt;/p&gt;
+&lt;/details&gt;
+&lt;h3 id=&#34;trirotor-vtol-unmanned-aerial-vehicle&#34;&gt;Trirotor VTOL Unmanned Aerial Vehicle&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Oct 2018 - Sep 2019&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://ercbunny.github.io/projects/190815-trivtol/&#34; &gt;documentation&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;Freshman Year Innovation Program&lt;/p&gt;
+&lt;/details&gt;
+&lt;h3 id=&#34;autonomous-antenna-tracker&#34;&gt;Autonomous Antenna Tracker&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;June 2018 - Sep 2018&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a class=&#34;link&#34; href=&#34;https://github.com/ErcBunny/bunnyAAT&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;code&lt;/a&gt;, &lt;a class=&#34;link&#34; href=&#34;https://tieba.baidu.com/p/5811562128&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;百度贴吧&lt;/a&gt;&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt; Click me for more information&lt;/summary&gt;
+&lt;p&gt;Home-made, super cheap autonomous antenna tracker for long-range FPV flights.&lt;/p&gt;
+&lt;/details&gt;
+&lt;h2 id=&#34;education&#34;&gt;Education&lt;/h2&gt;
+&lt;h3 id=&#34;harbin-institute-of-technology-shenzhen&#34;&gt;Harbin Institute of Technology, Shenzhen&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Bachelor&amp;rsquo;s degree, Mechatronics, Robotics, and Automation Engineering&lt;/strong&gt; &lt;br&gt;
+&lt;em&gt;Sep 2018 - Jul 2022&lt;/em&gt; &lt;br&gt;
+Grade: Cum Laude 88/100&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Activities and societies: &lt;a class=&#34;link&#34; href=&#34;https://space.bilibili.com/1559398123&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;RoboMaster Critical-HIT(南工晓鹰)&lt;/a&gt;, HITSZ Chorus(艺术团合唱部), &lt;a class=&#34;link&#34; href=&#34;https://github.com/HITSZ-NRSL&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;nROS-lab(网络机器人与系统实验室)&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;guangdong-experimental-high-school&#34;&gt;Guangdong Experimental High School&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;High School Diploma, Natural Sciences&lt;/strong&gt; &lt;br&gt;
+&lt;em&gt;Sep 2015 - Jul 2018&lt;/em&gt; &lt;br&gt;
+Grade: Gaokao 620/750&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Activities and societies: &lt;a class=&#34;link&#34; href=&#34;https://space.bilibili.com/8134367&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GEH Aerospace Association(广东实验中学航空社团)&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Overview Courses</title>
+        <link>https://ercbunny.github.io/page/courses/</link>
+        <pubDate>Sun, 02 Jan 2022 12:00:00 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/page/courses/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/page/assets/courses.jpg" alt="Featured image of post Overview Courses" /&gt;&lt;p&gt;&lt;code&gt;WIP&lt;/code&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>2021年度总结</title>
-        <link>https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</link>
+        <link>https://ercbunny.github.io/blogs/211231-summary21/</link>
         <pubDate>Fri, 31 Dec 2021 14:50:23 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/2021.jpg" alt="Featured image of post 2021年度总结" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/blogs/211231-summary21/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/blogs/211231-summary21/2021.jpg" alt="Featured image of post 2021年度总结" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/preface.jpg&#34;
+	width=&#34;1170&#34;
+	height=&#34;853&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/preface_huf973257bcf871ef13ffb308ffa474937_201182_480x0_resize_q75_box.jpg 480w, https://ercbunny.github.io/blogs/211231-summary21/preface_huf973257bcf871ef13ffb308ffa474937_201182_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 137; 
-			flex-basis: 329px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/preface.jpg&#34; data-size=&#34;1170x853&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/preface.jpg&#34;
-			width=&#34;1170&#34;
-			height=&#34;853&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/preface_huf973257bcf871ef13ffb308ffa474937_201182_480x0_resize_q75_box.jpg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/preface_huf973257bcf871ef13ffb308ffa474937_201182_1024x0_resize_q75_box.jpg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;137&#34;
+		data-flex-basis=&#34;329px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;p&gt;看着之前的年度总结，不经感叹我以前真的好认真啊，现在就貌似已经开摆了，只能靠翻相册来回忆这一年发生了什么事情这个样子（哭）。&lt;/p&gt;
 &lt;p&gt;不过也很有趣啦，回顾照片什么的，能找回当初拍摄每一张照片的心动的感觉。&lt;/p&gt;
 &lt;p&gt;总之就是篇post就是这一年的点点滴滴啦～看起貌似真的啥也没干哦……&lt;/p&gt;
@@ -575,72 +892,52 @@ cd scripts
 &lt;li&gt;在T3实验室弄工训无人机，当时的心态是抱着拿国奖加分去的，后面的结局证明年轻人做事情还是不要太功利&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://ercbunny.github.io/p/2020%e5%b9%b4%e5%ba%a6%e6%80%bb%e7%bb%93&#34; &gt;上一年的年度总结&lt;/a&gt;，妈耶写的好详细，给跪了&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan1.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan1_hu51dbb8c6c26a7bbdfe0ea23d5531ef93_2928293_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jan1_hu51dbb8c6c26a7bbdfe0ea23d5531ef93_2928293_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan1.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan1.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan1_hu51dbb8c6c26a7bbdfe0ea23d5531ef93_2928293_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan1_hu51dbb8c6c26a7bbdfe0ea23d5531ef93_2928293_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan3.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan3_hud693067f06068dd4d10342c63f94be62_2177001_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jan3_hud693067f06068dd4d10342c63f94be62_2177001_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan3.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan3.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan3_hud693067f06068dd4d10342c63f94be62_2177001_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan3_hud693067f06068dd4d10342c63f94be62_2177001_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan2.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan2_hu8d3552fb69d30c028b744c3a5b7a3bc3_3002146_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jan2_hu8d3552fb69d30c028b744c3a5b7a3bc3_3002146_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan2.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan2.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan2_hu8d3552fb69d30c028b744c3a5b7a3bc3_3002146_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan2_hu8d3552fb69d30c028b744c3a5b7a3bc3_3002146_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan4.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jan4_huab31cece781f163e65b2528a05b35427_4489990_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jan4_huab31cece781f163e65b2528a05b35427_4489990_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan4.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan4.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan4_huab31cece781f163e65b2528a05b35427_4489990_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jan4_huab31cece781f163e65b2528a05b35427_4489990_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;february&#34;&gt;February&lt;/h2&gt;
 &lt;ul&gt;
@@ -650,88 +947,63 @@ cd scripts
 &lt;li&gt;回学校赶上发烧还小题大做上报去深大医院做核酸，mdzz，就是脑袋一热想要给疫情防控做贡献的感觉？&lt;/li&gt;
 &lt;li&gt;开始了自控B的学习，手机里拍照图一堆一堆的（现在看也是完全看不懂了哈哈哈呜呜呜😭），再次怀念ZY老师的自控A的讲稿&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb1.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb1_hua7ef5aeca7a2129777a79126459c8f06_2573069_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Feb1_hua7ef5aeca7a2129777a79126459c8f06_2573069_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb1.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb1.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb1_hua7ef5aeca7a2129777a79126459c8f06_2573069_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb1_hua7ef5aeca7a2129777a79126459c8f06_2573069_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb2.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb2_hu480c348d7d1f6011e91b06fa018b1d3a_3178752_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Feb2_hu480c348d7d1f6011e91b06fa018b1d3a_3178752_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb2.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb2.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb2_hu480c348d7d1f6011e91b06fa018b1d3a_3178752_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb2_hu480c348d7d1f6011e91b06fa018b1d3a_3178752_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb3.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb3_hu354d606e83015949dbc0eb3a84d5a76d_1429319_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Feb3_hu354d606e83015949dbc0eb3a84d5a76d_1429319_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb3.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb3.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb3_hu354d606e83015949dbc0eb3a84d5a76d_1429319_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb3_hu354d606e83015949dbc0eb3a84d5a76d_1429319_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb4.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb4_hu5644e56a6c238c58428471c5787c0985_3346380_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Feb4_hu5644e56a6c238c58428471c5787c0985_3346380_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb4.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb4.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb4_hu5644e56a6c238c58428471c5787c0985_3346380_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb4_hu5644e56a6c238c58428471c5787c0985_3346380_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb5.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Feb5_hua0ce3958a133d0f292b75222bcbc4032_3463569_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Feb5_hua0ce3958a133d0f292b75222bcbc4032_3463569_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb5.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb5.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb5_hua0ce3958a133d0f292b75222bcbc4032_3463569_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Feb5_hua0ce3958a133d0f292b75222bcbc4032_3463569_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;march&#34;&gt;March&lt;/h2&gt;
 &lt;ul&gt;
@@ -741,72 +1013,52 @@ cd scripts
 &lt;li&gt;考了TOEFL，考完被晾在考场自生自灭，途中看到了撸猫猫大队&lt;/li&gt;
 &lt;li&gt;开始了omniHex项目，现在回想起来真的走了好多弯路，不说了，都是泪&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar1.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar1_hu16a1704aa8e51cb0d5462a3006b12bc1_1332018_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Mar1_hu16a1704aa8e51cb0d5462a3006b12bc1_1332018_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar1.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar1.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar1_hu16a1704aa8e51cb0d5462a3006b12bc1_1332018_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar1_hu16a1704aa8e51cb0d5462a3006b12bc1_1332018_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar2.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar2_hufc29ae1c40e8bd3e636cbe3e99b8c136_3167475_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Mar2_hufc29ae1c40e8bd3e636cbe3e99b8c136_3167475_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar2.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar2.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar2_hufc29ae1c40e8bd3e636cbe3e99b8c136_3167475_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar2_hufc29ae1c40e8bd3e636cbe3e99b8c136_3167475_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar3.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar3_hu3d0a92b061d1a1809270f33a15a0dbca_1275462_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Mar3_hu3d0a92b061d1a1809270f33a15a0dbca_1275462_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar3.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar3.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar3_hu3d0a92b061d1a1809270f33a15a0dbca_1275462_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar3_hu3d0a92b061d1a1809270f33a15a0dbca_1275462_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar4.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Mar4_hu5982863a156716ecde03a9da23f87e3a_3916411_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Mar4_hu5982863a156716ecde03a9da23f87e3a_3916411_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar4.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar4.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar4_hu5982863a156716ecde03a9da23f87e3a_3916411_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Mar4_hu5982863a156716ecde03a9da23f87e3a_3916411_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;april&#34;&gt;April&lt;/h2&gt;
 &lt;ul&gt;
@@ -814,72 +1066,52 @@ cd scripts
 &lt;li&gt;工训赛校内测试时候以为稳了，结果惨不忍睹，失败点在于图像识别算法对光照条件变化的鲁棒性太差&lt;/li&gt;
 &lt;li&gt;院羽毛球赛开打～轻羽飞扬（bushi&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr1.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr1_hue4042ad00f84ca47d01add718d28cdf7_1193913_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Apr1_hue4042ad00f84ca47d01add718d28cdf7_1193913_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr1.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr1.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr1_hue4042ad00f84ca47d01add718d28cdf7_1193913_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr1_hue4042ad00f84ca47d01add718d28cdf7_1193913_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr2.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr2_hu5982863a156716ecde03a9da23f87e3a_2752600_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Apr2_hu5982863a156716ecde03a9da23f87e3a_2752600_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr2.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr2.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr2_hu5982863a156716ecde03a9da23f87e3a_2752600_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr2_hu5982863a156716ecde03a9da23f87e3a_2752600_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr3.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr3_hu2df0e1a06c2d99b913e638a55d0299fa_3779111_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Apr3_hu2df0e1a06c2d99b913e638a55d0299fa_3779111_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr3.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr3.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr3_hu2df0e1a06c2d99b913e638a55d0299fa_3779111_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr3_hu2df0e1a06c2d99b913e638a55d0299fa_3779111_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr4.png&#34;
+	width=&#34;1966&#34;
+	height=&#34;1096&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Apr4_hu0fe6b41abab723b102eb339171a8c3a8_3317158_480x0_resize_box_3.png 480w, https://ercbunny.github.io/blogs/211231-summary21/Apr4_hu0fe6b41abab723b102eb339171a8c3a8_3317158_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 179; 
-			flex-basis: 430px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr4.png&#34; data-size=&#34;1966x1096&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr4.png&#34;
-			width=&#34;1966&#34;
-			height=&#34;1096&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr4_hu0fe6b41abab723b102eb339171a8c3a8_3317158_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Apr4_hu0fe6b41abab723b102eb339171a8c3a8_3317158_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;may&#34;&gt;May&lt;/h2&gt;
 &lt;ul&gt;
@@ -888,105 +1120,75 @@ cd scripts
 &lt;li&gt;学校羽毛球比赛结束，亚军，好耶😄&lt;/li&gt;
 &lt;li&gt;这个月景色很好，真的绝绝子！！！&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/May1.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/May1_hu9b5af640686fe55dbae9d77154ad3d9c_2994940_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/May1_hu9b5af640686fe55dbae9d77154ad3d9c_2994940_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May1.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May1.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May1_hu9b5af640686fe55dbae9d77154ad3d9c_2994940_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May1_hu9b5af640686fe55dbae9d77154ad3d9c_2994940_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/May3.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/May3_hu7b49936be7eacbe2ebd72a20ef960e92_2765675_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/May3_hu7b49936be7eacbe2ebd72a20ef960e92_2765675_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May3.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May3.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May3_hu7b49936be7eacbe2ebd72a20ef960e92_2765675_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May3_hu7b49936be7eacbe2ebd72a20ef960e92_2765675_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/May4.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/May4_hud9d2e19964e588b9c1d57dcb41a32f63_5530199_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/May4_hud9d2e19964e588b9c1d57dcb41a32f63_5530199_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May4.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May4.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May4_hud9d2e19964e588b9c1d57dcb41a32f63_5530199_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May4_hud9d2e19964e588b9c1d57dcb41a32f63_5530199_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/May2.JPG&#34;
+	width=&#34;3883&#34;
+	height=&#34;2589&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/May2_hu224a638522654ce15dfd557f66e32a58_1267237_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/May2_hu224a638522654ce15dfd557f66e32a58_1267237_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 149; 
-			flex-basis: 359px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May2.JPG&#34; data-size=&#34;3883x2589&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May2.JPG&#34;
-			width=&#34;3883&#34;
-			height=&#34;2589&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May2_hu224a638522654ce15dfd557f66e32a58_1267237_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May2_hu224a638522654ce15dfd557f66e32a58_1267237_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;149&#34;
+		data-flex-basis=&#34;359px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/May5.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/May5_hu38b3c79f3b6a9bc919c338f215c73788_2352250_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/May5_hu38b3c79f3b6a9bc919c338f215c73788_2352250_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May5.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May5.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May5_hu38b3c79f3b6a9bc919c338f215c73788_2352250_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May5_hu38b3c79f3b6a9bc919c338f215c73788_2352250_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/May6.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/May6_hu83b3daf932204298dde0edd573bf5a46_2626545_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/May6_hu83b3daf932204298dde0edd573bf5a46_2626545_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May6.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May6.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May6_hu83b3daf932204298dde0edd573bf5a46_2626545_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/May6_hu83b3daf932204298dde0edd573bf5a46_2626545_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;june&#34;&gt;June&lt;/h2&gt;
 &lt;ul&gt;
@@ -995,72 +1197,52 @@ cd scripts
 &lt;li&gt;在G305摸了一块地方作为办公位置，赶上了科创学院的剧组拍摄宣传片，呵呵呵呵呵还以为能见到Prof. Shaojie Shen呢，看来是想多了&lt;/li&gt;
 &lt;li&gt;是不是感觉这个月平平无奇，嗯，因为在肝omniHex，走弯路中&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun1.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun1_hu79ec6fc2cc8622950dc4c77e2d786acd_3845768_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jun1_hu79ec6fc2cc8622950dc4c77e2d786acd_3845768_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun1.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun1.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun1_hu79ec6fc2cc8622950dc4c77e2d786acd_3845768_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun1_hu79ec6fc2cc8622950dc4c77e2d786acd_3845768_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun2.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun2_hu234c212a04b4a1ebca18d269de19554f_2509528_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jun2_hu234c212a04b4a1ebca18d269de19554f_2509528_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun2.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun2.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun2_hu234c212a04b4a1ebca18d269de19554f_2509528_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun2_hu234c212a04b4a1ebca18d269de19554f_2509528_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun3.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun3_hu9f561f1cf44bba14a5ba23ad6212407b_2651424_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jun3_hu9f561f1cf44bba14a5ba23ad6212407b_2651424_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun3.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun3.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun3_hu9f561f1cf44bba14a5ba23ad6212407b_2651424_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun3_hu9f561f1cf44bba14a5ba23ad6212407b_2651424_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun4.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jun4_hud3cf5d83790981fffae977de00cc390e_3398909_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jun4_hud3cf5d83790981fffae977de00cc390e_3398909_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun4.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun4.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun4_hud3cf5d83790981fffae977de00cc390e_3398909_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jun4_hud3cf5d83790981fffae977de00cc390e_3398909_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;july&#34;&gt;July&lt;/h2&gt;
 &lt;ul&gt;
@@ -1070,161 +1252,116 @@ cd scripts
 &lt;li&gt;回GZ和高中宿舍小伙伴小聚，毕竟放假嘛呵呵呵&lt;/li&gt;
 &lt;li&gt;买了个蒂蒂抱枕，为斯卡蒂献上心脏！！！&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul1.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul1_hu1bbc45b42def8b50e7ad39cb3ab3175b_2930231_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jul1_hu1bbc45b42def8b50e7ad39cb3ab3175b_2930231_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul1.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul1.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul1_hu1bbc45b42def8b50e7ad39cb3ab3175b_2930231_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul1_hu1bbc45b42def8b50e7ad39cb3ab3175b_2930231_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul2.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul2_hub52281faebae462d6df2b1f1abfbbaed_2545395_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jul2_hub52281faebae462d6df2b1f1abfbbaed_2545395_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul2.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul2.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul2_hub52281faebae462d6df2b1f1abfbbaed_2545395_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul2_hub52281faebae462d6df2b1f1abfbbaed_2545395_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul3.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul3_hubb9512f8c80f344d5b5a856944ddf207_2849676_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jul3_hubb9512f8c80f344d5b5a856944ddf207_2849676_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul3.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul3.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul3_hubb9512f8c80f344d5b5a856944ddf207_2849676_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul3_hubb9512f8c80f344d5b5a856944ddf207_2849676_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul4.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul4_hu58d922db05805a17b6218424ce4df630_4250255_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jul4_hu58d922db05805a17b6218424ce4df630_4250255_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul4.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul4.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul4_hu58d922db05805a17b6218424ce4df630_4250255_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul4_hu58d922db05805a17b6218424ce4df630_4250255_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul5.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Jul5_hubc5f91065ed8be5ff05a402198639975_6500984_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Jul5_hubc5f91065ed8be5ff05a402198639975_6500984_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul5.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul5.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul5_hubc5f91065ed8be5ff05a402198639975_6500984_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Jul5_hubc5f91065ed8be5ff05a402198639975_6500984_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;august&#34;&gt;August&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;omniHex实体机器人完成组装，过程真的很累，迂回前进，以至于不想过多描述&lt;/li&gt;
 &lt;li&gt;开始投学校了，面了港大两个弄机器人的实验室，MARS不要我，ARCLAB让我做RA；对比同期RYF学长已经可以直接拿口头offer了，看来我是个FW&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug1.JPG&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug1_huf28a09d37dbfc5d4afd2f99e099df222_2354773_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Aug1_huf28a09d37dbfc5d4afd2f99e099df222_2354773_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug1.JPG&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug1.JPG&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug1_huf28a09d37dbfc5d4afd2f99e099df222_2354773_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug1_huf28a09d37dbfc5d4afd2f99e099df222_2354773_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug2.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug2_hu3c93a3e6ec2ad4fb9c62c55bce626fed_3560127_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Aug2_hu3c93a3e6ec2ad4fb9c62c55bce626fed_3560127_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug2.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug2.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug2_hu3c93a3e6ec2ad4fb9c62c55bce626fed_3560127_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug2_hu3c93a3e6ec2ad4fb9c62c55bce626fed_3560127_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug3.JPG&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug3_huf85a69404ef30db2cba81818d2876085_4805380_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Aug3_huf85a69404ef30db2cba81818d2876085_4805380_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug3.JPG&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug3.JPG&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug3_huf85a69404ef30db2cba81818d2876085_4805380_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug3_huf85a69404ef30db2cba81818d2876085_4805380_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug4.jpeg&#34;
+	width=&#34;4005&#34;
+	height=&#34;2252&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Aug4_huff6c9ecf4402ed596d3514723be13fb9_1340981_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Aug4_huff6c9ecf4402ed596d3514723be13fb9_1340981_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 177; 
-			flex-basis: 426px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug4.jpeg&#34; data-size=&#34;4005x2252&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug4.jpeg&#34;
-			width=&#34;4005&#34;
-			height=&#34;2252&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug4_huff6c9ecf4402ed596d3514723be13fb9_1340981_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Aug4_huff6c9ecf4402ed596d3514723be13fb9_1340981_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;september&#34;&gt;September&lt;/h2&gt;
 &lt;ul&gt;
@@ -1235,89 +1372,64 @@ cd scripts
 &lt;li&gt;吹爆CSY老师的Media &amp;amp; Culture课，真的好棒，而且给了我真正表达自己、练习口语的机会。感觉其他同学都有点小害羞不知道为啥，可能是准备run了，在这个学校已经没有在意的人了叭&lt;/li&gt;
 &lt;li&gt;以摸鱼的速度开始准备GRE，后面果然寄了&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep1.JPG&#34;
+	width=&#34;3799&#34;
+	height=&#34;2137&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep1_hue4dc839e99e9e6acedb397a375c955a8_1382529_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Sep1_hue4dc839e99e9e6acedb397a375c955a8_1382529_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 177; 
-			flex-basis: 426px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep1.JPG&#34; data-size=&#34;3799x2137&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep1.JPG&#34;
-			width=&#34;3799&#34;
-			height=&#34;2137&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep1_hue4dc839e99e9e6acedb397a375c955a8_1382529_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep1_hue4dc839e99e9e6acedb397a375c955a8_1382529_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep2.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep2_hu8399aaf41ef6338d85ad32cf7f0a9fd3_4068860_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Sep2_hu8399aaf41ef6338d85ad32cf7f0a9fd3_4068860_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep2.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep2.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep2_hu8399aaf41ef6338d85ad32cf7f0a9fd3_4068860_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep2_hu8399aaf41ef6338d85ad32cf7f0a9fd3_4068860_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep3.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep3_hu46de62fbe1123f2c798991b48aa95957_2130016_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Sep3_hu46de62fbe1123f2c798991b48aa95957_2130016_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep3.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep3.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep3_hu46de62fbe1123f2c798991b48aa95957_2130016_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep3_hu46de62fbe1123f2c798991b48aa95957_2130016_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep4.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep4_hu80130c4e0657799174c324614a33cf6b_1804638_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Sep4_hu80130c4e0657799174c324614a33cf6b_1804638_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep4.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep4.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep4_hu80130c4e0657799174c324614a33cf6b_1804638_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep4_hu80130c4e0657799174c324614a33cf6b_1804638_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep5.jpeg&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Sep5_hu44c31c2b5d1b96fc836ddd1c6613432e_4675884_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Sep5_hu44c31c2b5d1b96fc836ddd1c6613432e_4675884_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep5.jpeg&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep5.jpeg&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep5_hu44c31c2b5d1b96fc836ddd1c6613432e_4675884_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Sep5_hu44c31c2b5d1b96fc836ddd1c6613432e_4675884_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;october&#34;&gt;October&lt;/h2&gt;
 &lt;ul&gt;
@@ -1325,56 +1437,41 @@ cd scripts
 &lt;li&gt;考了一次GRE沉了，痛定思痛开始准备二战&lt;/li&gt;
 &lt;li&gt;到隔壁清华参加他们的某个晚会，感叹不愧是清华，当时这么酸，但是后来发现工大后来的其实也不差嘛哈哈哈（就是说人总是一边受着母校的照护，享受着光环的加护，又一边骂她哪里哪里不好，当然内心里却是真心希望她能变的更好这样子）&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Oct1.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Oct1_huec7f9fa8e2adc4e61c3f96fc91a807c0_2793198_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Oct1_huec7f9fa8e2adc4e61c3f96fc91a807c0_2793198_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct1.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct1.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct1_huec7f9fa8e2adc4e61c3f96fc91a807c0_2793198_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct1_huec7f9fa8e2adc4e61c3f96fc91a807c0_2793198_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Oct2.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Oct2_hu2f59a9de59aa5ba94101b0dc13326a70_2622160_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Oct2_hu2f59a9de59aa5ba94101b0dc13326a70_2622160_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct2.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct2.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct2_hu2f59a9de59aa5ba94101b0dc13326a70_2622160_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct2_hu2f59a9de59aa5ba94101b0dc13326a70_2622160_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Oct3.jpeg&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Oct3_hu4e11ce9bf3a053eadbe7fee13ca79b6d_2795615_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Oct3_hu4e11ce9bf3a053eadbe7fee13ca79b6d_2795615_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct3.jpeg&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct3.jpeg&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct3_hu4e11ce9bf3a053eadbe7fee13ca79b6d_2795615_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Oct3_hu4e11ce9bf3a053eadbe7fee13ca79b6d_2795615_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;november&#34;&gt;November&lt;/h2&gt;
 &lt;ul&gt;
@@ -1384,106 +1481,76 @@ cd scripts
 &lt;li&gt;合唱团第一首曲目大概排出来了Ave Maria～LHX sensei yyds&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://ercbunny.github.io/p/dash-to-cones&#34; &gt;完成了DIP课程设计&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov1.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov1_huf68b2899f0e5c24126e7c47bc8d84ad1_2553629_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Nov1_huf68b2899f0e5c24126e7c47bc8d84ad1_2553629_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov1.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov1.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov1_huf68b2899f0e5c24126e7c47bc8d84ad1_2553629_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov1_huf68b2899f0e5c24126e7c47bc8d84ad1_2553629_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov2.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov2_hudb1c53c9159218fce9aa32c242a41db1_2377563_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Nov2_hudb1c53c9159218fce9aa32c242a41db1_2377563_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov2.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov2.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov2_hudb1c53c9159218fce9aa32c242a41db1_2377563_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov2_hudb1c53c9159218fce9aa32c242a41db1_2377563_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov3.jpeg&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov3_hu96798f4c64d9ead78994286bd4af8a34_3794313_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Nov3_hu96798f4c64d9ead78994286bd4af8a34_3794313_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov3.jpeg&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov3.jpeg&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov3_hu96798f4c64d9ead78994286bd4af8a34_3794313_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov3_hu96798f4c64d9ead78994286bd4af8a34_3794313_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov4.png&#34;
+	width=&#34;1920&#34;
+	height=&#34;1046&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov4_hu3f5cccb631b1bc3848629825e33c5575_2563089_480x0_resize_box_3.png 480w, https://ercbunny.github.io/blogs/211231-summary21/Nov4_hu3f5cccb631b1bc3848629825e33c5575_2563089_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 183; 
-			flex-basis: 440px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov4.png&#34; data-size=&#34;1920x1046&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov4.png&#34;
-			width=&#34;1920&#34;
-			height=&#34;1046&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov4_hu3f5cccb631b1bc3848629825e33c5575_2563089_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov4_hu3f5cccb631b1bc3848629825e33c5575_2563089_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;183&#34;
+		data-flex-basis=&#34;440px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov5.png&#34;
+	width=&#34;1576&#34;
+	height=&#34;950&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov5_huae4686faef61a64823f2a85100289fc9_1996060_480x0_resize_box_3.png 480w, https://ercbunny.github.io/blogs/211231-summary21/Nov5_huae4686faef61a64823f2a85100289fc9_1996060_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 165; 
-			flex-basis: 398px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov5.png&#34; data-size=&#34;1576x950&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov5.png&#34;
-			width=&#34;1576&#34;
-			height=&#34;950&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov5_huae4686faef61a64823f2a85100289fc9_1996060_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov5_huae4686faef61a64823f2a85100289fc9_1996060_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;165&#34;
+		data-flex-basis=&#34;398px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov6.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Nov6_hu63f9fcec7fb3d0d05fd5b938ac0b5660_4944315_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Nov6_hu63f9fcec7fb3d0d05fd5b938ac0b5660_4944315_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov6.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov6.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov6_hu63f9fcec7fb3d0d05fd5b938ac0b5660_4944315_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Nov6_hu63f9fcec7fb3d0d05fd5b938ac0b5660_4944315_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;december&#34;&gt;December&lt;/h2&gt;
 &lt;ul&gt;
@@ -1497,130 +1564,95 @@ cd scripts
 &lt;li&gt;游园会，好多好有意思的，就是高级版社团节，还上去舞台唱了歌儿，但是车祸现场……嗯看来确实得认真学几首歌能一下子拿的出手的歌啊（之后集市上有好多表白XGG的，为什么没有我💔，我是FW）&lt;/li&gt;
 &lt;li&gt;终于参加了一次元旦晚会，但是是上去混的哈哈哈哈，艺术团的小伙伴们好好玩，谢谢你们，让我能够完成“登上元旦晚会舞台”的&lt;a class=&#34;link&#34; href=&#34;https://ercbunny.github.io/p/%e6%84%bf%e6%9c%9b%e6%b8%85%e5%8d%95&#34; &gt;TODO list&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec1.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec1_hub55f6240a11db0601d73ce1a3e6c7050_2864775_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Dec1_hub55f6240a11db0601d73ce1a3e6c7050_2864775_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec1.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec1.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec1_hub55f6240a11db0601d73ce1a3e6c7050_2864775_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec1_hub55f6240a11db0601d73ce1a3e6c7050_2864775_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec2.jpeg&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec2_hu5e7435eee830dbf0493ce904604832ff_2609683_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Dec2_hu5e7435eee830dbf0493ce904604832ff_2609683_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec2.jpeg&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec2.jpeg&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec2_hu5e7435eee830dbf0493ce904604832ff_2609683_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec2_hu5e7435eee830dbf0493ce904604832ff_2609683_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec3.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec3_hua0fd74ca5aa161a94ebf1101d01f995d_1952006_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Dec3_hua0fd74ca5aa161a94ebf1101d01f995d_1952006_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec3.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec3.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec3_hua0fd74ca5aa161a94ebf1101d01f995d_1952006_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec3_hua0fd74ca5aa161a94ebf1101d01f995d_1952006_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec4.jpeg&#34;
+	width=&#34;3024&#34;
+	height=&#34;4032&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec4_hu88267a937d7f3ddb91e46b3ddee5d095_2314494_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Dec4_hu88267a937d7f3ddb91e46b3ddee5d095_2314494_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 75; 
-			flex-basis: 180px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec4.jpeg&#34; data-size=&#34;3024x4032&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec4.jpeg&#34;
-			width=&#34;3024&#34;
-			height=&#34;4032&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec4_hu88267a937d7f3ddb91e46b3ddee5d095_2314494_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec4_hu88267a937d7f3ddb91e46b3ddee5d095_2314494_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;75&#34;
+		data-flex-basis=&#34;180px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec7.jpeg&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec7_hu5b04802d15c29a73a764d36162e2155d_2930338_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Dec7_hu5b04802d15c29a73a764d36162e2155d_2930338_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec7.jpeg&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec7.jpeg&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec7_hu5b04802d15c29a73a764d36162e2155d_2930338_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec7_hu5b04802d15c29a73a764d36162e2155d_2930338_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec5.JPG&#34;
+	width=&#34;1616&#34;
+	height=&#34;1080&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec5_hu8accb713ec536ac1e3e753368b738e79_356662_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/blogs/211231-summary21/Dec5_hu8accb713ec536ac1e3e753368b738e79_356662_1024x0_resize_q75_box.JPG 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 149; 
-			flex-basis: 359px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec5.JPG&#34; data-size=&#34;1616x1080&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec5.JPG&#34;
-			width=&#34;1616&#34;
-			height=&#34;1080&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec5_hu8accb713ec536ac1e3e753368b738e79_356662_480x0_resize_q75_box.JPG 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec5_hu8accb713ec536ac1e3e753368b738e79_356662_1024x0_resize_q75_box.JPG 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;149&#34;
+		data-flex-basis=&#34;359px&#34;
 	
-&lt;/figure&gt; &lt;figure 
+&gt; &lt;img src=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec6.jpeg&#34;
+	width=&#34;4032&#34;
+	height=&#34;3024&#34;
+	srcset=&#34;https://ercbunny.github.io/blogs/211231-summary21/Dec6_hu759c4fe66e00996d2e43ce0ce4c83160_3380089_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/blogs/211231-summary21/Dec6_hu759c4fe66e00996d2e43ce0ce4c83160_3380089_1024x0_resize_q75_box.jpeg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 133; 
-			flex-basis: 320px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec6.jpeg&#34; data-size=&#34;4032x3024&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec6.jpeg&#34;
-			width=&#34;4032&#34;
-			height=&#34;3024&#34;
-			srcset=&#34;https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec6_hu759c4fe66e00996d2e43ce0ce4c83160_3380089_480x0_resize_q75_box.jpeg 480w, https://ercbunny.github.io/p/2021%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/Dec6_hu759c4fe66e00996d2e43ce0ce4c83160_3380089_1024x0_resize_q75_box.jpeg 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;133&#34;
+		data-flex-basis=&#34;320px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 </description>
         </item>
         <item>
         <title>Notes for Introduction to Autonomous Mobile Robots</title>
-        <link>https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/</link>
+        <link>https://ercbunny.github.io/notes/211229-mobilerobot/</link>
         <pubDate>Wed, 29 Dec 2021 15:24:52 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/cover.jpg" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" /&gt;&lt;blockquote&gt;
+        <guid>https://ercbunny.github.io/notes/211229-mobilerobot/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/notes/211229-mobilerobot/cover.jpg" alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" /&gt;&lt;blockquote&gt;
 &lt;p&gt;篇幅较长，请先浏览目录，方便导航哦～&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -1680,25 +1712,20 @@ cd scripts
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/see-think-act.png&#34;
+	width=&#34;1288&#34;
+	height=&#34;788&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;general pipeline&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 163; 
-			flex-basis: 392px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act.png&#34; data-size=&#34;1288x788&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act.png&#34;
-			width=&#34;1288&#34;
-			height=&#34;788&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;general pipeline&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;163&#34;
+		data-flex-basis=&#34;392px&#34;
 	
-	&lt;figcaption&gt;general pipeline&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;运动形式&#34;&gt;运动形式&lt;/h2&gt;
 &lt;h3 id=&#34;运动相关的概念&#34;&gt;运动相关的概念&lt;/h3&gt;
@@ -1774,25 +1801,20 @@ cd scripts
 &lt;li&gt;config矩阵可以是 $3 \times 3$ ：因为只有两个维度&lt;/li&gt;
 &lt;li&gt;$\bold{\dot{\xi_I}=R(\theta)\dot{\xi_R}}$ ，两个坐标系下的速度之间关系为旋转矩阵&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/coord.png&#34;
+	width=&#34;2288&#34;
+	height=&#34;1006&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;坐标系的一般设置&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 227; 
-			flex-basis: 545px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord.png&#34; data-size=&#34;2288x1006&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord.png&#34;
-			width=&#34;2288&#34;
-			height=&#34;1006&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;坐标系的一般设置&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;227&#34;
+		data-flex-basis=&#34;545px&#34;
 	
-	&lt;figcaption&gt;坐标系的一般设置&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;前向运动学模型&#34;&gt;(前向)运动学模型&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;指建立惯性系下参考点速度和执行器速度之间的关系&lt;/li&gt;
@@ -1841,25 +1863,20 @@ cd scripts
 &lt;li&gt;轮式移动机器人运动学建模仅考虑平面运动，因此其对应的输出状态为三维向量，因此，最多有三个独立约束&lt;/li&gt;
 &lt;li&gt;动力学建模在运动变化较为快速、动态响应比较明显的情况下适用，比如无人机上&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kine-example.png&#34;
+	width=&#34;2060&#34;
+	height=&#34;2188&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;运动学模型例子&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 94; 
-			flex-basis: 225px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example.png&#34; data-size=&#34;2060x2188&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example.png&#34;
-			width=&#34;2060&#34;
-			height=&#34;2188&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;运动学模型例子&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;94&#34;
+		data-flex-basis=&#34;225px&#34;
 	
-	&lt;figcaption&gt;运动学模型例子&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;自由度&#34;&gt;自由度&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;自由度是机动性的度量&lt;/li&gt;
@@ -1893,25 +1910,20 @@ cd scripts
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/dof-example.png&#34;
+	width=&#34;1904&#34;
+	height=&#34;2500&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;自由度计算例子&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 76; 
-			flex-basis: 182px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example.png&#34; data-size=&#34;1904x2500&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example.png&#34;
-			width=&#34;1904&#34;
-			height=&#34;2500&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;自由度计算例子&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;76&#34;
+		data-flex-basis=&#34;182px&#34;
 	
-	&lt;figcaption&gt;自由度计算例子&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;二轮差速机器人的控制&#34;&gt;二轮差速机器人的控制&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -1941,25 +1953,20 @@ cd scripts
 &lt;li&gt;系统存在光滑的反馈控制的必要条件，Brockett定理&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;定点控制&#34;&gt;定点控制&lt;/h3&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/robot2ctrl.png&#34;
+	width=&#34;2344&#34;
+	height=&#34;1112&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;机器人模型&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 210; 
-			flex-basis: 505px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl.png&#34; data-size=&#34;2344x1112&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl.png&#34;
-			width=&#34;2344&#34;
-			height=&#34;1112&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;机器人模型&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;210&#34;
+		data-flex-basis=&#34;505px&#34;
 	
-	&lt;figcaption&gt;机器人模型&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;记号和问题描述
 &lt;ul&gt;
@@ -1997,63 +2004,48 @@ cd scripts
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole1.png&#34;
+	width=&#34;1752&#34;
+	height=&#34;666&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;误差模型的推导&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 263; 
-			flex-basis: 631px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1.png&#34; data-size=&#34;1752x666&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1.png&#34;
-			width=&#34;1752&#34;
-			height=&#34;666&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;误差模型的推导&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;263&#34;
+		data-flex-basis=&#34;631px&#34;
 	
-	&lt;figcaption&gt;误差模型的推导&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole2.png&#34;
+	width=&#34;1752&#34;
+	height=&#34;758&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;控制器和线性化&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 231; 
-			flex-basis: 554px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2.png&#34; data-size=&#34;1752x758&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2.png&#34;
-			width=&#34;1752&#34;
-			height=&#34;758&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;控制器和线性化&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;231&#34;
+		data-flex-basis=&#34;554px&#34;
 	
-	&lt;figcaption&gt;控制器和线性化&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole3.png&#34;
+	width=&#34;1752&#34;
+	height=&#34;898&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;稳定性分析&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 195; 
-			flex-basis: 468px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3.png&#34; data-size=&#34;1752x898&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3.png&#34;
-			width=&#34;1752&#34;
-			height=&#34;898&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;稳定性分析&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;195&#34;
+		data-flex-basis=&#34;468px&#34;
 	
-	&lt;figcaption&gt;稳定性分析&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;并不是说极坐标一定要线性化，也可以指定 $v,\omega$ 为其他的函数，非线性的也可以，只不过就得用Lyapnuov理论了&lt;/p&gt;
 &lt;p&gt;&lt;u&gt;&lt;strong&gt;一般方法都是得到误差状态变量的导数与 $[v,w]^T$ 的关系（误差模型），然后设计控制率，也就是 $v, w$ 的关于状态变量的函数，然后带入到误差模型中，得到误差的动态，对其做稳定性分析&lt;/strong&gt;&lt;/u&gt;&lt;/p&gt;
@@ -2113,25 +2105,20 @@ cd scripts
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/Dijk-Astar.png&#34;
+	width=&#34;2092&#34;
+	height=&#34;1174&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Dijkstra和A*区别&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 178; 
-			flex-basis: 427px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar.png&#34; data-size=&#34;2092x1174&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar.png&#34;
-			width=&#34;2092&#34;
-			height=&#34;1174&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Dijkstra和A*区别&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;178&#34;
+		data-flex-basis=&#34;427px&#34;
 	
-	&lt;figcaption&gt;Dijkstra和A*区别&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;D*: Dynamic A*
 &lt;ul&gt;
@@ -2152,25 +2139,20 @@ cd scripts
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/norm.png&#34;
+	width=&#34;2388&#34;
+	height=&#34;1088&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;范数&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 219; 
-			flex-basis: 526px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm.png&#34; data-size=&#34;2388x1088&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm.png&#34;
-			width=&#34;2388&#34;
-			height=&#34;1088&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;范数&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;219&#34;
+		data-flex-basis=&#34;526px&#34;
 	
-	&lt;figcaption&gt;范数&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Probabilistic Roadmaps (PRM, 1996)
 &lt;ul&gt;
@@ -2225,102 +2207,77 @@ cd scripts
 &lt;li&gt;主要思想：避免层级结构，同时考虑全局和局部路径，建立一个全局势能场，机器人自动沿着最大梯度方向下降到目标点&lt;/li&gt;
 &lt;li&gt;一种常见的实现：总场=目标场+障碍场&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/goal.png&#34;
+	width=&#34;1780&#34;
+	height=&#34;742&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/goal_hu714d753056c144d85d9749d39b2dd203_1884771_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/goal_hu714d753056c144d85d9749d39b2dd203_1884771_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;目标场&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 239; 
-			flex-basis: 575px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal.png&#34; data-size=&#34;1780x742&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal.png&#34;
-			width=&#34;1780&#34;
-			height=&#34;742&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal_hu714d753056c144d85d9749d39b2dd203_1884771_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/goal_hu714d753056c144d85d9749d39b2dd203_1884771_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;目标场&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;239&#34;
+		data-flex-basis=&#34;575px&#34;
 	
-	&lt;figcaption&gt;目标场&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/obs.png&#34;
+	width=&#34;2224&#34;
+	height=&#34;862&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;障碍场&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 258; 
-			flex-basis: 619px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs.png&#34; data-size=&#34;2224x862&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs.png&#34;
-			width=&#34;2224&#34;
-			height=&#34;862&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;障碍场&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;258&#34;
+		data-flex-basis=&#34;619px&#34;
 	
-	&lt;figcaption&gt;障碍场&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/total.png&#34;
+	width=&#34;2224&#34;
+	height=&#34;862&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;总势场&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 258; 
-			flex-basis: 619px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total.png&#34; data-size=&#34;2224x862&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total.png&#34;
-			width=&#34;2224&#34;
-			height=&#34;862&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;总势场&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;258&#34;
+		data-flex-basis=&#34;619px&#34;
 	
-	&lt;figcaption&gt;总势场&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;传感器大类和指标&#34;&gt;传感器大类和指标&lt;/h2&gt;
 &lt;h3 id=&#34;分类&#34;&gt;分类&lt;/h3&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor1.png&#34;
+	width=&#34;1526&#34;
+	height=&#34;716&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 213; 
-			flex-basis: 511px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1.png&#34; data-size=&#34;1526x716&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1.png&#34;
-			width=&#34;1526&#34;
-			height=&#34;716&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;213&#34;
+		data-flex-basis=&#34;511px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor2.png&#34;
+	width=&#34;1354&#34;
+	height=&#34;674&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;常见传感器&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 200; 
-			flex-basis: 482px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2.png&#34; data-size=&#34;1354x674&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2.png&#34;
-			width=&#34;1354&#34;
-			height=&#34;674&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;常见传感器&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;200&#34;
+		data-flex-basis=&#34;482px&#34;
 	
-	&lt;figcaption&gt;常见传感器&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;常见传感器的原理&#34;&gt;常见传感器的原理&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;rangefinder
@@ -2453,42 +2410,32 @@ cd scripts
 &lt;/li&gt;
 &lt;li&gt;步骤图如下&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow1.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;698&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 236; 
-			flex-basis: 568px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1.png&#34; data-size=&#34;1654x698&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1.png&#34;
-			width=&#34;1654&#34;
-			height=&#34;698&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;568px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow2.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;698&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;光流法&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 236; 
-			flex-basis: 568px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2.png&#34; data-size=&#34;1654x698&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2.png&#34;
-			width=&#34;1654&#34;
-			height=&#34;698&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;光流法&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;568px&#34;
 	
-	&lt;figcaption&gt;光流法&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;点检测&#34;&gt;点检测&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -2497,102 +2444,77 @@ cd scripts
 &lt;li&gt;同平面旋转不变性，线性光照强度变化不变性；但对于尺度和仿射变换没有不变性&lt;/li&gt;
 &lt;li&gt;corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner1.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;698&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 236; 
-			flex-basis: 568px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1.png&#34; data-size=&#34;1654x698&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1.png&#34;
-			width=&#34;1654&#34;
-			height=&#34;698&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;236&#34;
+		data-flex-basis=&#34;568px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner2.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;678&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;角落检测一般分析思路&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 243; 
-			flex-basis: 585px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2.png&#34; data-size=&#34;1654x678&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2.png&#34;
-			width=&#34;1654&#34;
-			height=&#34;678&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;角落检测一般分析思路&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;243&#34;
+		data-flex-basis=&#34;585px&#34;
 	
-	&lt;figcaption&gt;角落检测一般分析思路&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;特征值的解法 $det(A-\lambda I)=0$&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner3.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;478&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Eigen Visualization&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 346; 
-			flex-basis: 830px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3.png&#34; data-size=&#34;1654x478&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3.png&#34;
-			width=&#34;1654&#34;
-			height=&#34;478&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Eigen Visualization&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;346&#34;
+		data-flex-basis=&#34;830px&#34;
 	
-	&lt;figcaption&gt;Eigen Visualization&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner4.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;722&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;Shi-Tomasi&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 229; 
-			flex-basis: 549px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4.png&#34; data-size=&#34;1654x722&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4.png&#34;
-			width=&#34;1654&#34;
-			height=&#34;722&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Shi-Tomasi&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;229&#34;
+		data-flex-basis=&#34;549px&#34;
 	
-	&lt;figcaption&gt;Shi-Tomasi&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner5.png&#34;
+	width=&#34;1654&#34;
+	height=&#34;736&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;Harris实际上也可以采用单阈值筛选&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 224; 
-			flex-basis: 539px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5.png&#34; data-size=&#34;1654x736&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5.png&#34;
-			width=&#34;1654&#34;
-			height=&#34;736&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Harris实际上也可以采用单阈值筛选&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;224&#34;
+		data-flex-basis=&#34;539px&#34;
 	
-	&lt;figcaption&gt;Harris实际上也可以采用单阈值筛选&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;解决特征检测的尺度变换问题&lt;/p&gt;
@@ -2639,106 +2561,81 @@ cd scripts
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/lines.png&#34;
+	width=&#34;1648&#34;
+	height=&#34;412&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/lines_hud36468f48f180a9d6665864372b9f2bb_151644_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/lines_hud36468f48f180a9d6665864372b9f2bb_151644_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;一图对比&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 400; 
-			flex-basis: 960px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines.png&#34; data-size=&#34;1648x412&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines.png&#34;
-			width=&#34;1648&#34;
-			height=&#34;412&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines_hud36468f48f180a9d6665864372b9f2bb_151644_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/lines_hud36468f48f180a9d6665864372b9f2bb_151644_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;一图对比&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;400&#34;
+		data-flex-basis=&#34;960px&#34;
 	
-	&lt;figcaption&gt;一图对比&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Hough没什么好说的，参考DIP&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Split-and-merge&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split1.png&#34;
+	width=&#34;1648&#34;
+	height=&#34;530&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 310; 
-			flex-basis: 746px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1.png&#34; data-size=&#34;1648x530&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1.png&#34;
-			width=&#34;1648&#34;
-			height=&#34;530&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;310&#34;
+		data-flex-basis=&#34;746px&#34;
 	
-&lt;/figure&gt;
-&lt;figure 
+&gt;
+&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split2.png&#34;
+	width=&#34;654&#34;
+	height=&#34;530&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/split2_hucfa5d437b4868d2da828ae07f655727f_70688_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/split2_hucfa5d437b4868d2da828ae07f655727f_70688_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 123; 
-			flex-basis: 296px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2.png&#34; data-size=&#34;654x530&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2.png&#34;
-			width=&#34;654&#34;
-			height=&#34;530&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2_hucfa5d437b4868d2da828ae07f655727f_70688_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/split2_hucfa5d437b4868d2da828ae07f655727f_70688_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;123&#34;
+		data-flex-basis=&#34;296px&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/full.png&#34;
+	width=&#34;1592&#34;
+	height=&#34;730&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/full_hu25c2696c0cbc81a3a74d863979996dae_222264_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/full_hu25c2696c0cbc81a3a74d863979996dae_222264_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;full process&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 218; 
-			flex-basis: 523px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full.png&#34; data-size=&#34;1592x730&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full.png&#34;
-			width=&#34;1592&#34;
-			height=&#34;730&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full_hu25c2696c0cbc81a3a74d863979996dae_222264_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/full_hu25c2696c0cbc81a3a74d863979996dae_222264_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;full process&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;218&#34;
+		data-flex-basis=&#34;523px&#34;
 	
-	&lt;figcaption&gt;full process&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Linear regression&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/iterReg.png&#34;
+	width=&#34;1592&#34;
+	height=&#34;554&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;line regression&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 287; 
-			flex-basis: 689px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg.png&#34; data-size=&#34;1592x554&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg.png&#34;
-			width=&#34;1592&#34;
-			height=&#34;554&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;line regression&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;287&#34;
+		data-flex-basis=&#34;689px&#34;
 	
-	&lt;figcaption&gt;line regression&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;RANSAC: RANdom SAmple Consensus.&lt;/p&gt;
@@ -2803,89 +2700,69 @@ cd scripts
 &lt;ul&gt;
 &lt;li&gt;基于RK2的运动学模型&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/rk2.png&#34;
+	width=&#34;1608&#34;
+	height=&#34;510&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/rk2_hudc19162e910f97f96f42ffd127d72765_230742_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/rk2_hudc19162e910f97f96f42ffd127d72765_230742_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;运动学模型&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 315; 
-			flex-basis: 756px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2.png&#34; data-size=&#34;1608x510&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2.png&#34;
-			width=&#34;1608&#34;
-			height=&#34;510&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2_hudc19162e910f97f96f42ffd127d72765_230742_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/rk2_hudc19162e910f97f96f42ffd127d72765_230742_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;运动学模型&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;315&#34;
+		data-flex-basis=&#34;756px&#34;
 	
-	&lt;figcaption&gt;运动学模型&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;误差传导模型结论&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errprop.png&#34;
+	width=&#34;1608&#34;
+	height=&#34;642&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;新的协方差矩阵&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 250; 
-			flex-basis: 601px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop.png&#34; data-size=&#34;1608x642&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop.png&#34;
-			width=&#34;1608&#34;
-			height=&#34;642&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;新的协方差矩阵&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;250&#34;
+		data-flex-basis=&#34;601px&#34;
 	
-	&lt;figcaption&gt;新的协方差矩阵&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errpropv.png&#34;
+	width=&#34;2258&#34;
+	height=&#34;776&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;可视化&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 290; 
-			flex-basis: 698px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv.png&#34; data-size=&#34;2258x776&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv.png&#34;
-			width=&#34;2258&#34;
-			height=&#34;776&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;可视化&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;290&#34;
+		data-flex-basis=&#34;698px&#34;
 	
-	&lt;figcaption&gt;可视化&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;马尔可夫定位&#34;&gt;马尔可夫定位&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;Markov localization tracks the robot’s belief state using an arbitrary probability density function to represent the robot’s position&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/markov.png&#34;
+	width=&#34;1606&#34;
+	height=&#34;898&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;markov流程&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 178; 
-			flex-basis: 429px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov.png&#34; data-size=&#34;1606x898&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov.png&#34;
-			width=&#34;1606&#34;
-			height=&#34;898&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;markov流程&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;178&#34;
+		data-flex-basis=&#34;429px&#34;
 	
-	&lt;figcaption&gt;markov流程&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;对于2D定位，需要实时更新一个立方体的数据，很慢
 &lt;ul&gt;
@@ -2899,77 +2776,62 @@ cd scripts
 &lt;ul&gt;
 &lt;li&gt;卡尔曼滤波是迭代的，线性系统高斯噪声下最优的，实时性好&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman1.png&#34;
+	width=&#34;1606&#34;
+	height=&#34;896&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;kalman流程&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 179; 
-			flex-basis: 430px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1.png&#34; data-size=&#34;1606x896&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1.png&#34;
-			width=&#34;1606&#34;
-			height=&#34;896&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;kalman流程&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;430px&#34;
 	
-	&lt;figcaption&gt;kalman流程&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman2.png&#34;
+	width=&#34;3028&#34;
+	height=&#34;1612&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;kalman update&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 187; 
-			flex-basis: 450px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2.png&#34; data-size=&#34;3028x1612&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2.png&#34;
-			width=&#34;3028&#34;
-			height=&#34;1612&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;kalman update&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;187&#34;
+		data-flex-basis=&#34;450px&#34;
 	
-	&lt;figcaption&gt;kalman update&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;卡尔曼滤波器和信息融合&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/fuse.png&#34;
+	width=&#34;2974&#34;
+	height=&#34;1254&#34;
+	srcset=&#34;https://ercbunny.github.io/notes/211229-mobilerobot/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_480x0_resize_box_3.png 480w, https://ercbunny.github.io/notes/211229-mobilerobot/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;kalman fusion&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 237; 
-			flex-basis: 569px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse.png&#34; data-size=&#34;2974x1254&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse.png&#34;
-			width=&#34;2974&#34;
-			height=&#34;1254&#34;
-			srcset=&#34;https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/notes-for-introduction-to-autonomous-mobile-robots/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;kalman fusion&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;237&#34;
+		data-flex-basis=&#34;569px&#34;
 	
-	&lt;figcaption&gt;kalman fusion&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 </description>
         </item>
         <item>
         <title>さよなら〜GRE</title>
-        <link>https://ercbunny.github.io/p/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89gre/</link>
+        <link>https://ercbunny.github.io/notes/211212-gre/</link>
         <pubDate>Sun, 12 Dec 2021 21:40:00 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89gre/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89gre/cover.png" alt="Featured image of post さよなら〜GRE" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/notes/211212-gre/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/notes/211212-gre/cover.png" alt="Featured image of post さよなら〜GRE" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;先来说说结果&#34;&gt;先来说说结果&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Oct10在广外大学城考的是V150，Q166，AW4&lt;/li&gt;
@@ -3068,11 +2930,11 @@ cd scripts
         </item>
         <item>
         <title>Dash To Cones</title>
-        <link>https://ercbunny.github.io/p/dash-to-cones/</link>
+        <link>https://ercbunny.github.io/projects/211113-dashtocones/</link>
         <pubDate>Sat, 13 Nov 2021 16:37:33 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/dash-to-cones/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/dash-to-cones/cover.png" alt="Featured image of post Dash To Cones" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/projects/211113-dashtocones/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/211113-dashtocones/cover.png" alt="Featured image of post Dash To Cones" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -3109,11 +2971,11 @@ cd scripts
         </item>
         <item>
         <title>入海MV结尾问题我的答案</title>
-        <link>https://ercbunny.github.io/p/%E5%85%A5%E6%B5%B7mv%E7%BB%93%E5%B0%BE%E9%97%AE%E9%A2%98%E6%88%91%E7%9A%84%E7%AD%94%E6%A1%88/</link>
+        <link>https://ercbunny.github.io/blogs/210801-%E5%85%A5%E6%B5%B7/</link>
         <pubDate>Sun, 01 Aug 2021 11:07:12 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/%E5%85%A5%E6%B5%B7mv%E7%BB%93%E5%B0%BE%E9%97%AE%E9%A2%98%E6%88%91%E7%9A%84%E7%AD%94%E6%A1%88/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/outlook/%E5%85%A5%E6%B5%B7cover.jpg" alt="Featured image of post 入海MV结尾问题我的答案" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/blogs/210801-%E5%85%A5%E6%B5%B7/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/blogs/210801-%E5%85%A5%E6%B5%B7/%E5%85%A5%E6%B5%B7cover.jpg" alt="Featured image of post 入海MV结尾问题我的答案" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;这篇post是啥&#34;&gt;这篇Post是啥&lt;/h2&gt;
 
 
@@ -3145,20 +3007,16 @@ cd scripts
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;第一面&#34;&gt;第一面&lt;/h2&gt;
-&lt;p&gt;&lt;figure 
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b71.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b71.png&#34;
-			
-			
-			
-			loading=&#34;lazy&#34;
-			alt=&#34;第一面问题&#34;&gt;
-	&lt;/a&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b71.png&#34;
 	
-	&lt;figcaption&gt;第一面问题&lt;/figcaption&gt;
 	
-&lt;/figure&gt;&lt;/p&gt;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;第一面问题&#34;
+	
+	
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;同学们都各有去处我又要在何处落脚呢&#34;&gt;同学们都各有去处，我又要在何处落脚呢？&lt;/h3&gt;
 &lt;p&gt;去处的话投了下面这几个地方的学校：香港，瑞士，荷兰，加拿大，新加坡，哪里要我就去那里吧&lt;/p&gt;
 &lt;h3 id=&#34;为什么简历投出去总是没有反应呢&#34;&gt;为什么简历投出去总是没有反应呢？&lt;/h3&gt;
@@ -3221,20 +3079,16 @@ cd scripts
 &lt;p&gt;是，大部分时间都是花在追求这个过程中，不就是一种爱而不得嘛&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;第二面&#34;&gt;第二面&lt;/h2&gt;
-&lt;p&gt;&lt;figure 
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b72.png&#34; &gt;
-		&lt;img src=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b72.png&#34;
-			
-			
-			
-			loading=&#34;lazy&#34;
-			alt=&#34;第二面问题&#34;&gt;
-	&lt;/a&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/post/outlook/%e5%85%a5%e6%b5%b72.png&#34;
 	
-	&lt;figcaption&gt;第二面问题&lt;/figcaption&gt;
 	
-&lt;/figure&gt;&lt;/p&gt;
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;第二面问题&#34;
+	
+	
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;大城市里还留得住我的梦想么&#34;&gt;大城市里还留得住我的梦想么？&lt;/h3&gt;
 &lt;p&gt;可以哦，特别是与当地人好上之后&lt;/p&gt;
 &lt;h3 id=&#34;还没来得及拥抱的你是不是再也无法无法相遇了&#34;&gt;还没来得及拥抱的你，是不是再也无法无法相遇了？&lt;/h3&gt;
@@ -3299,11 +3153,11 @@ cd scripts
         </item>
         <item>
         <title>HLJenga: Hexalink Jenga Manipulator</title>
-        <link>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</link>
+        <link>https://ercbunny.github.io/projects/210701-hljenga/</link>
         <pubDate>Thu, 01 Jul 2021 15:24:52 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/cover.png" alt="Featured image of post HLJenga: Hexalink Jenga Manipulator" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/projects/210701-hljenga/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/210701-hljenga/cover.png" alt="Featured image of post HLJenga: Hexalink Jenga Manipulator" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -3348,25 +3202,20 @@ cd scripts
 &lt;li&gt;Solve for end effector transformation matrix and use &lt;code&gt;cv::calibrateHandEye()&lt;/code&gt; to finish the process&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;solving-the-axxb-problem&#34;&gt;Solving the AX=XB Problem&lt;/h3&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/210701-hljenga/HECProcess.png&#34;
+	width=&#34;1066&#34;
+	height=&#34;702&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/210701-hljenga/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/210701-hljenga/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;HE Calibration Illustrated&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 151; 
-			flex-basis: 364px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess.png&#34; data-size=&#34;1066x702&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess.png&#34;
-			width=&#34;1066&#34;
-			height=&#34;702&#34;
-			srcset=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;HE Calibration Illustrated&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;151&#34;
+		data-flex-basis=&#34;364px&#34;
 	
-	&lt;figcaption&gt;HE Calibration Illustrated&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Consider the transformation $T_{E_1 \rightarrow C_0}=g_{1_1}^{-1}g_{1_0}g_2=g_2g_{3_1}g_{3_0}^{-1}$, where $g$ stands for the configuration of a frame&lt;/li&gt;
 &lt;li&gt;By taking N pictures, we can make use of N equations to solve $AX=XB$&lt;/li&gt;
@@ -3383,25 +3232,20 @@ cd scripts
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/210701-hljenga/subp1.png&#34;
+	width=&#34;1908&#34;
+	height=&#34;870&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/210701-hljenga/subp1_hu76f58b4960776087e81296ab875f36f1_333982_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/210701-hljenga/subp1_hu76f58b4960776087e81296ab875f36f1_333982_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Solving Subproblem 1&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 219; 
-			flex-basis: 526px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1.png&#34; data-size=&#34;1908x870&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1.png&#34;
-			width=&#34;1908&#34;
-			height=&#34;870&#34;
-			srcset=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1_hu76f58b4960776087e81296ab875f36f1_333982_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/subp1_hu76f58b4960776087e81296ab875f36f1_333982_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Solving Subproblem 1&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;219&#34;
+		data-flex-basis=&#34;526px&#34;
 	
-	&lt;figcaption&gt;Solving Subproblem 1&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;jenga-detection&#34;&gt;JENGA DETECTION&lt;/h2&gt;
 &lt;ul&gt;
@@ -3439,25 +3283,20 @@ Apply inverse kinematics with given starting, ending and via points to find corr
 &lt;p&gt;To avoid collision and damage, trajectories are first visualized in MATLAB&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/210701-hljenga/traj.png&#34;
+	width=&#34;2006&#34;
+	height=&#34;522&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/210701-hljenga/traj_hu8104c97a1f2c34b96caa86d898114430_93886_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/210701-hljenga/traj_hu8104c97a1f2c34b96caa86d898114430_93886_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Trajectory Visualized&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 384; 
-			flex-basis: 922px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj.png&#34; data-size=&#34;2006x522&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj.png&#34;
-			width=&#34;2006&#34;
-			height=&#34;522&#34;
-			srcset=&#34;https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj_hu8104c97a1f2c34b96caa86d898114430_93886_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/traj_hu8104c97a1f2c34b96caa86d898114430_93886_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Trajectory Visualized&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;384&#34;
+		data-flex-basis=&#34;922px&#34;
 	
-	&lt;figcaption&gt;Trajectory Visualized&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;related-links&#34;&gt;RELATED LINKS&lt;/h2&gt;
 &lt;ul&gt;
@@ -3468,11 +3307,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>Autonomous Delivery Drone</title>
-        <link>https://ercbunny.github.io/p/autonomous-delivery-drone/</link>
+        <link>https://ercbunny.github.io/projects/210423-delivery/</link>
         <pubDate>Fri, 23 Apr 2021 14:55:42 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/autonomous-delivery-drone/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/autonomous-delivery-drone/cover.png" alt="Featured image of post Autonomous Delivery Drone" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/projects/210423-delivery/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/210423-delivery/cover.png" alt="Featured image of post Autonomous Delivery Drone" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -3525,11 +3364,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>pyTimelapse</title>
-        <link>https://ercbunny.github.io/p/pytimelapse/</link>
+        <link>https://ercbunny.github.io/projects/210122-timelapse/</link>
         <pubDate>Fri, 22 Jan 2021 16:37:33 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/pytimelapse/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/pytimelapse/cover.jpg" alt="Featured image of post pyTimelapse" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/projects/210122-timelapse/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/210122-timelapse/cover.jpg" alt="Featured image of post pyTimelapse" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -3585,11 +3424,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>2020年度总结</title>
-        <link>https://ercbunny.github.io/p/2020%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</link>
+        <link>https://ercbunny.github.io/blogs/201231-summary20/</link>
         <pubDate>Thu, 31 Dec 2020 19:52:23 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/2020%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/2020%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/2020.jpg" alt="Featured image of post 2020年度总结" /&gt;&lt;p&gt;元旦左右的时候按照习惯是会写一个年度小结之类的东西。但当时有一堆事情要做，复习机械之类的，然后心态也稍微有点爆炸所以就拖到现在10号了，老实说如果当时不是在onenote里给自己定下了“要写个总结”的计划，我估计就懒得写了。&lt;/p&gt;
+        <guid>https://ercbunny.github.io/blogs/201231-summary20/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/blogs/201231-summary20/2020.jpg" alt="Featured image of post 2020年度总结" /&gt;&lt;p&gt;元旦左右的时候按照习惯是会写一个年度小结之类的东西。但当时有一堆事情要做，复习机械之类的，然后心态也稍微有点爆炸所以就拖到现在10号了，老实说如果当时不是在onenote里给自己定下了“要写个总结”的计划，我估计就懒得写了。&lt;/p&gt;
 &lt;p&gt;这里主要就是想对着onenote回顾一下这一年做了些啥，体会一下心态的变化，为啥是onenote呢，我习惯在onenote里面规划自己的日程。曾经想过要不要把onenote迁移到notability上，想了想又还是觉得算了，毕竟我还是挺喜欢onenote那种无限大的页面，不会被纸张大小局限的感觉。&lt;/p&gt;
 &lt;p&gt;新的一年给我的感觉好像总是从冬天、寒假开始，而不是人们常说的春夏秋冬这个顺序。2020年的寒假开始于13号，当时花了四天时间把电路书讲cadence的章节给看了，上手了这个软件。啊，竟然还是不到一年前吗？真的很难想象这一年我都经历了什么以至于到最后做电机仿真的时候都有一种已经认识这个软件两三年的感觉……大概是一堆远程仿真实验吧……寒假期间终于在许多次找场地、试飞和修理后体会到了固定翼FPV飞行的乐趣（DJI还是牛的），确实很爽，但一个人玩终究还是孤单了一点哈，而且尾推式的飞翼起飞的时候有点麻烦。下次可能就弄一个尾座式VTOL，加上头部追踪云台，和小伙伴们一起飞吧。看书的话主要就是把电路剩下的那几章给学完了，作业也做了，总结也做了。虽说最后复习的时候还是得重新做一遍的，但还是给我省下了一点在电路课上啃模数电（以及摸鱼）的时间。&lt;/p&gt;
 &lt;p&gt;这个寒假绝对是最最最特殊的一个寒假，一开始从15截止延期到29号，最后直接无缝过渡到春季学期，现在回忆起来也没有觉得春季学期有什么实感，好像还是放假的感觉。造成这种情况的源头是很大概率会被载入史册的COVID19。当时天气尚冷、新闻里不断播报着疫情的蔓延和城市的封锁，真的给人一种非常压抑喘不过气来的感觉。要命的是我还突然开始咳嗽了，当然不是新冠而是普通的着凉那种。虽然当时也心里很明白大概率只是着凉了，但是当时真的很恐慌啊也不知道该不该去医院，处于一种进退两难的地步，我还去问了我一个学医的学长，现在想起来简直是xswl。咳嗽这种东西啊，你越去想就越想咳——后来沉迷于罗小黑和三蹦子，就没怎么去管咳嗽是不是新冠这档子事情了。我好像是把这有关这两个IP的几乎所有作品都给补了一遍……对了对了，受008的启发我也做了一个类似的视频，虽然莫有什么人看，但是做视频的那几天还是挺快乐的（沙雕并快乐着），是疫情期间少有的闪光的日子。&lt;/p&gt;
@@ -3603,11 +3442,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>大二学年总结</title>
-        <link>https://ercbunny.github.io/p/%E5%A4%A7%E4%BA%8C%E5%AD%A6%E5%B9%B4%E6%80%BB%E7%BB%93/</link>
+        <link>https://ercbunny.github.io/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/</link>
         <pubDate>Mon, 01 Jun 2020 18:52:23 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/%E5%A4%A7%E4%BA%8C%E5%AD%A6%E5%B9%B4%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/%E5%A4%A7%E4%BA%8C%E5%AD%A6%E5%B9%B4%E6%80%BB%E7%BB%93/grade2.png" alt="Featured image of post 大二学年总结" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/blogs/200601-%E5%A4%A7%E4%BA%8C%E5%B9%B4%E5%BA%A6/grade2.png" alt="Featured image of post 大二学年总结" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;主要工作&#34;&gt;主要工作&lt;/h2&gt;
 &lt;h3 id=&#34;学分绩&#34;&gt;学分绩&lt;/h3&gt;
 &lt;p&gt;大一摸清了一些考试规律，所以大二更加注重对知识的掌握程度，而非仅仅停留在把握整体框架上，于是在最后考试的时候做题不会感觉生疏。虽然有些课是真的不戳我兴趣点，但是还是硬着头皮去学了，毕竟抛开卷的问题，学分绩在哪里都是很重要的，所以丝毫不敢放松。&lt;/p&gt;
@@ -3625,11 +3464,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>愿望清单</title>
-        <link>https://ercbunny.github.io/p/%E6%84%BF%E6%9C%9B%E6%B8%85%E5%8D%95/</link>
+        <link>https://ercbunny.github.io/blogs/200101-wishlist/</link>
         <pubDate>Wed, 01 Jan 2020 15:45:12 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/%E6%84%BF%E6%9C%9B%E6%B8%85%E5%8D%95/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/outlook/wishListCover.jpg" alt="Featured image of post 愿望清单" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/blogs/200101-wishlist/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/blogs/200101-wishlist/wishListCover.jpg" alt="Featured image of post 愿望清单" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;这是什么&#34;&gt;这是什么&lt;/h2&gt;
 &lt;p&gt;在2020年初，我写下了一些对“‘主旋律’和生活本身协调问题，或者说怎么协调所谓正事和兴趣的问题”的一些思考，然后一直存在我的本地磁盘上，现在觉得可以放在个人主页上来充实一下内容&lt;/p&gt;
 &lt;p&gt;正事是学业和事业，是直接和以后的成就高度和生活水平相关的硬核事务。这个东西如果要很深入可能要上升到人生意义和君之何从的哲学问题，很难回答，一般的做法是先着眼于当下的小目标，这个小目标就是所谓的主旋律或者说大方向。而兴趣以及生活可以看成是一个愿望清单，里面包括各种杂七杂八的愿望，等着自己去实现。&lt;/p&gt;
@@ -3762,11 +3601,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>2019年度总结</title>
-        <link>https://ercbunny.github.io/p/2019%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</link>
+        <link>https://ercbunny.github.io/blogs/192131-summary19/</link>
         <pubDate>Tue, 31 Dec 2019 17:52:23 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/2019%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/2019%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/2019.jpg" alt="Featured image of post 2019年度总结" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/blogs/192131-summary19/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/blogs/192131-summary19/2019.jpg" alt="Featured image of post 2019年度总结" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;2019总结&#34;&gt;2019总结&lt;/h2&gt;
 &lt;p&gt;这一年过得非常充实。&lt;/p&gt;
 &lt;p&gt;课业上基本都是基础课，而且基础课要一直持续到大二结束。有意思的专业课都被学校放在了大三。大三得出去交换，要不然很难完成“取得世界公认的硕士（或以上）学位”这个目标呀。不过听说那边课也能选到对应的，而且怎么说呢，感觉在这边也是基本靠自学。学分绩上最终的结果是排名到前0.3，还混了个三等奖学金。&lt;/p&gt;
@@ -3781,11 +3620,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>A 3-Rotor VTOL UAV</title>
-        <link>https://ercbunny.github.io/p/a-3-rotor-vtol-uav/</link>
+        <link>https://ercbunny.github.io/projects/190815-trivtol/</link>
         <pubDate>Thu, 15 Aug 2019 13:20:21 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/a-3-rotor-vtol-uav/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/a-3-rotor-vtol-uav/cover.png" alt="Featured image of post A 3-Rotor VTOL UAV" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/projects/190815-trivtol/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/190815-trivtol/cover.png" alt="Featured image of post A 3-Rotor VTOL UAV" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 
@@ -3819,63 +3658,48 @@ Apply inverse kinematics with given starting, ending and via points to find corr
 &lt;p&gt;We only implemented attitude control. Communication between boards is via PWM&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure 
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/190815-trivtol/illustration.png&#34;
+	width=&#34;468&#34;
+	height=&#34;395&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/190815-trivtol/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/190815-trivtol/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Illustration of the UAV | ①: Aileron, ②: Rudder &amp; Elevator, ③ &amp; ④: Tilt Servo, ⑤: Motor&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 118; 
-			flex-basis: 284px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration.png&#34; data-size=&#34;468x395&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration.png&#34;
-			width=&#34;468&#34;
-			height=&#34;395&#34;
-			srcset=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/a-3-rotor-vtol-uav/illustration_hu7473972062d87efc5eae662551d8ea8c_78217_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Illustration of the UAV | ①: Aileron, ②: Rudder &amp; Elevator, ③ &amp; ④: Tilt Servo, ⑤: Motor&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;118&#34;
+		data-flex-basis=&#34;284px&#34;
 	
-	&lt;figcaption&gt;Illustration of the UAV | ①: Aileron, ②: Rudder &amp;amp; Elevator, ③ &amp;amp; ④: Tilt Servo, ⑤: Motor&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/190815-trivtol/overview.png&#34;
+	width=&#34;1312&#34;
+	height=&#34;314&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/190815-trivtol/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/190815-trivtol/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;System Block Diagram&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 417; 
-			flex-basis: 1002px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview.png&#34; data-size=&#34;1312x314&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview.png&#34;
-			width=&#34;1312&#34;
-			height=&#34;314&#34;
-			srcset=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/a-3-rotor-vtol-uav/overview_hu92f4a20396b16f489f370f9754ddc6b5_153281_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;System Block Diagram&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;417&#34;
+		data-flex-basis=&#34;1002px&#34;
 	
-	&lt;figcaption&gt;System Block Diagram&lt;/figcaption&gt;
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/190815-trivtol/math.png&#34;
+	width=&#34;3840&#34;
+	height=&#34;2160&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/190815-trivtol/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/190815-trivtol/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
 	
-&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure 
+		alt=&#34;Essential Part of the F1 Mixing Unit Explained&#34;
+	
 	
 		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 177; 
-			flex-basis: 426px&#34;
-	&gt;
-	&lt;a href=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math.png&#34; data-size=&#34;3840x2160&#34;&gt;
-		&lt;img src=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math.png&#34;
-			width=&#34;3840&#34;
-			height=&#34;2160&#34;
-			srcset=&#34;https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_480x0_resize_box_3.png 480w, https://ercbunny.github.io/p/a-3-rotor-vtol-uav/math_hu9284eb0554ec795d5b5d0707c6993e7a_2128860_1024x0_resize_box_3.png 1024w&#34;
-			loading=&#34;lazy&#34;
-			alt=&#34;Essential Part of the F1 Mixing Unit Explained&#34;&gt;
-	&lt;/a&gt;
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
 	
-	&lt;figcaption&gt;Essential Part of the F1 Mixing Unit Explained&lt;/figcaption&gt;
-	
-&lt;/figure&gt;&lt;/p&gt;
+&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;detailed-report&#34;&gt;DETAILED REPORT&lt;/h2&gt;
 &lt;ul&gt;
@@ -3886,11 +3710,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>基于MBTI的职业生涯规划</title>
-        <link>https://ercbunny.github.io/p/%E5%9F%BA%E4%BA%8Embti%E7%9A%84%E8%81%8C%E4%B8%9A%E7%94%9F%E6%B6%AF%E8%A7%84%E5%88%92/</link>
+        <link>https://ercbunny.github.io/blogs/190327-mbti/</link>
         <pubDate>Wed, 27 Mar 2019 11:07:12 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/%E5%9F%BA%E4%BA%8Embti%E7%9A%84%E8%81%8C%E4%B8%9A%E7%94%9F%E6%B6%AF%E8%A7%84%E5%88%92/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/post/outlook/MBTICover.png" alt="Featured image of post 基于MBTI的职业生涯规划" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/blogs/190327-mbti/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/blogs/190327-mbti/MBTICover.png" alt="Featured image of post 基于MBTI的职业生涯规划" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;摘要&#34;&gt;摘要&lt;/h2&gt;
 &lt;p&gt;此规划分三部分。第一部分是基于MBTI测试的自我分析；第二部分是未来一到两年的详细规划；第三部分是到毕业时的中期规划，主要谈谈感兴趣的方向和各种可能性。&lt;/p&gt;
 &lt;hr&gt;
@@ -3926,11 +3750,11 @@ Apply inverse kinematics with given starting, ending and via points to find corr
         </item>
         <item>
         <title>BunnyAAT</title>
-        <link>https://ercbunny.github.io/p/bunnyaat/</link>
+        <link>https://ercbunny.github.io/projects/180914-bunnyaat/</link>
         <pubDate>Fri, 14 Sep 2018 10:19:16 +0800</pubDate>
         
-        <guid>https://ercbunny.github.io/p/bunnyaat/</guid>
-        <description>&lt;img src="https://ercbunny.github.io/p/bunnyaat/cover.png" alt="Featured image of post BunnyAAT" /&gt;&lt;hr&gt;
+        <guid>https://ercbunny.github.io/projects/180914-bunnyaat/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/180914-bunnyaat/cover.png" alt="Featured image of post BunnyAAT" /&gt;&lt;hr&gt;
 &lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
 
 

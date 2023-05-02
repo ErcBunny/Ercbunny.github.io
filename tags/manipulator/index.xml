@@ -1,20 +1,165 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>MANIPULATOR on Yueqian&#39;s Page</title>
-    <link>https://ercbunny.github.io/tags/manipulator/</link>
-    <description>Recent content in MANIPULATOR on Yueqian&#39;s Page</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Thu, 01 Jul 2021 15:24:52 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/manipulator/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>HLJenga: Hexalink Jenga Manipulator</title>
-      <link>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</link>
-      <pubDate>Thu, 01 Jul 2021 15:24:52 +0800</pubDate>
-      
-      <guid>https://ercbunny.github.io/p/hljenga-hexalink-jenga-manipulator/</guid>
-      <description>VIDEO DEMO OVERVIEW We were required to program QKM manipulators to play Jenga automatically My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI The robot operates like this: Take a picture with camera and calculate target positions Do path and trajectory planning Upload planned trajectory to bot Run HAND-EYE CALIBRATION HEC Explained in A Nutshell Aims to find the transform matrix from camera frame to tool frame.</description>
-    </item>
+    <channel>
+        <title>MANIPULATOR on Ryan&#39;s Page</title>
+        <link>https://ercbunny.github.io/tags/manipulator/</link>
+        <description>Recent content in MANIPULATOR on Ryan&#39;s Page</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 01 Jul 2021 15:24:52 +0800</lastBuildDate><atom:link href="https://ercbunny.github.io/tags/manipulator/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>HLJenga: Hexalink Jenga Manipulator</title>
+        <link>https://ercbunny.github.io/projects/210701-hljenga/</link>
+        <pubDate>Thu, 01 Jul 2021 15:24:52 +0800</pubDate>
+        
+        <guid>https://ercbunny.github.io/projects/210701-hljenga/</guid>
+        <description>&lt;img src="https://ercbunny.github.io/projects/210701-hljenga/cover.png" alt="Featured image of post HLJenga: Hexalink Jenga Manipulator" /&gt;&lt;hr&gt;
+&lt;h2 id=&#34;video-demo&#34;&gt;VIDEO DEMO&lt;/h2&gt;
+
+
+
+
+
+
     
-  </channel>
+
+
+&lt;div class=&#34;video-wrapper&#34;&gt;
+    &lt;iframe src=&#34;https://player.bilibili.com/player.html?as_wide=1&amp;amp;high_quality=1&amp;amp;page=1&amp;bvid=BV1654y177YU&#34;
+            scrolling=&#34;no&#34;
+            frameborder=&#34;no&#34;
+            framespacing=&#34;0&#34;
+            allowfullscreen=&#34;true&#34;
+    &gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;overview&#34;&gt;OVERVIEW&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;We were required to program QKM manipulators to play Jenga automatically&lt;/li&gt;
+&lt;li&gt;My part was doing hand-eye calibration, blob analysis, path/trajectory planning and simple UI&lt;/li&gt;
+&lt;li&gt;The robot operates like this:
+&lt;ol&gt;
+&lt;li&gt;Take a picture with camera and calculate target positions&lt;/li&gt;
+&lt;li&gt;Do path and trajectory planning&lt;/li&gt;
+&lt;li&gt;Upload planned trajectory to bot&lt;/li&gt;
+&lt;li&gt;Run&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;hand-eye-calibration&#34;&gt;HAND-EYE CALIBRATION&lt;/h2&gt;
+&lt;h3 id=&#34;hec-explained-in-a-nutshell&#34;&gt;HEC Explained in A Nutshell&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Aims to find the transform matrix from camera frame to tool frame.&lt;/li&gt;
+&lt;li&gt;Intrinsic params: &lt;code&gt;cv::calibrateCamera()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Solve for pose of the calibration board in camera frame: &lt;code&gt;cv::solvePnP()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Solve for end effector transformation matrix and use &lt;code&gt;cv::calibrateHandEye()&lt;/code&gt; to finish the process&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;solving-the-axxb-problem&#34;&gt;Solving the AX=XB Problem&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/210701-hljenga/HECProcess.png&#34;
+	width=&#34;1066&#34;
+	height=&#34;702&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/210701-hljenga/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/210701-hljenga/HECProcess_huabf55ba5f4cfdf79adad087a67f5cf1d_59423_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;HE Calibration Illustrated&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;151&#34;
+		data-flex-basis=&#34;364px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Consider the transformation $T_{E_1 \rightarrow C_0}=g_{1_1}^{-1}g_{1_0}g_2=g_2g_{3_1}g_{3_0}^{-1}$, where $g$ stands for the configuration of a frame&lt;/li&gt;
+&lt;li&gt;By taking N pictures, we can make use of N equations to solve $AX=XB$&lt;/li&gt;
+&lt;li&gt;Actual solver is implemented by OpenCV: &lt;code&gt;cv::calibrateHandEye()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Subproblem 1: How to find $g_{3_i }$?
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cv::calibrateCamera()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cv::solvePnP()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Subproblem 2: How to find $g_{1_i }$?
+&lt;ul&gt;
+&lt;li&gt;Forward kinematics&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/210701-hljenga/subp1.png&#34;
+	width=&#34;1908&#34;
+	height=&#34;870&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/210701-hljenga/subp1_hu76f58b4960776087e81296ab875f36f1_333982_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/210701-hljenga/subp1_hu76f58b4960776087e81296ab875f36f1_333982_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Solving Subproblem 1&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;219&#34;
+		data-flex-basis=&#34;526px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;jenga-detection&#34;&gt;JENGA DETECTION&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Blob Analysis:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;RGB to HSV&lt;/li&gt;
+&lt;li&gt;Get blob areas based on color filtering&lt;/li&gt;
+&lt;li&gt;Apply morphology process to eliminate cracks and dots&lt;/li&gt;
+&lt;li&gt;Find blob contours and corresponding &lt;code&gt;minAreaRect&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Coordinates transformation:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Pixel frame to camera frame: $q_{pixel}Z_c=KDq_{camera}$&lt;/li&gt;
+&lt;li&gt;Camera frame to world frame: $q_{world}=g_1g_2q_{camera}$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sort targets by the distance to base in ascending order, because we need to take into consideration of the height of already built structure and make sure that the planned path does not crush it&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;trajectory-planning&#34;&gt;TRAJECTORY PLANNING&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Linear function with parabolic bends and via points
+Apply inverse kinematics with given starting, ending and via points to find corresponding points in joint space&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Doing trajectory planning in joint space directly is much faster because of absence of calculating inverse&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;To avoid collision and damage, trajectories are first visualized in MATLAB&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://ercbunny.github.io/projects/210701-hljenga/traj.png&#34;
+	width=&#34;2006&#34;
+	height=&#34;522&#34;
+	srcset=&#34;https://ercbunny.github.io/projects/210701-hljenga/traj_hu8104c97a1f2c34b96caa86d898114430_93886_480x0_resize_box_3.png 480w, https://ercbunny.github.io/projects/210701-hljenga/traj_hu8104c97a1f2c34b96caa86d898114430_93886_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Trajectory Visualized&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;384&#34;
+		data-flex-basis=&#34;922px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;related-links&#34;&gt;RELATED LINKS&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/TANGBEN7/HLJenga&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Source Code&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

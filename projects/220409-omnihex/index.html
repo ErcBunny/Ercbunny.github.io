@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter'>
+<title>OmniHex</title>
+
+<link rel='canonical' href='https://ercbunny.github.io/projects/220409-omnihex/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='OmniHex'>
+<meta property='og:description' content='Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter'>
+<meta property='og:url' content='https://ercbunny.github.io/projects/220409-omnihex/'>
+<meta property='og:site_name' content='Ryan&#39;s Page'>
+<meta property='og:type' content='article'><meta property='article:section' content='Projects' /><meta property='article:tag' content='UAV' /><meta property='article:tag' content='MPC' /><meta property='article:tag' content='ADAPTIVE CTRL' /><meta property='article:published_time' content='2022-04-09T12:00:00&#43;08:00'/><meta property='article:modified_time' content='2022-04-09T12:00:00&#43;08:00'/><meta property='og:image' content='https://ercbunny.github.io/projects/220409-omnihex/cover.png' />
+<meta name="twitter:site" content="@yueqianliu1">
+    <meta name="twitter:creator" content="@yueqianliu1"><meta name="twitter:title" content="OmniHex">
+<meta name="twitter:description" content="Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://ercbunny.github.io/projects/220409-omnihex/cover.png' />
+    <link rel="shortcut icon" href="/img/user.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu047d7df235c50937c4e2e6b6880cc61b_117975_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Ryan&#39;s Page</a></h1>
+            <h2 class="site-description">Yueqian Liu | 刘越千</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/ErcBunny'
+                        target="_blank"
+                        title="1-GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/ryan-yql/'
+                        target="_blank"
+                        title="2-linkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0,0,256,256" width="50px" height="50px" fill-rule="nonzero"><g fill-opacity="1" fill="#cdcdcd" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.12,5.12)"><path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.76 2.24,5 5,5h32c2.76,0 5,-2.24 5,-5v-32c0,-2.76 -2.24,-5 -5,-5zM17,20v19h-6v-19zM11,14.47c0,-1.4 1.2,-2.47 3,-2.47c1.8,0 2.93,1.07 3,2.47c0,1.4 -1.12,2.53 -3,2.53c-1.8,0 -3,-1.13 -3,-2.53zM39,39h-6c0,0 0,-9.26 0,-10c0,-2 -1,-4 -3.5,-4.04h-0.08c-2.42,0 -3.42,2.06 -3.42,4.04c0,0.91 0,10 0,10h-6v-19h6v2.56c0,0 1.93,-2.56 5.81,-2.56c3.97,0 7.19,2.73 7.19,8.26z"></path></g></g></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/16031917'
+                        target="_blank"
+                        title="3-BiliBili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg t="1638771673560" class="icon" viewBox="0 0 2299 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2977" width="200" height="200"><path d="M1775.840814 322.588002c6.0164 1.002733 53.144869-9.525967 55.150336-6.016401 3.0082 4.5123 24.065601 155.92504 18.550567 156.927774s-44.621635 10.027334-44.621635 10.027334c-3.0082-20.556034-28.577901-147.903173-29.079268-160.938707m75.205003-14.539634l20.556034 162.944174c10.5287-0.501367 53.144869-3.509567 57.155803-4.010934-6.0164-61.668103-16.545101-158.933241-16.545101-158.93324-20.054668-4.010934-41.112069-4.010934-61.166736 0m-40.610702 226.116376s92.752838-23.564234 126.344406-12.0328c17.046467 61.668103 48.131202 407.611118 51.139402 421.649386-21.057401 2.506833-90.246004 8.523234-95.761037 10.027333-4.5123-26.071068-81.72277-403.098818-81.722771-419.643919m343.436183-207.565809c5.515034 1.5041 54.648969-5.013667 55.150335-1.5041 1.002733 12.032801 6.0164 157.42914 0.501367 157.930507s-44.621635 4.010934-44.621635 4.010934c-1.002733-20.054668-12.032801-146.90044-11.030067-160.437341m75.70637-4.010933l4.010933 160.938707c10.5287 0 52.643502 2.506833 57.155803 2.005467-1.002733-61.668103 0-158.933241 0-158.933241-20.054668-3.509567-40.610702-5.013667-61.166736-4.010933m-64.676303 216.089043s94.758304-12.534167 126.845772 2.506833c7.019134 72.196803 6.0164 408.613852 7.019134 422.652119-21.558768 0-90.246004 1.002733-95.761038 2.005467-1.002733-26.071068-39.607968-410.619319-38.103868-427.164419m-220.099977-413.627519c54.648969 278.759879 96.262404 755.058234 97.766504 785.641602 0 0 43.117535 1.002733 91.750105 4.010934C2105.740095 614.383415 2070.644427 134.575493 2071.145794 119.033126c-12.032801-13.536901-126.344406 6.0164-126.344406 6.0164m-120.328005 659.297196c-10.5287-78.213204-290.291313-166.955108-447.720454-138.377206 0 0-19.553301-172.470141-27.073801-339.425248-6.517767-143.390873-1.002733-282.770813 0.501366-305.833681-10.5287-7.5205-123.837572 46.627102-185.004308 69.188603 0 0 73.199537 309.844614 126.344406 952.59671 0 0 84.730971 9.0246 230.12731-19.051934s317.365114-115.815705 302.825481-219.097244m-341.932083 140.88404l-24.566967-176.982441c6.0164-3.0082 156.927774 53.144869 172.971507 63.172203-2.506833 11.030067-148.40454 113.810238-148.40454 113.810238M610.664628 322.588002c6.0164 1.002733 53.144869-9.525967 55.150335-6.016401 3.0082 4.5123 24.065601 155.92504 18.550568 156.927774s-44.621635 10.027334-44.621635 10.027334c-3.0082-20.556034-28.577901-147.903173-29.079268-160.938707m75.205003-14.539634l20.556034 162.944174c10.5287-0.501367 53.144869-3.509567 57.155803-4.010934-6.517767-61.668103-16.545101-158.933241-16.545101-158.93324-20.054668-4.010934-41.112069-4.010934-61.166736 0m-40.610702 226.116376s92.752838-23.564234 126.344406-12.0328c17.046467 61.668103 48.131202 407.611118 51.139402 421.649386-21.057401 2.506833-90.246004 8.523234-95.761037 10.027333-4.5123-26.071068-81.72277-403.098818-81.722771-419.643919m343.436182-207.565809c5.515034 1.5041 54.648969-5.013667 55.150336-1.5041 1.002733 12.032801 6.0164 157.42914 0.501367 157.930507s-44.621635 4.010934-44.621635 4.010934c-1.002733-20.054668-11.531434-146.90044-11.030068-160.437341m75.706371-4.010933l4.010933 160.938707c10.5287 0 52.643502 2.506833 57.155803 2.005467-1.002733-61.668103 0-158.933241 0-158.933241-20.054668-3.509567-40.610702-4.5123-61.166736-4.010933m-64.676303 216.089043s94.758304-12.534167 126.845772 2.506833c7.019134 72.196803 6.0164 408.613852 7.019134 422.652119-21.558768 0-90.246004 1.002733-95.761038 2.005467-0.501367-26.071068-39.607968-410.619319-38.103868-427.164419m-220.099977-413.627519c54.648969 278.759879 96.262404 755.058234 97.766504 785.641602 0 0 43.117535 1.002733 91.750105 4.010934-28.577901-300.318647-63.67357-780.126569-63.172203-796.170303-12.032801-13.035534-126.344406 6.517767-126.344406 6.517767m-120.328005 659.297196c-10.5287-78.213204-290.291313-166.955108-447.720454-138.377206 0 0-19.553301-172.470141-27.073801-339.425248-6.517767-143.390873-1.002733-282.770813 0.501366-305.833681C174.475608-6.308547 61.166736 47.337689 0 69.89919c0 0 73.199537 309.844614 126.344406 952.59671 0 0 84.730971 9.0246 230.12731-19.051934s317.365114-115.815705 302.825481-219.097244m-341.932083 140.88404l-24.566967-176.982441c6.0164-3.0082 156.927774 53.144869 172.971507 63.172203-2.506833 11.030067-148.40454 113.810238-148.40454 113.810238" p-id="2978" fill="#cdcdcd"></path></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/projects/220409-omnihex/">
+                <img src="/projects/220409-omnihex/cover_huba54d71c326fc4a7fe04e9df8fd07842_1133223_800x0_resize_box_3.png"
+                        srcset="/projects/220409-omnihex/cover_huba54d71c326fc4a7fe04e9df8fd07842_1133223_800x0_resize_box_3.png 800w, /projects/220409-omnihex/cover_huba54d71c326fc4a7fe04e9df8fd07842_1133223_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="212" 
+                        loading="lazy"
+                        alt="Featured image of post OmniHex" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/projects/" style="background-color: #97d48a; color: #fff;">
+                Projects
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/projects/220409-omnihex/">OmniHex</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Adaptive Nonlinear Model Predictive Control for An Overactuated Hexacopter
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 09, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <hr>
+<h2 id="links--downloads">LINKS &amp; DOWNLOADS</h2>
+<ul>
+<li><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/Project%20Experience.pptx"  target="_blank" rel="noopener"
+    >Presentation of Early Work (English)</a></li>
+<li><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/omnihex.pdf"  target="_blank" rel="noopener"
+    >Research Proposal (Chinese)</a></li>
+<li><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/%e4%b8%ad%e6%9c%9f%e6%8a%a5%e5%91%8a.pdf"  target="_blank" rel="noopener"
+    >Midterm Summary (Chinese)</a></li>
+<li><a class="link" href="https://github.com/ErcBunny/sharedDocs/raw/main/wide.pdf"  target="_blank" rel="noopener"
+    >Closing Presentation (Chinese)</a></li>
+<li><a class="link" href="https://1drv.ms/b/s!AtUoQjeuHMpihMpIooJgC1C_nQjvbw?e=b5tRRc"  target="_blank" rel="noopener"
+    >Thesis (Chinese)</a></li>
+</ul>
+<hr>
+<h2 id="video-demo">VIDEO DEMO</h2>
+
+
+
+
+
+
+    
+
+
+<div class="video-wrapper">
+    <iframe src="https://player.bilibili.com/player.html?as_wide=1&amp;high_quality=1&amp;page=1&bvid=BV1ov4y1g7R6"
+            scrolling="no"
+            frameborder="no"
+            framespacing="0"
+            allowfullscreen="true"
+    >
+    </iframe>
+</div>
+
+<p><img src="/projects/220409-omnihex/numsim.svg"
+	
+	
+	
+	loading="lazy"
+	
+	
+> <img src="/projects/220409-omnihex/gzsim.svg"
+	
+	
+	
+	loading="lazy"
+	
+	
+> <img src="/projects/220409-omnihex/real.png"
+	width="1100"
+	height="1008"
+	srcset="/projects/220409-omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_480x0_resize_box_3.png 480w, /projects/220409-omnihex/real_hu8060b16c994461fdc70f2d342878ea98_2435923_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="109"
+		data-flex-basis="261px"
+	
+></p>
+<hr>
+<h2 id="dev-milestones">Dev Milestones</h2>
+<ol>
+<li>Upgrade to ROS2: 100%</li>
+<li>PID and Newton-Euler Dynamics in SITL: 100%</li>
+<li>Real hardware drivers and maiden flight: 100%</li>
+<li>Controller architecture and design: 100%</li>
+<li>Formulate MPC solver using acados: 100%</li>
+<li>Test MPC solver in Python: 100%</li>
+<li>L1-MPC python simulation: 100%</li>
+<li>ROS L1-MPC node: 100%</li>
+<li>Track trajectories and collect data: 100%</li>
+<li>Thesis writing: 100%</li>
+</ol>
+<blockquote>
+<p>Far from perfect, but done for now (May29, 2022)</p>
+</blockquote>
+<h2 id="environment-setup">Environment Setup</h2>
+<ol>
+<li><code>Ubuntu 20.04 LTS</code> with <code>ROS2 foxy</code> and <code>ROS1 noetic</code> (since vrpn-client-ros is only available for ROS1).</li>
+<li>Install ROS2 <a class="link" href="https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html"  target="_blank" rel="noopener"
+    >via debian</a> and <a class="link" href="https://docs.px4.io/master/en/ros/ros2_comm.html#install-ros-2"  target="_blank" rel="noopener"
+    >additional tools</a>.</li>
+<li>Install Fast-RTPS-Gen using source code.
+<ul>
+<li>Install <a class="link" href="https://gradle.org/install/"  target="_blank" rel="noopener"
+    >Gradle v6.3</a> through <a class="link" href="https://sdkman.io/"  target="_blank" rel="noopener"
+    >sdkman</a>.</li>
+<li>Use Gradle to build and install Fast-RTPS-Gen.</li>
+</ul>
+</li>
+</ol>
+<pre tabindex="0"><code>git clone --recursive https://github.com/eProsima/Fast-DDS-Gen.git -b v1.0.4 ~/Fast-RTPS-Gen \
+    &amp;&amp; cd ~/Fast-RTPS-Gen \
+    &amp;&amp; gradle assemble \
+    &amp;&amp; sudo env &#34;PATH=$PATH&#34; gradle install
+</code></pre><ol start="4">
+<li>Install dependencies for PX4: <code>PX4-Autopilot/Tools/setup/ubuntu.sh</code>.</li>
+<li>Install officially provided ROS2 plug-ins for Gazebo: <code>sudo apt install ros-foxy-gazebo-ros-pkgs</code>.</li>
+<li>Install <a class="link" href="http://qgroundcontrol.com/"  target="_blank" rel="noopener"
+    >QgroundControl</a> ground station.</li>
+<li>Install packages for optitrack: <code>sudo apt install ros-foxy-ros1-bridge ros-noetic-vrpn ros-noetic-vrpn-client-ros</code>
+<ul>
+<li><code>vrpn-client-ros</code> publishes the built in message type <code>geometry-msgs</code>, it is OK to use debian release of <code>ros1-bridge</code>.</li>
+<li>Building <code>ros1-bridge</code> form source enables extra support for custom message and service types but has conflicts with <code>ros-foxy-controller-manager-msgs</code>.</li>
+</ul>
+</li>
+<li>Install mavros for data visualization: <code>sudo apt install ros-noetic-mavros* ros-noetic-mavlink</code>.</li>
+<li>Dynamixel-sdk <code>ros-foxy-dynamixel-*</code></li>
+<li>Run <code>build_acados.sh</code> to set up the mpc code generation tool.</li>
+</ol>
+<h2 id="usage">Usage</h2>
+<h3 id="l1-mpc">L1-MPC</h3>
+<ol>
+<li>Models and solvers are formulated in <code>ros2-workspace/src/adaptive_mpc/tools/omnihex.py</code>.</li>
+<li>Run <code>acados_generate_code.sh</code> to generate solver code and do numerical simulation.</li>
+<li>ROS2 Solver node is <code>ros2-workspace/src/adaptive_mpc/src/l1_mpc_main.cpp</code>. It has to be recompiled after regenerating the solver code (where control params are defined and stored).</li>
+</ol>
+<h3 id="simulation-with-gazebo">Simulation with Gazebo</h3>
+<ol>
+<li>Build ROS2 workspace.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+cd scripts
+./build_all_ros_clean.sh
+</code></pre><ol start="2">
+<li>Build and run PX4 SITL simulation. It is required to source ROS2 setup file.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+cd PX4-Autopilot
+PX4_NO_FOLLOW_MODE=1 make px4_sitl_ctrlalloc gazebo_omni_hex
+</code></pre><ol start="3">
+<li>Run <code>micrortps_agent</code> over UDP.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+micrortps_agent -t UDP
+</code></pre><ol start="4">
+<li>Use QGC to give commands to the simulation environment. Several useful buttons and modes are listed below.
+<ul>
+<li>Takeoff and land</li>
+<li>Virtual joysticks</li>
+<li>Position mode, altitude mode, ACRO mode</li>
+</ul>
+</li>
+<li>Or use the offboard control node to generate a trajectory for omniHex to track.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+source ./ros2-workspace/install/setup.bash
+ros2 run px4_ros_com offboard_control
+</code></pre><blockquote>
+<p>Above mentioned steps are implemented in <code>run_simulation.sh</code>, run this script, take off to <code>{0, 0, 2.5}</code> and run <code>offboard.sh</code> to track the 8-shape trajectory.</p>
+</blockquote>
+<ol start="6">
+<li>
+<p>If MPC needed, then take off, use <code>ros2 run trajectory_generator min_ref_publisher 0 0 -2.5 1 0 0 0 0 0 0 0 0 0</code> to generate a plain state reference, and publish <code>/RunMpc</code> topic to actually run the MPC. This topic is designed to be published once for a time when you need to change the flag status.</p>
+<blockquote>
+<p>TODO: use service instead</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="real-world-flight">Real World Flight</h3>
+<ul>
+<li>
+<p>Port connections on NUC:</p>
+<ul>
+<li>dynamixel servos on <code>/dev/ttyUSB0 @ 115200</code></li>
+<li>urtps_bridge on <code>/dev/ttyUSB1 @ 3000000</code> -&gt; MCU <code>TELEM1</code></li>
+<li>QGC/mavlink on <code>/dev/ttyACM0 @ any baud</code> (<code>ACM1</code> occurs after a reboot) -&gt; MCU <code>microUSB</code></li>
+</ul>
+</li>
+<li>
+<p>About RC:</p>
+<ul>
+<li>switch A is the kill switch</li>
+<li>switch F sets different flight modes (up: altitude, mid: position, down: acro).</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>Setup the motion capture system.
+<ol>
+<li>Open motive software and open the most recent project (Z-up configuration).</li>
+<li>Go to capture layout (upper-right corner) and delete default rigid bodies.</li>
+<li>Aligned markers with the world frame and create a new rigid body from the selected ones, rename this new instance to <code>uav</code> (as it is fixed in <code>ros1-workspace/src/vrpn_client/launch/default.launch</code>). Data is automatically published to local network.</li>
+</ol>
+</li>
+<li>Build PX4 firmware.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+cd PX4-Autopilot
+make cubepilot_cubeorange_ctrlalloc
+</code></pre><ol start="2">
+<li>Upload firmware to MCU.
+<ol>
+<li>Open QGC and navigate to &ldquo;Vehicle Setup-Firmware&rdquo;.</li>
+<li>Plug in MCU through USB (ttyACM) port and QGC will auto detect the MCU. This step requires the MCU only powered by USB.</li>
+<li>Select custom firmware and upload <code>PX4-Autopilot/build/cubepilot_cubeorange_ctrlalloc/cubepilot_cubeorange_ctrlalloc.px4</code>.</li>
+<li>Restart QGC so that airframe files could be loaded by QGC, then you can do further settings and calibration.</li>
+</ol>
+</li>
+<li>Build ROS1 workspace.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/noetic/setup.bash
+cd ros1-workspace
+catkin build
+</code></pre><ol start="4">
+<li>Build ROS2 workspace.</li>
+</ol>
+<pre tabindex="0"><code>source /opt/ros/foxy/setup.bash
+cd scripts
+./build_all_ros_clean.sh
+</code></pre><ol start="5">
+<li>Start packages on NUC: <code>setup_real_flight.sh</code>. This script starts the following necessary drivers.
+<ul>
+<li>ROS1 <code>vrpn_client</code></li>
+<li>ROS2 <code>ros1_bridge</code></li>
+<li>ROS2  <code>micrortps_bridge</code>, <code>dyanmixel_driver</code>, <code>optitrack</code></li>
+</ul>
+</li>
+<li>Now you can use packages like rqt or rviz for data monitor and visualization. Make sure to source the corresponding ROS version and workspace.</li>
+</ol>
+<h2 id="software-version">Software Version</h2>
+<ol>
+<li>The original version of <code>PX4</code> is <code>stable release v1.12.3</code>. Modified submodules derive from the commit that is referenced by PX4.</li>
+<li>The original version of <code>px4_msg</code> is commit <code>0f550f436547fccc6b86d448e095ad914f5de94a</code> on master branch.</li>
+<li><code>px4_ros_com</code>: commit <code>c618d757bd64113ccbee17ad0ae17ab8122337e8</code> on master branch.</li>
+</ol>
+<h2 id="coordinate-frame">Coordinate Frame</h2>
+<ol>
+<li>SDF and Solidworks models
+<ul>
+<li>front-x, left-y, up-z (body)</li>
+</ul>
+</li>
+<li>PX4
+<ul>
+<li>NED (world)</li>
+<li>front-x, right-y, down-z (body)</li>
+</ul>
+</li>
+<li>Gazebo
+<ul>
+<li>N-Green-y, E-Red-x, U-Blue-z (world)</li>
+</ul>
+</li>
+<li>Arm rotation: see <a class="link" href="https://doi.org/10.3929/ethz-b-000224598"  target="_blank" rel="noopener"
+    >Control Allocation of a Tilting Rotor Hexacopter</a></li>
+<li>In SITL, PX4 NED x is aligned with Gazebo y</li>
+<li>In lab setting, PX4 FRD is algined with optitrack x</li>
+</ol>
+<h2 id="sw-model-to-sdf">SW Model to SDF</h2>
+<ol>
+<li>There are several useful links
+<ul>
+<li><a class="link" href="https://gazebosim.org/tutorials?cat=build_robot"  target="_blank" rel="noopener"
+    >Gazebo official guide</a></li>
+<li><a class="link" href="http://sdformat.org/spec"  target="_blank" rel="noopener"
+    >Format standard of <code>.sdf</code></a></li>
+</ul>
+</li>
+<li>Do NOT use SW2018SP0</li>
+<li>Minimize the number of links. It is good to treat parts that do not move relatively as a whole. Only separate parts into links if there must be a joint in between. Usually, a link corresponds to an assembly.</li>
+<li>In the assembly that represents a link, make sure to attach a coordinate frame in the SDF convention to the model. This frame will be used as the reference frame when exporting <code>.stl</code> and calculating mass properties.</li>
+<li>When exporting to <code>.stl</code> files, hide fine parts otherwise your file would be too big. Choose the aforementioned reference frame, use meter as the scale, and select &ldquo;do not transform to positive space&rdquo;.</li>
+<li>Write the SDF
+<ul>
+<li>SDF uses kilogram and meter as the default unit.</li>
+<li>Don&rsquo;t use mesh as collision. Use the geometry shapes instead.</li>
+<li>Specify a <code>min_depth</code> property to the collision that is in contact with the ground.</li>
+<li>Use numbers in &ldquo;Moments of inertia, taken at the center of mass and aligned with the output coordinate system&rdquo;. Numbers that are not on the diagonal line of the matrix should be inverted.</li>
+</ul>
+</li>
+<li><code>sitl_gazebo</code> plug-ins: &ldquo;IMU&rdquo; should be loaded after &ldquo;mavlink interface&rdquo;.</li>
+</ol>
+<h2 id="ros1-packages">ROS1 Packages</h2>
+<h3 id="mavros_client">mavros_client</h3>
+<ul>
+<li>An overlay package for customizing the launch file. Note that this package should not be named <code>mavros</code>, otherwise ROS may not find the right package path.</li>
+</ul>
+<h3 id="vrpn_client">vrpn_client</h3>
+<ul>
+<li>An overlay package for customizing the launch file.</li>
+</ul>
+<h2 id="ros2-packages">ROS2 Packages</h2>
+<h3 id="custom_gazebo_plugins">custom_gazebo_plugins</h3>
+<ol>
+<li>This package is a supplement to <a class="link" href="https://github.com/ros-simulation/gazebo_ros_pkgs/tree/foxy"  target="_blank" rel="noopener"
+    >officially provided ROS2 plug-ins</a> and those provided in <code>PX4-Autopilot/Tool/sitl_gazebo</code>. The official repository provides example code for writing a plug-in.</li>
+<li><code>gazebo_ros_arm_rotation.cpp</code> is for controlling the position of six arm joints of omniHex via the <code>PID</code> API. Similarly, <code>gazebo_ros_joint_pid_ctrl.cpp</code> controls the position of a single joint via <code>PID</code>.</li>
+<li><code>gazebo_ros_joint_motor.cpp</code> is for controlling joint position or velocity via <code>SetParam</code> and <code>SetPosition</code> API.</li>
+<li><code>gazebo_ros_motor_model.cpp</code> is a simplified ROS2 adaptation of the original version in <code>PX4-Autopilot/Tool/sitl_gazebo</code>.</li>
+</ol>
+<h3 id="px4_msgs">px4_msgs</h3>
+<ol>
+<li>This package contains message types needed by <code>px4_ros_com</code> and other packages that might use the PX4 types, as well as <code>rqt</code> utility.</li>
+<li>The <code>msg</code> folder is updated by the script in <code>PX4-Autopilot/msg/tools/uorb_to_ros_msgs.py</code>. It should be synced whenever a message definition in <code>PX4-Autopilot/msg</code> is changed.</li>
+</ol>
+<h3 id="px4_ros_com">px4_ros_com</h3>
+<ol>
+<li>
+<p>The main purpose of this package is to generate the communication bridge <code>micrortps_agent</code> from a template file <code>src/templates/uorb_rtps_message_ids.yaml</code>. The template file should be synced with PX4 via script <code>PX4-Autopilot/msg/tools/uorb_to_ros_rtps_ids.yaml</code>.</p>
+</li>
+<li>
+<p>There is also an example of off-board control available in <code>src/examples/offboard</code>. This example code is modified to generate a full position-pose trajectory as the function of timestamps.</p>
+<ol>
+<li>circle</li>
+<li>8-shape</li>
+</ol>
+<blockquote>
+<p>TODO: use input args or launch file to specify trajectory shape</p>
+</blockquote>
+</li>
+<li>
+<p>It also provides useful scripts for cleaning and building the workspace.</p>
+<ul>
+<li>Previously, <code>build_ros2_workspace.bash</code> is set to skip <code>custom_gazebo_plugins</code> because the latter depend on <code>px4_msgs</code>.</li>
+<li>It is better to add <code>&lt;depend&gt;px4_msg&lt;/depend&gt;</code> in <code>package.xml</code>. In this way we don&rsquo;t need to specify a order. Make sure to add <code>find_package(px4_msgs REQUIRED)</code> and <code>ament_target_dependencies(foo ...px4_msgs...)</code> in <code>CMakeLists.txt</code>.</li>
+</ul>
+</li>
+</ol>
+<h3 id="optitrack_driver">optitrack_driver</h3>
+<ol>
+<li><code>visual_odom_publisher</code> receives pose data from MOCAP, performs frame transformation and publishes data to topic <code>VehicleVisualOdometry_PubSubTopic</code>. In this target, the message is published in a timer callback at 50Hz.</li>
+<li>Timestamps are taken from <code>VehicleImu_PubSubTopic</code>.</li>
+<li><code>callback_relay</code> is a simple relay. It is similar to <code>visual_odom_publisher</code> but instead of publishing data in a timer callback, it publishes data in the callback for receiving pose data.</li>
+</ol>
+<h3 id="dynamixel_driver">dynamixel_driver</h3>
+<ol>
+<li><code>read_write_node</code> is the example node provided by <code>dynamixel_sdk</code>.</li>
+<li><code>arm_position_control</code> is the one used for controlling the arm positions. It communicates with dynamixel servos via UART in the callback function for receiving <code>ArmRotation_PubSubTopic</code>.</li>
+</ol>
+<h3 id="trajectory_generator">trajectory_generator</h3>
+<ol>
+<li>A package for generating trajectories in MPC framework and visualizing <code>TrajectorySetpoint_PubSubTopic</code>.</li>
+<li>Visualization is implemented in <code>rviz_translator.cpp</code></li>
+</ol>
+<h2 id="adaptive_mpc">adaptive_mpc</h2>
+<ol>
+<li>
+<p>Input topic: <code>/StateReferenceOcp</code>, horizon 1s, 20 + 1 nodes</p>
+</li>
+<li>
+<p>Outputs wrench setpoint</p>
+</li>
+<li>
+<p>Switches and flags:</p>
+<ul>
+<li><code>/RunMpc</code>: should be published once every time you wish to change the status of <code>run_mpc_</code>. It is switched to false if a solver reset has occurred.</li>
+</ul>
+</li>
+</ol>
+<h2 id="px4-tools-and-miscellaneous">PX4 Tools and Miscellaneous</h2>
+<ol>
+<li>Set the correct URL in <code>.gitmodules</code>.</li>
+<li>Custom models for Gazebo simulation is put in <code>PX4-Autopilot/Tools/sitl_gazebo/models</code> with a corresponding <code>.world</code> file in <code>PX4-Autopilot/Tools/sitl_gazebo/worlds</code>.
+<ul>
+<li>The initial condition of the simulation could be set in <code>PX4-Autopilot/Tools/sitl_run.sh</code>.</li>
+<li>Some plug-ins are built externally (in the ROS2 workspace). So <code>PX4-Autopilot/Tools/setup_gazebo.bash</code> is modified to export the correct library paths.</li>
+</ul>
+</li>
+<li>As we are using the <code>micrortps_bridge</code>, we need to build this module in PX4. We can specify this feature by uncommenting the <code>micrortps_bridge</code> line in <code>PX4-Autopilot/boards/px4/sitl/ctrlalloc.cmake</code>, which is the module configuration file for SITL targets. We can choose what modules to be built and what not to be built. The same rule applies to <code>.cmake</code> files for other boards.</li>
+<li>Add our custom model for gazebo simulation in <code>PX4-Autopilot/platforms/posix/cmake/sitl_target.cmake</code>.</li>
+<li>Add our airframe file (a model-dependent script for loading parameters and modules) for simulation in <code>PX4-Autopilot/ROMFS/init.d-posix/airframes</code> and make sure to add this file to the <code>CMakeLists.txt</code>.</li>
+<li>The airframe for real hardware is <code>init.d/airframes/6004_omni_hex</code>.</li>
+<li>A new mixer is in use: <code>omnihex.main.mix</code>.</li>
+<li><code>mc_rate_control</code> isn&rsquo;t started in <code>rc.mc_apps</code> if <code>MIXER = omnihex</code></li>
+</ol>
+<h2 id="px4-messages">PX4 Messages</h2>
+<ol>
+<li>Add a message to hold arm positions and limit status: <code>arm_rotation.msg</code>. After adding a new message file, don&rsquo;t forget to indicate it in <code>CmakeList.txt</code>, otherwise it won&rsquo;t be compiled.</li>
+<li>Every message should be assigned an ID in <code>msg/tools/urob_rtps_message_ids.yaml</code> or targets with <code>micrortps_bridge</code> enabled cannot be compiled. Also, we can specify how <code>micrortps_bridge</code> treat each message.</li>
+<li><code>vehicle_attitude_setpoint.msg</code> and <code>vehicle_local_position_setpoint.msg</code> are modified to handle roll and pitch movements.</li>
+</ol>
+<h2 id="px4-modules">PX4 Modules</h2>
+<ul>
+<li>Generally, a good way to read the code is to look at the header files first. Look at topic subscriptions and publications. Then look at the <code>run()</code> function in <code>.cpp</code> files.</li>
+<li>Modified modules are <code>angular_velocity_controller</code>, <code>commander</code>, <code>control_allocator</code>, <code>flight_mode_manager</code>, <code>mc_att_control</code> and <code>mc_pos_control</code>.</li>
+</ul>
+<h3 id="angular_velocity_controller">angular_velocity_controller</h3>
+<ol>
+<li>
+<p>Center of mass compensation $x_{com} \cross F_{sp}$ in <code>AngularVelocityControl.cpp/hpp</code>, <code>void AngularVelocityControl::update()</code>.</p>
+</li>
+<li>
+<p>Read center of mass parameters and call <code>AngularVelocityControl::update()</code> with additional arguments in<code>AngularVelocityController.cpp/hpp</code>.</p>
+</li>
+<li>
+<p>Newton-Euler equation cross term $\omega_b \cross v_b$ in <code>void AngularVelocityController::Run()</code>.</p>
+</li>
+<li>
+<p>Center of mass parameters are defined in <code>vehicle_model_params.c</code>.</p>
+</li>
+</ol>
+<h3 id="commander">commander</h3>
+<ol>
+<li>In <code>void Commander::update_control_mode()</code>, ACRO mode is added with the same set of configuration as POSCTL mode.</li>
+</ol>
+<h3 id="control_allocator">control_allocator</h3>
+<ol>
+<li>The allocation matrix (actuator effectiveness) is implemented as a subclass of <code>ControlAllocationPseudoInverse</code> and <code>ModuleParams</code>. See <code>ActuatorEffectivenessOmniHex.cpp/hpp/params.c</code> for more detail. In PX4 convention, torque comes above force in a wrench.</li>
+<li>Add omniHex to enum classes, switch cases, and includes in <code>ControlAllocator.cpp/hpp</code>.</li>
+<li>Publish control signals to <code>actuator_controls_0</code> instead of <code>actuator_controls_4</code>, with <code>actuator_controls_0[3]</code> reserved for total thrust signal.</li>
+<li>Always check <code>CMakeLists.txt</code></li>
+</ol>
+<h3 id="flight_mode_manager">flight_mode_manager</h3>
+<ol>
+<li>
+<p>This module takes care of controller setpoints in different flight modes.</p>
+</li>
+<li>
+<p>Switch to <code>FlightTaskIndex::ManualAcceleration</code> when in <code>vehicle_status_s::NAVIGATION_STATE_ACRO</code>. This feature is implemented in <code>FlightModeManager.cpp</code>.</p>
+<blockquote>
+<p>TODO: exclusive flight task for ACRO mode (not only pitch but full pose)</p>
+</blockquote>
+</li>
+<li>
+<p><code>FlightTask.cpp/hpp</code>: add missing variables and functions that are not implemented for roll and pitch commands.</p>
+</li>
+<li>
+<p><code>FlightTaskManualAltitude.hpp</code>: add scaling factors from stick to roll and pitch rate.</p>
+</li>
+<li>
+<p><code>FlightTaskManualAcceleration.cpp/hpp</code>: generate different setpoints in different navigation states.</p>
+</li>
+<li>
+<p>Set roll pitch angle and angular speed setpoint in <code>FlightTaskFoo::activate()</code> function of tasks such as <code>Auto</code>, <code>Failsafe</code> and <code>ManualAltitudeSmoothVel</code>. This is necessary because otherwise the vehicle loses roll and pitch control when auto buttons in QGC is pressed.</p>
+</li>
+</ol>
+<h3 id="mc_att_control">mc_att_control</h3>
+<ol>
+<li><code>AttitudeControl.cpp</code>: <code>matrix::Vector3f AttitudeControl::update()</code> is modified to consider turning rate feed-forward.</li>
+<li><code>AttitudeControl.hpp</code>: add roll and pitch in <code>void setAttitudeSetpoint()</code>, also variables.</li>
+<li><code>mc_att_control_main.cpp</code> and <code>mc_att_control.hpp</code>: call modified function with the right arguments.</li>
+</ol>
+<h3 id="mc_pos_control">mc_pos_control</h3>
+<ol>
+<li><code>PositionControl.cpp/hpp</code>: add variables to take care of roll and pitch rotation. In <code>void PositionControl::getAttitudeSetpoint()</code> attitude setpoints are passed down and thrust setpoint is converted into body frame.</li>
+<li><code>mc_pos_control_params.c</code>: define parameters for manual roll and pitch rate control, which are used in <code>FlightTaskManualAltitude.hpp</code>.</li>
+<li><code>MulticopterPositionControl.cpp/hpp</code>: call modified functions and pass correct arguments.</li>
+</ol>
+<h3 id="ekf2">EKF2</h3>
+<ol>
+<li>In <code>PublishAttitude</code>, an extra step of converting and publishing RPY is added.</li>
+</ol>
+<h2 id="mixer--px4io">mixer &amp; px4io</h2>
+<ol>
+<li>
+<p><code>AllocatedActuatorMixer.cpp</code> now listens to <code>actuator_controls_0</code> instead of <code>actuator_controls_4</code>.</p>
+</li>
+<li>
+<p>ESC calibration parts in <code>px4io.cpp</code> and <code>mixer_module.cpp</code> are modified for <code>control[0]</code> to <code>control[6]</code>, except <code>control[3]</code>.</p>
+<blockquote>
+<p>TODO: test calibration function, <u><em><strong>make sure props are removed</strong></em></u></p>
+</blockquote>
+</li>
+</ol>
+<h2 id="motor-propeller-model">Motor-Propeller Model</h2>
+<h3 id="sitl">SITL</h3>
+<ol>
+<li>In <code>gazebo_motor_model</code> and <code>omni_hex.sdf</code>
+<ul>
+<li><code>motorConstant = thrustCoef = 8.5e-06</code></li>
+<li><code>torqueCoef = thrustCoef * momentConstant = 8.5e-06 * 0.06</code></li>
+</ul>
+</li>
+<li>In <code>px4</code>
+<ul>
+<li>The thrust coefficient if defined as <code>Thrust = CT * u^2</code>, where u (with value between CA_ACT0_MIN and CA_ACT0_MAX) is the output signal sent to the motor controller. <code>CT = 19.125</code></li>
+<li>The moment coefficient is defined as Torque = KM * Thrust (is consistent with momentConstant). <code>KM = 0.06</code></li>
+</ul>
+</li>
+<li>From u (PX4) to $\omega$(real rotor angular velocity)
+<ul>
+<li><code>PWM = 1000 * (1 + u)</code> (observation from print-debugging), where <code>u = actuator_setpoint[0, 1]</code></li>
+<li><code>omega = (u + offset) * scaling + idle</code> @(line ~1121 mavlink interface plugin), in sdf <code>offset = 0; scaling = 1500; idle = 100</code></li>
+</ul>
+</li>
+<li>Conversion between <code>CT</code>(PX4) and <code>motor constant</code> (thrust coef, paper, plugin), we assume that the idle value is negligable
+<ul>
+<li><code>CT = scaling^2 * motorConstant</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="real-world-data">Real World Data</h3>
+<blockquote>
+<p>TODO: mapping between PWM and angular velocity, determine thrust and torque coefficient</p>
+</blockquote>
+<ol>
+<li><code>x = actuator_setpoint[0, 1]</code> to <code>y = actuator_controls_0[-1, 1]</code>: $y=2x-1$</li>
+<li><code>x = actuator_controls_0[-1, 1]</code> to <code>y = PWM[min, max]</code>: $y=\frac{x(y_{max}-y_{min})}{2}+\frac{y_{max}+y_{min}}{2}$</li>
+<li><code>x = PWM[min, max]</code> &amp; <code>y = relative_thrust[0, 1]</code>: $ay^2+(1-a)y-x=0$, where $a\in[0.25,0.35]$</li>
+</ol>
+<h2 id="matlab-files">Matlab Files</h2>
+<ol>
+<li>In <code>matlab-workspace</code>.</li>
+<li><code>trajectory.m</code>: visualization of 8-shape trajectory.</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/uav/">UAV</a>
+        
+            <a href="/tags/mpc/">MPC</a>
+        
+            <a href="/tags/adaptive-ctrl/">ADAPTIVE CTRL</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/projects/210423-delivery/">
+        
+        
+            <div class="article-image">
+                <img src="/projects/210423-delivery/cover.fdb864baa91ee3cfa8d3bc0dcd8daec4_hu3a5654af451f72d615660f99e36c46aa_3411183_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Autonomous Delivery Drone"
+                        
+                        data-hash="md5-/bhkuqke48&#43;o07wNzY2uxA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Autonomous Delivery Drone</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/projects/190815-trivtol/">
+        
+        
+            <div class="article-image">
+                <img src="/projects/190815-trivtol/cover.973e5e9b6e16fe0122a1955cce061a7e_hu937dc71485028e8ffe6cb945e1660d91_2834993_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post A 3-Rotor VTOL UAV"
+                        
+                        data-hash="md5-lz5em24W/gEioZVczgYafg==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">A 3-Rotor VTOL UAV</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/projects/211113-dashtocones/">
+        
+        
+            <div class="article-image">
+                <img src="/projects/211113-dashtocones/cover.95b4910d5a0cfe1b485af7d7bb0edb67_hu1596c4524e5e256ae3691ce675d04ab7_1474265_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Dash To Cones"
+                        
+                        data-hash="md5-lbSRDVoM/htIWvfXuw7bZw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Dash To Cones</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/projects/210701-hljenga/">
+        
+        
+            <div class="article-image">
+                <img src="/projects/210701-hljenga/cover.46a6d3fbe8fa920e2edbbcd4d6a8484f_hu0850b6c007daea2e7b374a0a29db32b6_4012887_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post HLJenga: Hexalink Jenga Manipulator"
+                        
+                        data-hash="md5-RqbT&#43;&#43;j6kg4u27zU1qhITw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HLJenga: Hexalink Jenga Manipulator</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/projects/210122-timelapse/">
+        
+        
+            <div class="article-image">
+                <img src="/projects/210122-timelapse/cover.f9086acdc0901491391c137ef4ff26bd_huc1a5e2943fc7a390a74a968662e68c26_382039_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post pyTimelapse"
+                        
+                        data-hash="md5-&#43;QhqzcCQFJE5HBN&#43;9P8mvQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">pyTimelapse</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2021 - 
+        
+        2023 Ryan&#39;s Page
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

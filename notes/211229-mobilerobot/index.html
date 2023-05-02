@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='A Fall 2021 Course 「移动机器人导论」'>
+<title>Notes for Introduction to Autonomous Mobile Robots</title>
+
+<link rel='canonical' href='https://ercbunny.github.io/notes/211229-mobilerobot/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Notes for Introduction to Autonomous Mobile Robots'>
+<meta property='og:description' content='A Fall 2021 Course 「移动机器人导论」'>
+<meta property='og:url' content='https://ercbunny.github.io/notes/211229-mobilerobot/'>
+<meta property='og:site_name' content='Ryan&#39;s Page'>
+<meta property='og:type' content='article'><meta property='article:section' content='Notes' /><meta property='article:published_time' content='2021-12-29T15:24:52&#43;08:00'/><meta property='article:modified_time' content='2021-12-29T15:24:52&#43;08:00'/><meta property='og:image' content='https://ercbunny.github.io/notes/211229-mobilerobot/cover.jpg' />
+<meta name="twitter:site" content="@yueqianliu1">
+    <meta name="twitter:creator" content="@yueqianliu1"><meta name="twitter:title" content="Notes for Introduction to Autonomous Mobile Robots">
+<meta name="twitter:description" content="A Fall 2021 Course 「移动机器人导论」"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://ercbunny.github.io/notes/211229-mobilerobot/cover.jpg' />
+    <link rel="shortcut icon" href="/img/user.svg" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu047d7df235c50937c4e2e6b6880cc61b_117975_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Ryan&#39;s Page</a></h1>
+            <h2 class="site-description">Yueqian Liu | 刘越千</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/ErcBunny'
+                        target="_blank"
+                        title="1-GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/ryan-yql/'
+                        target="_blank"
+                        title="2-linkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0,0,256,256" width="50px" height="50px" fill-rule="nonzero"><g fill-opacity="1" fill="#cdcdcd" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.12,5.12)"><path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.76 2.24,5 5,5h32c2.76,0 5,-2.24 5,-5v-32c0,-2.76 -2.24,-5 -5,-5zM17,20v19h-6v-19zM11,14.47c0,-1.4 1.2,-2.47 3,-2.47c1.8,0 2.93,1.07 3,2.47c0,1.4 -1.12,2.53 -3,2.53c-1.8,0 -3,-1.13 -3,-2.53zM39,39h-6c0,0 0,-9.26 0,-10c0,-2 -1,-4 -3.5,-4.04h-0.08c-2.42,0 -3.42,2.06 -3.42,4.04c0,0.91 0,10 0,10h-6v-19h6v2.56c0,0 1.93,-2.56 5.81,-2.56c3.97,0 7.19,2.73 7.19,8.26z"></path></g></g></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/16031917'
+                        target="_blank"
+                        title="3-BiliBili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg t="1638771673560" class="icon" viewBox="0 0 2299 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2977" width="200" height="200"><path d="M1775.840814 322.588002c6.0164 1.002733 53.144869-9.525967 55.150336-6.016401 3.0082 4.5123 24.065601 155.92504 18.550567 156.927774s-44.621635 10.027334-44.621635 10.027334c-3.0082-20.556034-28.577901-147.903173-29.079268-160.938707m75.205003-14.539634l20.556034 162.944174c10.5287-0.501367 53.144869-3.509567 57.155803-4.010934-6.0164-61.668103-16.545101-158.933241-16.545101-158.93324-20.054668-4.010934-41.112069-4.010934-61.166736 0m-40.610702 226.116376s92.752838-23.564234 126.344406-12.0328c17.046467 61.668103 48.131202 407.611118 51.139402 421.649386-21.057401 2.506833-90.246004 8.523234-95.761037 10.027333-4.5123-26.071068-81.72277-403.098818-81.722771-419.643919m343.436183-207.565809c5.515034 1.5041 54.648969-5.013667 55.150335-1.5041 1.002733 12.032801 6.0164 157.42914 0.501367 157.930507s-44.621635 4.010934-44.621635 4.010934c-1.002733-20.054668-12.032801-146.90044-11.030067-160.437341m75.70637-4.010933l4.010933 160.938707c10.5287 0 52.643502 2.506833 57.155803 2.005467-1.002733-61.668103 0-158.933241 0-158.933241-20.054668-3.509567-40.610702-5.013667-61.166736-4.010933m-64.676303 216.089043s94.758304-12.534167 126.845772 2.506833c7.019134 72.196803 6.0164 408.613852 7.019134 422.652119-21.558768 0-90.246004 1.002733-95.761038 2.005467-1.002733-26.071068-39.607968-410.619319-38.103868-427.164419m-220.099977-413.627519c54.648969 278.759879 96.262404 755.058234 97.766504 785.641602 0 0 43.117535 1.002733 91.750105 4.010934C2105.740095 614.383415 2070.644427 134.575493 2071.145794 119.033126c-12.032801-13.536901-126.344406 6.0164-126.344406 6.0164m-120.328005 659.297196c-10.5287-78.213204-290.291313-166.955108-447.720454-138.377206 0 0-19.553301-172.470141-27.073801-339.425248-6.517767-143.390873-1.002733-282.770813 0.501366-305.833681-10.5287-7.5205-123.837572 46.627102-185.004308 69.188603 0 0 73.199537 309.844614 126.344406 952.59671 0 0 84.730971 9.0246 230.12731-19.051934s317.365114-115.815705 302.825481-219.097244m-341.932083 140.88404l-24.566967-176.982441c6.0164-3.0082 156.927774 53.144869 172.971507 63.172203-2.506833 11.030067-148.40454 113.810238-148.40454 113.810238M610.664628 322.588002c6.0164 1.002733 53.144869-9.525967 55.150335-6.016401 3.0082 4.5123 24.065601 155.92504 18.550568 156.927774s-44.621635 10.027334-44.621635 10.027334c-3.0082-20.556034-28.577901-147.903173-29.079268-160.938707m75.205003-14.539634l20.556034 162.944174c10.5287-0.501367 53.144869-3.509567 57.155803-4.010934-6.517767-61.668103-16.545101-158.933241-16.545101-158.93324-20.054668-4.010934-41.112069-4.010934-61.166736 0m-40.610702 226.116376s92.752838-23.564234 126.344406-12.0328c17.046467 61.668103 48.131202 407.611118 51.139402 421.649386-21.057401 2.506833-90.246004 8.523234-95.761037 10.027333-4.5123-26.071068-81.72277-403.098818-81.722771-419.643919m343.436182-207.565809c5.515034 1.5041 54.648969-5.013667 55.150336-1.5041 1.002733 12.032801 6.0164 157.42914 0.501367 157.930507s-44.621635 4.010934-44.621635 4.010934c-1.002733-20.054668-11.531434-146.90044-11.030068-160.437341m75.706371-4.010933l4.010933 160.938707c10.5287 0 52.643502 2.506833 57.155803 2.005467-1.002733-61.668103 0-158.933241 0-158.933241-20.054668-3.509567-40.610702-4.5123-61.166736-4.010933m-64.676303 216.089043s94.758304-12.534167 126.845772 2.506833c7.019134 72.196803 6.0164 408.613852 7.019134 422.652119-21.558768 0-90.246004 1.002733-95.761038 2.005467-0.501367-26.071068-39.607968-410.619319-38.103868-427.164419m-220.099977-413.627519c54.648969 278.759879 96.262404 755.058234 97.766504 785.641602 0 0 43.117535 1.002733 91.750105 4.010934-28.577901-300.318647-63.67357-780.126569-63.172203-796.170303-12.032801-13.035534-126.344406 6.517767-126.344406 6.517767m-120.328005 659.297196c-10.5287-78.213204-290.291313-166.955108-447.720454-138.377206 0 0-19.553301-172.470141-27.073801-339.425248-6.517767-143.390873-1.002733-282.770813 0.501366-305.833681C174.475608-6.308547 61.166736 47.337689 0 69.89919c0 0 73.199537 309.844614 126.344406 952.59671 0 0 84.730971 9.0246 230.12731-19.051934s317.365114-115.815705 302.825481-219.097244m-341.932083 140.88404l-24.566967-176.982441c6.0164-3.0082 156.927774 53.144869 172.971507 63.172203-2.506833 11.030067-148.40454 113.810238-148.40454 113.810238" p-id="2978" fill="#cdcdcd"></path></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/notes/211229-mobilerobot/">
+                <img src="/notes/211229-mobilerobot/cover_hu51328586977ed3b7b80ac2bd02aacb27_216134_800x0_resize_q75_box.jpg"
+                        srcset="/notes/211229-mobilerobot/cover_hu51328586977ed3b7b80ac2bd02aacb27_216134_800x0_resize_q75_box.jpg 800w, /notes/211229-mobilerobot/cover_hu51328586977ed3b7b80ac2bd02aacb27_216134_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="500" 
+                        loading="lazy"
+                        alt="Featured image of post Notes for Introduction to Autonomous Mobile Robots" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/notes/" style="background-color: #6495ED; color: #fff;">
+                Notes
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/notes/211229-mobilerobot/">Notes for Introduction to Autonomous Mobile Robots</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            A Fall 2021 Course 「移动机器人导论」
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 29, 2021</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <blockquote>
+<p>篇幅较长，请先浏览目录，方便导航哦～</p>
+</blockquote>
+<hr>
+<h2 id="2021年1231考试内容">2021年12.31考试内容</h2>
+<ul>
+<li>机器人的自由度计算</li>
+<li>轮子的自由度</li>
+<li>sobel算子作用</li>
+<li>直线检测各种算法原理</li>
+<li>搜索算法哪个完备</li>
+<li>概率框架下的定位模型</li>
+<li>什么噪声没办法去除</li>
+<li>dijkstra</li>
+<li>markov定位图</li>
+<li>split merge</li>
+<li>势场法导航</li>
+<li>卡尔曼滤波的k矩阵</li>
+<li>单轮驱动的运动模型，自由度</li>
+<li>odom模型和误差传播</li>
+</ul>
+<hr>
+<h2 id="绪论">绪论</h2>
+<h3 id="按功能分类">按功能分类</h3>
+<ul>
+<li>移动机器人</li>
+<li>操作机器人</li>
+<li>移动作业机器人</li>
+<li>举些例子：机械臂，月球车，心脏手术，扫地，UAV，自驾车</li>
+</ul>
+<h3 id="应用领域">应用领域</h3>
+<ul>
+<li>工业</li>
+<li>空间探测</li>
+<li>军事</li>
+<li>医疗手术</li>
+<li>家庭</li>
+</ul>
+<h3 id="自动化">自动化</h3>
+<ul>
+<li>自主性(autonomy)是行为主体按自己意愿行事的动机、能力或特性
+<ul>
+<li>自主移动机器人是一类可以根据任务需求、具有在单维或多维空间主动改变自身位姿以及空间位置能力的机器人统称</li>
+<li>自动驾驶分级：0-2级需要驾驶员实时介入，自动驾驶提供辅助速度和车道控制；3级有时会要求接管驾驶，4级开始是在特定环境下完全自主，5级是所有环境下全自主
+<ul>
+<li>0-2：特斯拉，小鹏，未来</li>
+<li>没有一个达到了3</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>三大关键问题：在哪，去哪，怎么去</li>
+<li>经典3环节
+<ul>
+<li>see (perception): sensing, info extraction (filtering, keypoint extraction and matching)</li>
+<li>think (planning/understanding): localizatoon, mapping, planning</li>
+<li>act (motion control): tracking, actuator driving</li>
+</ul>
+</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/see-think-act.png"
+	width="1288"
+	height="788"
+	srcset="/notes/211229-mobilerobot/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/see-think-act_hub70df280b28622c0bbe596a90c0de32c_457310_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="general pipeline"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="163"
+		data-flex-basis="392px"
+	
+></p>
+<hr>
+<h2 id="运动形式">运动形式</h2>
+<h3 id="运动相关的概念">运动相关的概念</h3>
+<ul>
+<li>locomotion，运动，是一种机器人与环境的物理交互</li>
+<li>稳定性考虑：接触点数目和形状（角度，摩擦），重心，环境（地形，空气），本体稳定性</li>
+</ul>
+<h3 id="两种地面运动形式">两种地面运动形式</h3>
+<ul>
+<li>腿式运动
+<ul>
+<li>自然界偏爱，自然界表面粗糙，环境复杂</li>
+<li>通过性强，控制困难，非连续点接触</li>
+<li>效率取决于本体质量</li>
+<li>近似滚动多边形，随着步距减小，接近圆形</li>
+</ul>
+</li>
+<li>轮式运动
+<ul>
+<li>自然界基本没有，因为关节不能旋转</li>
+<li>在平面上运动效率高，控制简单，受环境约束大</li>
+<li>效率取决于环境质量</li>
+</ul>
+</li>
+</ul>
+<h3 id="腿式机器人">腿式机器人</h3>
+<ul>
+<li>特点（因为不同场景下优点和弱点互相转换）包括：适应地形，自主调节重心高度，运动执行器也能当成操作器，主动隔离震动，自由度高，难控制建模，对关节驱动要求高，需要配合地形感知，落地有冲击</li>
+<li>稳定性
+<ul>
+<li>动态稳定指的是执行器停止工作时机器人摔倒，反之则是静态稳定的</li>
+<li>静止时保持稳定的条件
+<ul>
+<li>点接触腿需要三支同时着地（波士顿动力方案，快，动态稳定，能耗低）</li>
+<li>面接触腿只需要一支（比如日本方案的双足，静态稳定，慢，能耗高）</li>
+</ul>
+</li>
+<li>运动时保持稳定的条件
+<ul>
+<li>静态步态行走需要4-6条腿</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>关节数和自由度：每个腿至少需要两个自由度，增加自由度可以提高机动性、步态稳定性，同时增加设计难度</li>
+<li>可能事件总数Gait/步态：一个行进周期内腿式机器人每条腿抬起和落地可能性的组合$=(2k-1)!$注意与腿状态数区分 $=2^k$</li>
+</ul>
+<h3 id="轮式机器人">轮式机器人</h3>
+<ul>
+<li>特点：人造结构的高效性（滚动摩擦，重心不会起伏变化），结构简单，成本低，控制简单，系统复杂度低，运行速度高</li>
+<li>稳定性：至少有三个车轮同时接触地面才能保证静态稳定性（重心落在接触点的三角形内部），3个轮子以上需要悬挂系统使所有轮子保持与地面接触</li>
+<li>轮子类型
+<ul>
+<li>标准轮，DOF=2</li>
+<li>脚轮，DOF=3，调向时会对机器人底盘施加一个扭矩，偏心距d:触地点到垂直旋转轴的距离</li>
+<li>瑞典轮（十字连续切换90/麦克纳姆45），DOF=3，无法单独使用，至少需三个或以上共同使用，对地面冲击大，噪音大，易破坏地面，运行震动大，对机器人本体机构冲击大</li>
+<li>球轮，DOF=3，无约束:具有很高的灵活性，成本高:制造和维护成本均很高，积灰、磨损</li>
+</ul>
+</li>
+<li>全向驱动经典布局：等边三角形，瑞典轮，转向标准轮，4麦克纳姆</li>
+</ul>
+<hr>
+<h2 id="轮式机器人运动学">轮式机器人运动学</h2>
+<h3 id="非完整约束">非完整约束</h3>
+<ul>
+<li>大部分轮式机器人形态均含有非完整约束，即无法从位置空间找到一一对应的关系，和历史状态有关</li>
+<li>需要扩展到速度空间 (车轮间相对位置增量的差别)考虑微分运动学</li>
+</ul>
+<h3 id="坐标系描述">坐标系描述</h3>
+<ul>
+<li>惯性参考坐标系 $\xi_I$ ：机器人作业目标及控制指令，传感器感知测量的环境信息</li>
+<li>机器人参考坐标系 $\xi_R$ ：机器人控制器的误差输入以及控制指令</li>
+<li>config矩阵可以是 $3 \times 3$ ：因为只有两个维度</li>
+<li>$\bold{\dot{\xi_I}=R(\theta)\dot{\xi_R}}$ ，两个坐标系下的速度之间关系为旋转矩阵</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/coord.png"
+	width="2288"
+	height="1006"
+	srcset="/notes/211229-mobilerobot/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/coord_hu6aaf22280888ea8b679a603c169bbc28_183356_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="坐标系的一般设置"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="227"
+		data-flex-basis="545px"
+	
+></p>
+<h3 id="前向运动学模型">(前向)运动学模型</h3>
+<ul>
+<li>指建立惯性系下参考点速度和执行器速度之间的关系</li>
+<li>中间桥梁为机器人系下参考点速度</li>
+<li>构建方法
+<ul>
+<li>作用法：从轮运动参数（转速，半径，轮距），进行速度的合成与分解（同时考虑约束作用），得到参考点在机体坐标系下的速度，然后通过旋转矩阵转为世界坐标系</li>
+<li>约束法：把每个轮子的约束方程写出来（轮运动参数与机体坐标下速度的关系），合并成一个式子并转换为世界坐标速度</li>
+</ul>
+</li>
+<li>标准轮约束
+<ul>
+<li>主动固定标准轮：$v_{\parallel}=r \dot{\phi}$ 以及 $v_{\perp}=0$ ；将 $v_{\parallel}$ 和 $v_{\perp}$ 用机体坐标系下的速度表示出来</li>
+<li>主动转向标准轮：滚动约束，可控制角度来改变运动： $v_{\parallel}=r \dot{\phi}$</li>
+<li>随动固定标准轮：无侧滑约束（滑动约束）： $v_{\perp}=0$</li>
+<li>随动转向标准轮：自由</li>
+</ul>
+</li>
+<li>脚轮约束
+<ul>
+<li>作为主动轮：滚动约束，可控制角度来改变运动</li>
+<li>作为从动轮：自由</li>
+</ul>
+</li>
+<li>球轮约束
+<ul>
+<li>主动：与主动转向标准轮一致</li>
+<li>从动：自由</li>
+</ul>
+</li>
+<li>瑞典轮约束
+<ul>
+<li>主动：驱动速度 $\dot{\phi} r$ 往转子上投影作为最终这个执行器产生的速度，没有无侧滑约束
+<ul>
+<li>记 $\gamma$ 为滚子轴与轮平面的夹角，则滚动约束为 $\dot{\phi} r \cos(\gamma)=v_{\parallel}$ ，这里 $v_{\parallel}$ 指的是机体坐标系下速度滚子轴方向的投影</li>
+</ul>
+</li>
+<li>从动：自由</li>
+</ul>
+</li>
+<li>零运动直线：几何上经过轮子的轴心并垂直于轮平面的线，当受无侧滑约束时，轮子在该直线上不能存在运动
+<ul>
+<li>脚轮、瑞典轮：不存在无侧滑约束，不存在零运动直线</li>
+</ul>
+</li>
+<li>轮式移动机器人运动学建模仅考虑平面运动，因此其对应的输出状态为三维向量，因此，最多有三个独立约束</li>
+<li>动力学建模在运动变化较为快速、动态响应比较明显的情况下适用，比如无人机上</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/kine-example.png"
+	width="2060"
+	height="2188"
+	srcset="/notes/211229-mobilerobot/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/kine-example_hu924a8312b171a840b714df7fddbf66a7_485080_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="运动学模型例子"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="94"
+		data-flex-basis="225px"
+	
+></p>
+<h3 id="自由度">自由度</h3>
+<ul>
+<li>自由度是机动性的度量</li>
+<li>总自由度=移动mobility自由度+操纵steerability自由度：$\delta_{M}=\delta_{m}+\delta_{s}$
+<ul>
+<li>$\delta_{M}=3$：瞬心可在平面的任意点，可在工作空间中跟踪任何路径</li>
+<li>$\delta_{M}=2$：瞬心被限制在某条直线上</li>
+</ul>
+</li>
+<li>移动自由度（可移动度）$\delta_{m}$
+<ul>
+<li>$\delta_{m}=$ 工作空间维度 $-$ 独立约束数目 $=$ 状态向量的维度 $-$ 滑动约束中的独立约束个数</li>
+<li>考虑 $\bold{AR\dot{\xi_I}} = [\bold{B,0}]^T$ 这样动力学模型的基本形式，与 $\bold{0}$ 对应的 $\bold{A}$ 的部分子矩阵零空间维度 $=$ 列数 $-$ 秩 $=\delta_{m}$</li>
+<li>$\delta_{m}=0$ 时无法在平面中运动， $\delta_{m}=1$ 时只能沿着圆弧/直线行走（移动性退化）， $\delta_{m}=2$ 时可原地（线速度和角速度解耦）， $\delta_{m}=3$ 时全向
+<ul>
+<li>二轮差速小车：通过改变轮转速可同时控制角速度和线速度， $\delta_{m}=2$</li>
+<li>自行车：改变主动轮转速只能改变线速度，角速度要通过另一个轮子的方向， $\delta_{m}=1$</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>操纵自由度（可操纵度） $\delta_{s}$
+<ul>
+<li>等于独立的能够转向的舵机的个数，范围是 $[0,2]$</li>
+<li>考虑 $\bold{A}$ 矩阵中滑动约束部分，挑出其中转向轮的子矩阵，求秩，则等于 $\delta_{s}$</li>
+</ul>
+</li>
+<li>机器人的完整性判据：可移动度等于工作空间维度
+<ul>
+<li>对于地面移动机器人，工作空间维度是3</li>
+</ul>
+</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/dof-example.png"
+	width="1904"
+	height="2500"
+	srcset="/notes/211229-mobilerobot/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/dof-example_hue8ed1c4238ede2d17d82db05f2760201_778473_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="自由度计算例子"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="76"
+		data-flex-basis="182px"
+	
+></p>
+<hr>
+<h2 id="二轮差速机器人的控制">二轮差速机器人的控制</h2>
+<blockquote>
+<p>只考虑运动学控制，仅分析二轮差速小车</p>
+</blockquote>
+<h3 id="术语和零碎知识点">术语和零碎知识点</h3>
+<ul>
+<li>定点(镇定)控制Regulation Control：以指定姿态到达指定工作位置</li>
+<li>路径跟踪控制Path Tracking Control：跟随给定路线</li>
+<li>轨迹跟踪控制Trajectory Tracking Control：跟随给定的轨迹</li>
+<li>对于非完整约束机器人而言，不存在静态反馈控制律，使得机器人达到目标位姿</li>
+<li>移动机器人反馈控制器设计一般步骤
+<ol>
+<li>根据作业需求定义系统开环误差信号</li>
+<li>误差信号描述变换:惯性参考坐标系、机器人参考坐标系</li>
+<li>基于机器人模型，构建闭环系统误差模型</li>
+<li>控制器设计</li>
+<li>稳定性分析</li>
+<li>仿真实验</li>
+<li>实际实验</li>
+</ol>
+</li>
+<li>自治系统(Autonomous system)：控制量只依赖状态不依赖时间</li>
+<li>微分平坦(differentially flat)系统：控制量可以用状态量及其导数来表示</li>
+<li>非完整约束系统总是欠驱动系统</li>
+<li>可控：能通过施加控制使系统到达状态空间中的任意一个状态，是模型本身的性质，与控制量无关</li>
+<li>系统存在光滑的反馈控制的必要条件，Brockett定理</li>
+</ul>
+<h3 id="定点控制">定点控制</h3>
+<p><img src="/notes/211229-mobilerobot/robot2ctrl.png"
+	width="2344"
+	height="1112"
+	srcset="/notes/211229-mobilerobot/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/robot2ctrl_hu79da71aebac6bc2b84cd90096097101c_233767_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="机器人模型"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="210"
+		data-flex-basis="505px"
+	
+></p>
+<ul>
+<li>记号和问题描述
+<ul>
+<li>$q=[x,y,\theta]^T$ 为世界坐标系下的状态</li>
+<li>$q_r=[x_r,y_r,\theta_r]^T$ 为世界坐标系下参考状态</li>
+<li>$\tilde{q}=[\tilde{x},\tilde{y},\tilde{\theta}]^T=q-q_r$ 为开环误差</li>
+<li>$e=\bold{R(\theta)^T} \tilde{q}$ 为机体坐标系下误差信号</li>
+<li>误差的动态模型是 $\dot{e}$ 使用“左导右不导……”可展开，矩阵求导这里是每个元素分别求导即可</li>
+<li>定点控制是找到一系列 $\bold{\dot{\xi_R}} = [v(t),\omega(t)]^T = [\dot{x}(t), \dot{y}(t), \omega(t)]^T = \bold{K}e$ 使 $e(t)=0$， 这里 $\bold{K}$ 为控制矩阵，是要设计的变量， $\bold{\dot{\xi_R}}$ 则能通过运动学模型转化为执行器需要的输出</li>
+<li>这个模型中 $\dot{y}(t)=0$ ， $\dot{x}(t)=v(t)$</li>
+</ul>
+</li>
+<li>惯性坐标系中机器人的运动学模型
+<ul>
+<li>$\bold{\dot{\xi_I}} = \bold{R(\theta)\bold{\dot{\xi_R}}}$</li>
+<li>根据此以及Brockett定理可判定对于这个模型，没有光滑的反馈控制</li>
+<li>根据Chow定理是可控的</li>
+</ul>
+</li>
+<li>非线性控制器
+<ul>
+<li>记机体坐标系下误差信号为 $e=[e_1,e_2,e_3]^T$</li>
+<li>可令 $v(t)=-k_1 e_1$ ，单纯的比例控制</li>
+<li>可令 $\omega(t)=-k_2 e_3 + {e_2}^2\sin(t)$ ，比例控制加前馈</li>
+<li>如此带入误差的动态模型 $\dot{e}$ 可以进行稳定性分析</li>
+</ul>
+</li>
+<li>极坐标线性化
+<ul>
+<li>$\tilde{q}=[\rho, \alpha, \beta]$</li>
+<li>误差模型则是 $\dot{\tilde{q}}=\bold{A} [v,\omega]^T$</li>
+<li>控制器则可以令 $v=k_{\rho}\rho, \omega=k_1 \alpha + k_2 \beta$</li>
+<li>带入到误差模型里后还是存在三角非线性，因为 $\alpha$ 始终比较小，可以做三角函数的线性化得 $\dot{\tilde{q}} = \bold{A_{linear}} \tilde{q}$</li>
+<li>由Hurwitz判据知系统指数收敛，又近似了LTI，所以渐进收敛</li>
+</ul>
+</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/pole1.png"
+	width="1752"
+	height="666"
+	srcset="/notes/211229-mobilerobot/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/pole1_hu6ac0c3469f4172887fff2f3d0a3194fa_612295_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="误差模型的推导"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="263"
+		data-flex-basis="631px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/pole2.png"
+	width="1752"
+	height="758"
+	srcset="/notes/211229-mobilerobot/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/pole2_hu60d70a078cf7dc4ee0e3cffd2621eb99_217418_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="控制器和线性化"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="231"
+		data-flex-basis="554px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/pole3.png"
+	width="1752"
+	height="898"
+	srcset="/notes/211229-mobilerobot/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/pole3_hu5dbb221b2c7bdf2668999163ace95d1d_382222_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="稳定性分析"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="195"
+		data-flex-basis="468px"
+	
+></p>
+<blockquote>
+<p>并不是说极坐标一定要线性化，也可以指定 $v,\omega$ 为其他的函数，非线性的也可以，只不过就得用Lyapnuov理论了</p>
+<p><u><strong>一般方法都是得到误差状态变量的导数与 $[v,w]^T$ 的关系（误差模型），然后设计控制率，也就是 $v, w$ 的关于状态变量的函数，然后带入到误差模型中，得到误差的动态，对其做稳定性分析</strong></u></p>
+</blockquote>
+<h3 id="轨迹跟踪控制">轨迹跟踪控制</h3>
+<ul>
+<li>$q_r$ 这时候是规定的一条轨迹了，类似上面的定点控制</li>
+<li>更高级的在这里有<a class="link" href="https://blog.csdn.net/weixin_46723764/article/details/108885265"  target="_blank" rel="noopener"
+    >「横向自动控制方法：Purepursuit, Stanley, MPC对比」</a></li>
+</ul>
+<hr>
+<h2 id="规划">规划</h2>
+<h3 id="几个基本概念">几个基本概念</h3>
+<ul>
+<li>The workspace is often the representation of the world, possibly independent of the robot itself. Often describes some notion of reachability, what space is free or occupied? 不一定是笛卡尔空间，关节空间或者参数空间都可以</li>
+<li>Configuration space describes the full state of the robot in the world (actuator positions, orientation, etc.)</li>
+<li>Let’s consider that our robot is no longer a point, but occupies an area&hellip;</li>
+<li>structured: occupancy grid map, distance field; Unstructured: graph, mesh, exact</li>
+</ul>
+<h3 id="基于搜索树的路径查找">基于搜索树的路径查找</h3>
+<ul>
+<li><a class="link" href="https://qiao.github.io/PathFinding.js/visual/"  target="_blank" rel="noopener"
+    >一个很好的视觉实现</a></li>
+<li>广度优先搜索BFS
+<ul>
+<li>从起点开始，首先遍历起点周围邻近的点，然后再遍历已经遍历过的点邻近的点，逐步的向外扩散</li>
+<li>一旦到达终点，便可以从终点开始，反过来顺着父节点的顺序找到起点，由此就构成了一条路径</li>
+<li>完备</li>
+</ul>
+</li>
+<li>深度优先搜索DFS
+<ul>
+<li>从起点开始，不断沿着路径进行扩展，直到找到终点或者无路可走，再重新选取父节点进行深度搜索</li>
+<li>不完备，可能无限走错路</li>
+</ul>
+</li>
+<li>Edsger W. Dijkstra
+<ul>
+<li>寻找图形中节点之间的最短路径，需要计算每一个节点距离起点的总移动代价</li>
+<li>节点放入优先队列中会按照代价进行排序，运行时优选选出代价最小的作为下一个遍历的节点</li>
+<li>Asymptotically the fastest known single-source shortest path algorithm for arbitrary directed graphs</li>
+<li>Doesn’t really know the goal exists until it reaches it</li>
+</ul>
+</li>
+<li>从Dijkstra到A*
+<ul>
+<li>综合代价=代价+启发函数</li>
+<li>优先选取综合代价小的节点作为下一个路径点</li>
+<li>启发函数是节点n距离终点的预计代价
+<ul>
+<li>估计值 $&lt;=$ 实际代价：一定能找到最短路径，估计值越小则遍历的节点越多</li>
+<li>估计值 $=$ 实际代价：一定能找到最短路径，最理想的情况</li>
+<li>估计值 $&gt;$ 实际代价：不能保证找到最短路径，不过此时会很快，若远大于则变为最佳优先搜索</li>
+</ul>
+</li>
+<li>在低维度空间里很常用，限制是需要构造一个图，启发函数比较难找，比较难栅格化</li>
+</ul>
+</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/Dijk-Astar.png"
+	width="2092"
+	height="1174"
+	srcset="/notes/211229-mobilerobot/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/Dijk-Astar_hue63153060a83acf5f28e6738516a5a53_2283788_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Dijkstra和A*区别"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="178"
+		data-flex-basis="427px"
+	
+></p>
+<ul>
+<li>D*: Dynamic A*
+<ul>
+<li>动态环境下可能各种条件代价会变化所以进行了改进</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于采样的路径查找">基于采样的路径查找</h3>
+<ul>
+<li>主要是为了防止维数爆炸，防止连通性降级，以及直接在config空间里（不好grid化）直接plan</li>
+<li>主要思路
+<ol>
+<li>在config空间中采样（uniform，gaussian，obstacle involved）</li>
+<li>将新采样点和附近的已有点进行连接，判据一般是范数</li>
+<li>检查碰撞（计算量大户），如果没碰撞则添加一条边到路径中</li>
+<li>检查是否到达目标（附近）</li>
+<li>loop</li>
+</ol>
+</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/norm.png"
+	width="2388"
+	height="1088"
+	srcset="/notes/211229-mobilerobot/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/norm_hu9b9b5fb032044fccf71e7de8605ea67a_944332_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="范数"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="219"
+		data-flex-basis="526px"
+	
+></p>
+<ul>
+<li>Probabilistic Roadmaps (PRM, 1996)
+<ul>
+<li>特性
+<ul>
+<li>为multiple-queries设计，允许大量预先计算</li>
+<li>对于single-query问题则可以省略一些预先计算来加速</li>
+<li>先全图采样完再寻找一条路径</li>
+</ul>
+</li>
+<li>主要步骤
+<ol>
+<li>在空间中sample一堆没有碰撞的点</li>
+<li>用这些点构造一个图，包括碰撞检测</li>
+<li>使用A*做搜索</li>
+</ol>
+</li>
+<li>限制
+<ul>
+<li>限制为完整约束运动</li>
+<li>窄通道无视问题</li>
+<li>动态环境不适用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Rapidly-exploring random trees (RRT, 1998)
+<ul>
+<li>不断生长的树，而不是把全部空间都采样完</li>
+<li>designed for single-query search</li>
+<li>适用于非完整性约束运动和动态环境，比PRM更容易整合控制和运动学约束</li>
+<li>可用于高维空间问题，无需几何划分，可以尽可能的探索未知区域</li>
+<li>改进型
+<ul>
+<li>Goal-Bias：将目标节点作为采样点出现，可以控制目标点出现的概率</li>
+<li>Extend RRT：引入路径点集合，加快了收敛速度，提高了路径的稳定性</li>
+<li>RRT-Connect：初始点和目标点生成两棵树，直到两棵树连在一起算法收敛</li>
+<li>Local-tree-RRT：对随机采样算法狭窄通道难以迅速通过的问题，提出局部树方法加以解决</li>
+<li>Dynamic RRT：提出了修剪和合并操作，去除掉无效的节点后再继续进行搜索</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="局部规划避障">局部规划（避障）</h3>
+<ul>
+<li>BUG算法</li>
+<li>动态窗口：认为一小段时间内twist恒定</li>
+</ul>
+<h3 id="势场法">势场法</h3>
+<ul>
+<li>主要思想：避免层级结构，同时考虑全局和局部路径，建立一个全局势能场，机器人自动沿着最大梯度方向下降到目标点</li>
+<li>一种常见的实现：总场=目标场+障碍场</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/goal.png"
+	width="1780"
+	height="742"
+	srcset="/notes/211229-mobilerobot/goal_hu714d753056c144d85d9749d39b2dd203_1884771_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/goal_hu714d753056c144d85d9749d39b2dd203_1884771_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="目标场"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="239"
+		data-flex-basis="575px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/obs.png"
+	width="2224"
+	height="862"
+	srcset="/notes/211229-mobilerobot/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/obs_hu260276f4571d31c35d608e1aa8e6bea2_1084778_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="障碍场"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="258"
+		data-flex-basis="619px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/total.png"
+	width="2224"
+	height="862"
+	srcset="/notes/211229-mobilerobot/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/total_hu6fed33323110f00e9c4b1a0b9203e817_1071448_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="总势场"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="258"
+		data-flex-basis="619px"
+	
+></p>
+<hr>
+<h2 id="传感器大类和指标">传感器大类和指标</h2>
+<h3 id="分类">分类</h3>
+<p><img src="/notes/211229-mobilerobot/sensor1.png"
+	width="1526"
+	height="716"
+	srcset="/notes/211229-mobilerobot/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/sensor1_hu227aa7aad1f880e3994a013c28a9fd47_759179_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="213"
+		data-flex-basis="511px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/sensor2.png"
+	width="1354"
+	height="674"
+	srcset="/notes/211229-mobilerobot/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/sensor2_hu7256e7218beb4ff56b6ed34a1dca7830_644519_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="常见传感器"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="200"
+		data-flex-basis="482px"
+	
+></p>
+<h3 id="常见传感器的原理">常见传感器的原理</h3>
+<ul>
+<li>rangefinder
+<ul>
+<li>TOF
+<ul>
+<li>sonar</li>
+<li>lidar</li>
+</ul>
+</li>
+<li>RSS</li>
+</ul>
+</li>
+<li>infra-red：发光二极管发出包括红外的光，由物体反射，传感器接收检测强度</li>
+</ul>
+<h3 id="主要性能指标">主要性能指标</h3>
+<ul>
+<li>动态范围</li>
+<li>测量范围</li>
+<li>分辨率</li>
+<li>线性度</li>
+<li>频率/带宽</li>
+<li>误差
+<ul>
+<li>系统误差由理论上可建模的因素或过程造成，是确定性的（deterministic 知道解析形式的），可测的</li>
+</ul>
+</li>
+</ul>
+<h3 id="标定和不确定性">标定和不确定性</h3>
+<ul>
+<li>标定：确定一个从传感器读数到有意义数据的映射
+<ol>
+<li>获得ground truth和测试数据</li>
+<li>拟合模型</li>
+</ol>
+</li>
+<li>不确定性一般处理办法
+<ul>
+<li>储存测试值和准确值的pair</li>
+<li>获得确定性变换模型</li>
+<li>获得概率模型（比如假设高斯分布）
+<ul>
+<li>可以用平均值（第一moment）和方差（第二moment）</li>
+<li>贝叶斯公式</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="基于视觉的感知">基于视觉的感知</h2>
+<h3 id="cv的常见应用">CV的常见应用</h3>
+<ul>
+<li>语义分割</li>
+<li>图像分类</li>
+<li>目标检测</li>
+<li>实例分割</li>
+<li>目标追踪</li>
+<li>三维重建</li>
+</ul>
+<h3 id="相机图像获取">相机图像获取</h3>
+<ul>
+<li>小孔成像-&gt;光圈虚化原理-&gt;使用透镜</li>
+<li>小孔成像与透视原理
+<ul>
+<li>radial distortion</li>
+<li>intrinsic calibration: Use camera model to interpret the projection from world to image plane
+<ul>
+<li>To estimate 11 unknowns, we need at least 6 points to calibrate the camera (linear least squares)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数字图像处理">数字图像处理</h3>
+<ul>
+<li>相关和卷积，都是对应位置相乘之后相加，但是卷积的核要倒过来，但是因为图像处理中基本是对称的，所以区别不大</li>
+<li>空间滤波基础（模糊和锐化）</li>
+<li>边缘检测，一阶和二阶导数的区别，如果加入了高斯模糊，则一阶对应用gussian一阶导DOG卷原图，二阶对应LOG卷原图</li>
+<li>图像匹配
+<ul>
+<li>normalized cross correlation</li>
+<li>zero-mean correlation</li>
+<li>dot product</li>
+</ul>
+</li>
+</ul>
+<h3 id="立体视觉">立体视觉</h3>
+<ul>
+<li>Triangulation：给出一组对应的图像坐标和相机位置，确定像素对应点的3D位置
+<ul>
+<li>geometric approach</li>
+<li>linear approach</li>
+<li>non-linear approach</li>
+</ul>
+</li>
+<li>Stereo camera
+<ul>
+<li>标定：外参数（relative pose between the cameras (rotation, translation)）；内参数（focal length, optical center, radial distortion）</li>
+<li>像素匹配
+<ul>
+<li>Epipolar Constraint
+<ol>
+<li>Epipolar rectification: warps image pairs into new “rectified” images, whose epipolar lines are parallel &amp; collinear (aligned to the baseline)</li>
+<li>计算相似度来匹配，Typical similarity measures: Normalized Cross-Correlation (NCC) , Sum of Squared Differences (SSD), Sum of Absolute Differences (SAD)</li>
+</ol>
+</li>
+<li>得到像素的匹配之后可以获得视差图：同一个场景在两个相机下成像的像素的位置偏差，因为通常下两个双目相机是水平放置的，所以该位置偏差一般体现在水平方向</li>
+</ul>
+</li>
+<li>对双目成像来说，视差图和深度图在某种程度上是等价的，知道了两个相机的相关参数，是可以将视差图转换为深度图的（最近有工作直接用AI输出深度图）</li>
+<li>双目间距的影响：太小则深度误差大看不远，太大则看不近</li>
+</ul>
+</li>
+<li>Structure from motion (SFM)
+<ul>
+<li>Simultaneously estimate both 3D geometry (structure) and camera pose (motion): solve via non-linear minimization of the reprojection errors</li>
+</ul>
+</li>
+</ul>
+<h3 id="光流lucaskanade">光流（Lucas–Kanade）</h3>
+<ul>
+<li>根据相邻两帧图像估计运动信息</li>
+<li>三个假设
+<ul>
+<li>光强（像素值）不变： $I(x,y,t)=I(x+dx,y+dy,t+dt)$</li>
+<li>时间差较小： $dt=0$</li>
+<li>空间相关性，空间不变形</li>
+</ul>
+</li>
+<li>步骤图如下</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/opticalflow1.png"
+	width="1654"
+	height="698"
+	srcset="/notes/211229-mobilerobot/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/opticalflow1_hu50352bcfa13d9bbc64d849376498de82_168018_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="236"
+		data-flex-basis="568px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/opticalflow2.png"
+	width="1654"
+	height="698"
+	srcset="/notes/211229-mobilerobot/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/opticalflow2_hu0be1f0b5191ca059308d1d471c3864cb_140933_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="光流法"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="236"
+		data-flex-basis="568px"
+	
+></p>
+<h3 id="点检测">点检测</h3>
+<ul>
+<li>
+<p>Harris Corner &amp; Shi-Tomasi（可判断是edge类型还是corner）</p>
+<ul>
+<li>同平面旋转不变性，线性光照强度变化不变性；但对于尺度和仿射变换没有不变性</li>
+<li>corner的一个特性：Shifting a window in any direction should give a large change of intensity in at least 2 directions</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/corner1.png"
+	width="1654"
+	height="698"
+	srcset="/notes/211229-mobilerobot/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/corner1_hu2c09e5072878ac8272c575e77c1c9bd7_192613_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="236"
+		data-flex-basis="568px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/corner2.png"
+	width="1654"
+	height="678"
+	srcset="/notes/211229-mobilerobot/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/corner2_hu5fcb38e9ce79d326550e3ef5951d7ca6_418113_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="角落检测一般分析思路"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="243"
+		data-flex-basis="585px"
+	
+></p>
+<ul>
+<li>特征值的解法 $det(A-\lambda I)=0$</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/corner3.png"
+	width="1654"
+	height="478"
+	srcset="/notes/211229-mobilerobot/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/corner3_huffc1d7639e0fb6286d60bad98dfa5ffe_141507_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Eigen Visualization"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="346"
+		data-flex-basis="830px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/corner4.png"
+	width="1654"
+	height="722"
+	srcset="/notes/211229-mobilerobot/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/corner4_hubbfdce6f0bd8a3b6adb228741097b342_183519_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Shi-Tomasi"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="229"
+		data-flex-basis="549px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/corner5.png"
+	width="1654"
+	height="736"
+	srcset="/notes/211229-mobilerobot/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/corner5_hu8d45e838336b6c271bd172ea189c5fd5_320091_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Harris实际上也可以采用单阈值筛选"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="224"
+		data-flex-basis="539px"
+	
+></p>
+</li>
+<li>
+<p>解决特征检测的尺度变换问题</p>
+<ul>
+<li>Scale detector
+<ul>
+<li>思想是根据不同的图片尺度选择不同大小的检测区域大小/shifting region大小</li>
+<li>Sharp, local intensity changes in an image, are good regions to monitor for identifying relative scale in usual images
+<ul>
+<li>Use DOG and LOG</li>
+<li>convolve image with kernel to identify sharp intensity discontinuities</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SIFT = Scale Invariant Feature Transform: an approach for detecting and describing regions of interest in an image
+<ul>
+<li>invariant to changes in: rotation, scaling, illumination</li>
+<li>Very powerful in capturing + describing distinctive structure, but also computationally demanding</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>一些快速算法</p>
+<ul>
+<li>FAST corner detector</li>
+<li>BRIEF descriptor，Not scale/rotation invariant (extensions exist&hellip;)</li>
+<li>BRISK （快，仅次于BRIEF，但旋转和尺度不变）</li>
+</ul>
+</li>
+</ul>
+<h3 id="线检测">线检测</h3>
+<ul>
+<li>算法比较
+<ul>
+<li>Split-and-merge and Line-Regression: fastest
+<ul>
+<li>best applied on laser scans</li>
+<li>Deterministic &amp; make use of the sequential ordering of raw scan points</li>
+</ul>
+</li>
+<li>If applied on randomly captured points only last 3 algorithms would segment all lines</li>
+</ul>
+</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/lines.png"
+	width="1648"
+	height="412"
+	srcset="/notes/211229-mobilerobot/lines_hud36468f48f180a9d6665864372b9f2bb_151644_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/lines_hud36468f48f180a9d6665864372b9f2bb_151644_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="一图对比"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="400"
+		data-flex-basis="960px"
+	
+></p>
+<ul>
+<li>
+<p>Hough没什么好说的，参考DIP</p>
+</li>
+<li>
+<p>Split-and-merge</p>
+<p><img src="/notes/211229-mobilerobot/split1.png"
+	width="1648"
+	height="530"
+	srcset="/notes/211229-mobilerobot/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/split1_hu79bf24bbc2eecd28888952f438a33d14_209096_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="310"
+		data-flex-basis="746px"
+	
+>
+<img src="/notes/211229-mobilerobot/split2.png"
+	width="654"
+	height="530"
+	srcset="/notes/211229-mobilerobot/split2_hucfa5d437b4868d2da828ae07f655727f_70688_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/split2_hucfa5d437b4868d2da828ae07f655727f_70688_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="123"
+		data-flex-basis="296px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/full.png"
+	width="1592"
+	height="730"
+	srcset="/notes/211229-mobilerobot/full_hu25c2696c0cbc81a3a74d863979996dae_222264_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/full_hu25c2696c0cbc81a3a74d863979996dae_222264_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="full process"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="218"
+		data-flex-basis="523px"
+	
+></p>
+</li>
+<li>
+<p>Linear regression</p>
+<p><img src="/notes/211229-mobilerobot/iterReg.png"
+	width="1592"
+	height="554"
+	srcset="/notes/211229-mobilerobot/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/iterReg_hu304e21f6194f2337e9a49f3db7fefa2f_163255_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="line regression"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="287"
+		data-flex-basis="689px"
+	
+></p>
+</li>
+<li>
+<p>RANSAC: RANdom SAmple Consensus.</p>
+<ul>
+<li>A generic &amp; robust fitting algorithm of models in the presence of outliers (i.e. points which do not satisfy a model)</li>
+<li>Typical applications in robotics are: line extraction from 2D range data, plane extraction from 3D data, feature matching, structure from motion, camera calibration, homography estimation, etc.</li>
+<li>iterative and non-deterministic, the probability to find a set free of outliers increases as more iterations are used</li>
+<li>a non-deterministic method, results are different between runs</li>
+</ul>
+</li>
+</ul>
+<h3 id="地方检测">地方检测</h3>
+<ul>
+<li>地方的图像抽象为bag of words：We can describe a scene as a collection of words and look up in the database for images with a similar collection of words</li>
+<li>图像各种feature通过某种方法得到descriptor space里面的一个个点，用k聚类算法归类
+<ul>
+<li>k-means
+<ol>
+<li>先定义总共有多少个类/蔟 (cluster)</li>
+<li>将每个蔟心 (cluster centers）随机定在一个点上</li>
+<li>将每个数据点关联到最近蔟中心所属的蔟上</li>
+<li>对于每一个蔟找到其所有关联点的中心点（取每一个点坐标的平均值)</li>
+<li>将上述点变为新的蔟心</li>
+<li>不停重复，直到每个蔟所拥有的点不变</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>根据聚类生成一个单词树，树的最末端代表word，上一级代表一个聚类，拿去跟训练好的模型进行比较即可知道是什么单词</li>
+</ul>
+<hr>
+<h2 id="移动机器人的定位">移动机器人的定位</h2>
+<h3 id="相关概念">相关概念</h3>
+<ul>
+<li>Perception : the robot must interpret its sensors to extract meaningful data;</li>
+<li>Localization : the robot must determine its position in the environment;</li>
+<li>Cognition : the robot must decide how to act to achieve its goals;</li>
+<li>Motion control : the robot must modulate its motor outputs to achieve the desired trajectory.</li>
+</ul>
+<h3 id="挑战">挑战</h3>
+<ul>
+<li>noise: illumination, jitter, gain, bloom, blur</li>
+<li>sensor aliasing (混叠)</li>
+<li>odometry
+<ul>
+<li>Limited resolution during integration (time increments, measurement resolution, etc.);</li>
+<li>Misalignment of the wheels (deterministic);</li>
+<li>Uncertainty in the wheel diameter and in particular unequal wheel diameter (deterministic);</li>
+<li>Variation in the contact point of the wheel;</li>
+<li>Unequal floor contact (slipping, nonplanar surface, etc.)</li>
+<li>error types
+<ol>
+<li>Range error: 积分 integrated path length (distance) of the robot’s movement, sum of the wheel movements</li>
+<li>Turn error: 运动学参数 similar to range error, but for turns, difference of the wheel motions</li>
+<li>Drift error: 打滑 difference in the error of the wheels leads to an error in the robot’s angular orientation</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="差速模型里程计误差">差速模型里程计误差</h3>
+<ul>
+<li>基于RK2的运动学模型</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/rk2.png"
+	width="1608"
+	height="510"
+	srcset="/notes/211229-mobilerobot/rk2_hudc19162e910f97f96f42ffd127d72765_230742_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/rk2_hudc19162e910f97f96f42ffd127d72765_230742_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="运动学模型"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="315"
+		data-flex-basis="756px"
+	
+></p>
+<ul>
+<li>误差传导模型结论</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/errprop.png"
+	width="1608"
+	height="642"
+	srcset="/notes/211229-mobilerobot/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/errprop_hu18e2356b4ef39feadf3475396d5c065e_331985_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="新的协方差矩阵"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="250"
+		data-flex-basis="601px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/errpropv.png"
+	width="2258"
+	height="776"
+	srcset="/notes/211229-mobilerobot/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/errpropv_hu8176619e2ea47b3fc789429eebf47222_422003_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="可视化"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="290"
+		data-flex-basis="698px"
+	
+></p>
+<h3 id="马尔可夫定位">马尔可夫定位</h3>
+<ul>
+<li>Markov localization tracks the robot’s belief state using an arbitrary probability density function to represent the robot’s position</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/markov.png"
+	width="1606"
+	height="898"
+	srcset="/notes/211229-mobilerobot/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/markov_hu92eac502fd09e308eb0b9ef2b214ad4b_199743_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="markov流程"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="178"
+		data-flex-basis="429px"
+	
+></p>
+<ul>
+<li>对于2D定位，需要实时更新一个立方体的数据，很慢
+<ul>
+<li>One possible solution would be to increase the cell size at the expense of localization accuracy.</li>
+<li>Another solution is to use an adaptive cell decomposition instead of a fixed cell decomposition.</li>
+<li>reduce the number of states that are updated in each step</li>
+</ul>
+</li>
+</ul>
+<h3 id="卡尔曼滤波定位">卡尔曼滤波定位</h3>
+<ul>
+<li>卡尔曼滤波是迭代的，线性系统高斯噪声下最优的，实时性好</li>
+</ul>
+<p><img src="/notes/211229-mobilerobot/kalman1.png"
+	width="1606"
+	height="896"
+	srcset="/notes/211229-mobilerobot/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/kalman1_hu3e0d51426ca313757d89d4aca191c692_225363_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="kalman流程"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="179"
+		data-flex-basis="430px"
+	
+></p>
+<p><img src="/notes/211229-mobilerobot/kalman2.png"
+	width="3028"
+	height="1612"
+	srcset="/notes/211229-mobilerobot/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/kalman2_hu0d60e58ce24e1cce8deae0ff70a6dc46_904022_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="kalman update"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="450px"
+	
+></p>
+<ul>
+<li>
+<p>卡尔曼滤波器和信息融合</p>
+<p><img src="/notes/211229-mobilerobot/fuse.png"
+	width="2974"
+	height="1254"
+	srcset="/notes/211229-mobilerobot/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_480x0_resize_box_3.png 480w, /notes/211229-mobilerobot/fuse_hu93e5ffff44643b04d0074690871cd3dc_657462_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="kalman fusion"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="237"
+		data-flex-basis="569px"
+	
+></p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/notes/230501-ekf/">
+        
+        
+            <div class="article-image">
+                <img src="/notes/230501-ekf/cover.7429e490cc41e6a2607d7141d492ded7_hu26ae92dd6b118305d9748826b5136196_1172678_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Extended Kalman Filter"
+                        
+                        data-hash="md5-dCnkkMxB5qJgfXFB1JLe1w==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Extended Kalman Filter</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/notes/211212-gre/">
+        
+        
+            <div class="article-image">
+                <img src="/notes/211212-gre/cover.513c577b711a9da482fe521dfcaffcdd_hu77614c637fc6c9a84dc47c4d43e7b525_303754_250x150_fill_box_smart1_3.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post さよなら〜GRE"
+                        
+                        data-hash="md5-UTxXe3EanaSC/lId/K/83Q==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">さよなら〜GRE</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2021 - 
+        
+        2023 Ryan&#39;s Page
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
